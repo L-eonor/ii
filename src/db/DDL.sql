@@ -5,6 +5,7 @@ CREATE TABLE `up201504515`.`Order_` (
      `t_start` INT NULL COMMENT 'início de processamento da ordem' ,
      `t_end` INT NULL COMMENT 'término do processamento' ,
      `status` INT NOT NULL COMMENT 'indica se a order está: waiting, processing, done' ,
+     manager_ID BIGINT(20) UNSIGNED,
      PRIMARY KEY (`ID`)
 ) ENGINE = InnoDB;
 
@@ -55,12 +56,14 @@ CREATE TABLE `up201504515`.`Status_Stores` (
 
 CREATE TABLE `up201504515`.`Order_Manager` (
      manager_ID SERIAL NOT NULL ,
+     OPC_ID BIGINT(20) UNSIGNED,
      PRIMARY KEY (manager_ID)
 ) ENGINE = InnoDB;
 
 
 CREATE TABLE `up201504515`.`Calculate_Path` (
      calculator_ID SERIAL NOT NULL ,
+     DB_ID BIGINT(20) UNSIGNED,
      PRIMARY KEY (calculator_ID)
 ) ENGINE = InnoDB;
 
@@ -69,7 +72,8 @@ CREATE TABLE `up201504515`.`DB_Handler` (
      DB_ID SERIAL NOT NULL PRIMARY KEY,
      user TEXT NOT NULL, 
      passw TEXT NOT NULL,
-     manager_ID INT REFERENCES Order_Manager(manager_ID )
+     manager_ID BIGINT(20) UNSIGNED,
+     FOREIGN KEY (manager_ID ) REFERENCES `up201504515`.`Order_Manager`(manager_ID )
        
 ) ENGINE = InnoDB;
 
@@ -79,21 +83,24 @@ CREATE TABLE `up201504515`.`UDP_Handler` (
      socket TEXT NOT NULL, 
      port TEXT NOT NULL,
      server_addr TEXT NOT NULL,
-     manager_ID INT REFERENCES Order_Manager(manager_ID ),
+     manager_ID BIGINT(20) UNSIGNED,
+     FOREIGN KEY ( manager_ID ) REFERENCES `up201504515`.`Order_Manager`(manager_ID ),
      PRIMARY KEY (UDP_ID )
 ) ENGINE = InnoDB;
 
 
 CREATE TABLE `up201504515`.`Monitor_State` (
      monitor_ID SERIAL NOT NULL AUTO_INCREMENT ,
-     DB_ID INT REFERENCES DB_Handler (DB_ID),
+     DB_ID BIGINT(20) UNSIGNED, 
+     FOREIGN KEY (DB_ID)  REFERENCES `up201504515`.`DB_Handler` (DB_ID),
      PRIMARY KEY (monitor_ID )
 ) ENGINE = InnoDB;
 
 
-CREATE TABLE `up201504515`.`OPC_UA` (
+CREATE TABLE `up201504515`.`OPC_UA_Handler` (
      OPC_ID SERIAL NOT NULL AUTO_INCREMENT ,
-     monitor_ID INT REFERENCES Monitor_State(monitor_ID ),
+     monitor_ID BIGINT(20) UNSIGNED, 
+     FOREIGN KEY (monitor_ID ) REFERENCES `up201504515`.`Monitor_State`(monitor_ID ),
      PRIMARY KEY (OPC_ID )
 ) ENGINE = InnoDB;
 
@@ -101,7 +108,8 @@ CREATE TABLE `up201504515`.`OPC_UA` (
 CREATE TABLE `up201504515`.`Cell` (
      cell_ID SERIAL NOT NULL AUTO_INCREMENT ,
      cell_actuators TEXT NOT NULL, 
-     OPC_ID INT REFERENCES OPC_UA_Handler(OPC_ID ),
+     OPC_ID BIGINT(20) UNSIGNED,
+     FOREIGN KEY (OPC_ID) REFERENCES `up201504515`.`OPC_UA_Handler` (OPC_ID ),
      PRIMARY KEY (cell_ID )
 ) ENGINE = InnoDB;
 
@@ -149,7 +157,8 @@ CREATE TABLE `up201504515`.`Unit` (
      estado TEXT NOT NULL,
      position TEXT NOT NULL, 
      path_to_follow TEXT NULL,
-     cell_ID INT REFERENCES Cell(cell_ID ),
+     cell_ID BIGINT(20) UNSIGNED, 
+     FOREIGN KEY (cell_ID ) REFERENCES Cell(cell_ID ),
      PRIMARY KEY (unit_ID)
 ) ENGINE = InnoDB;
 
@@ -157,7 +166,8 @@ CREATE TABLE `up201504515`.`Unit` (
 CREATE TABLE `up201504515`.`Actuator` (
      actuator_ID SERIAL NOT NULL ,
      status TEXT NOT NULL,
-     cell_ID INT REFERENCES Cell(cell_ID ),
+     cell_ID BIGINT(20) UNSIGNED, 
+     FOREIGN KEY (cell_ID ) REFERENCES Cell(cell_ID ),
      PRIMARY KEY (actuator_ID )
 ) ENGINE = InnoDB;
 
@@ -203,3 +213,19 @@ CREATE TABLE `up201504515`.`Machine` (
      FOREIGN KEY (actuator_ID ) REFERENCES Actuator(actuator_ID ),
      PRIMARY KEY (actuator_ID )
 ) ENGINE = InnoDB;
+
+
+alter table `up201504515`.`Order_`
+    add constraint fk_order_manager
+    foreign key (manager_ID) 
+    REFERENCES Order_Manager(manager_ID);
+
+alter table `up201504515`.`Order_Manager`
+    add constraint fk_opc_ua_manager
+    foreign key (OPC_ID ) 
+    REFERENCES OPC_UA_Handler(OPC_ID );
+
+alter table `up201504515`.`Calculate_Path`
+    add constraint fk_db_handler
+    foreign key (DB_ID) 
+    REFERENCES DB_Handler(DB_ID);
