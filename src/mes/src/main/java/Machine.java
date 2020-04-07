@@ -1,0 +1,17 @@
+public class Machine extends Cell {
+
+    /*
+     * Class Machine, that represents all the action related to the machine cell on the shop floor simulator.
+     */
+
+    // Attributes
+
+    // Constructor
+    public Machine() {
+
+    }
+
+    //Methods
+
+
+}
