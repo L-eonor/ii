@@ -1,7 +1,8 @@
 /src/mes/.idea/
 /src/mes/target/
 
-
+# Codesys aux files
+*.opt
 
 # Prerequisites
 *.d
