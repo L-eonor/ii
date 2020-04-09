@@ -3,6 +3,9 @@
 
 # Codesys aux files
 *.opt
+*.bootinfo
+*.bootinfo_guids
+*.bootinfo_compileinfo
 
 # Prerequisites
 *.d
