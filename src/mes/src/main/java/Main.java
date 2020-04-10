@@ -10,7 +10,7 @@ public class Main {
     public static void main(String[] args) throws Exception {
 
         int[] start = {0, 0};
-        int[] goal = {3, 6};
+        int[] goal = {2, 3};
 
         System.out.println(" - - - - - - - - - - - - - - - - - - - ");
         System.out.println("Starting shortest path finding . . .");

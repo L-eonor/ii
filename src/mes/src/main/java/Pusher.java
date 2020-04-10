@@ -5,9 +5,10 @@ public class Pusher extends Cell {
      */
 
     // Attributes
-
+    private String name="Pusher";
     // Constructor
-    public Pusher() {
+    public Pusher(int y, int x) {
+        super(y,x);
 
     }
 

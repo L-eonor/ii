@@ -5,12 +5,17 @@ public class Rotator extends Cell {
      */
 
     //Attributes
+    private String name="Rotator";
     public boolean rotorState;
     public boolean isDirectionVertical;
     public boolean isDirectionHorizontal;
 
     //Constructor
-    public Rotator() {
+    public Rotator(int y, int x) {
+        super(y,x);
+        this.rotorState=false;
+        this.isDirectionHorizontal=true;
+        this.isDirectionVertical=false;
 
     }
 

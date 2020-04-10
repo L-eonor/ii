@@ -4,10 +4,11 @@ public class Slider extends Cell {
      */
 
     // Attributes
+    private String name="Slider";
 
     // Constructor
-    public Slider() {
-
+    public Slider(int y, int x) {
+        super(y,x);
     }
 
     //Methods

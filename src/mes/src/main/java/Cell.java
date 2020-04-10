@@ -7,14 +7,18 @@ public class Cell {
      */
 
     //Attributes
+    private String name="Conveyor";
+    public int[] position = new int[2];
     public boolean unitPresence;
     public boolean motorState;
 
 
     // Constructor
-    public Cell() {
+    public Cell(int y, int x) {
         this.motorState=false;
         this.unitPresence=false;
+        this.position[0]=y;
+        this.position[1]=x;
     }
 
     //Methods

@@ -101,7 +101,7 @@ public class OPCUA_Connection {
 
         try {
             getClient().writeValue(nodeidstring, dv).get();
-            System.out.println("Variavel alterada para: " + ((DataValue) client.readValue(0, TimestampsToReturn.Both, nodeidstring).get()).getValue().getValue());
+            //System.out.println("Variavel alterada para: " + ((DataValue) client.readValue(0, TimestampsToReturn.Both, nodeidstring).get()).getValue().getValue());
         } catch (InterruptedException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -121,7 +121,7 @@ public class OPCUA_Connection {
 
         try {
             getClient().writeValue(nodeidstring, dv).get();
-            System.out.println("Variavel alterada para: " + ((DataValue) client.readValue(0, TimestampsToReturn.Both, nodeidstring).get()).getValue().getValue());
+            //System.out.println("Variavel alterada para: " + ((DataValue) client.readValue(0, TimestampsToReturn.Both, nodeidstring).get()).getValue().getValue());
         } catch (InterruptedException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
