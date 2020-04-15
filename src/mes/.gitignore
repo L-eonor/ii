@@ -1,0 +1,7 @@
+#exclude folder .idea
+/.idea/*
+#exclude folder targer
+/target/*
+
+#exclude mes_code.iml file
+*mes_code.iml
