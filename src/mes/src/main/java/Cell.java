@@ -7,7 +7,7 @@ public class Cell {
      */
 
     //Attributes
-    private String name="Conveyor";
+    public String name;
     public int[] position = new int[2];
     public boolean unitPresence;
     public boolean motorState;
@@ -19,9 +19,17 @@ public class Cell {
         this.unitPresence=false;
         this.position[0]=y;
         this.position[1]=x;
+        this.setName("Conveyor");
     }
 
     //Methods
+    public String getName(){
+        return this.name;
+    }
+
+    public void setName(String a){
+        this.name=a;
+    }
 
     public boolean startMotor() {
         if(motorState=true) return true;

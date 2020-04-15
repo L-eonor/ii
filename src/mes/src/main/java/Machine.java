@@ -5,11 +5,11 @@ public class Machine extends Cell {
      */
 
     // Attributes
-    private String name="Machine";
 
     // Constructor
     public Machine(int y, int x) {
         super(y,x);
+        super.setName("Machine");
 
     }
 

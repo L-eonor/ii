@@ -9,6 +9,7 @@ public class Slider extends Cell {
     // Constructor
     public Slider(int y, int x) {
         super(y,x);
+        super.setName("Slider");
     }
 
     //Methods
