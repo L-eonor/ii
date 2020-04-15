@@ -5,19 +5,11 @@ public class Path_Logic {
     public int nodeIdentification=0;
     public int[] start;
     public int[] goal;
-    private Stack<Integer> path;
+    private Stack<Node> path;
     private ArrayList<Node> usedNodes;
     private PriorityQueue<Node> unusedNodes;
     public Node solutionFound;
     private SFS floor;
-   /* private int[][] sfs = {
-            { 0,  0, 0,  0, 0,  0,  0,  0,  0},
-            {-1, -1, 0, -1, 0, -1,  0,  0, -1},
-            {-1,  1, 0,  1, 0,  1,  0,  2, -1},
-            {-1,  1, 0,  1, 0,  1,  0,  2,  0},
-            {-1,  1, 0,  1, 0,  1,  0,  2,  0},
-            {-1, -1, 0, -1, 0, -1,  0,  0, -1},
-            { 0,  0, 0,  0, 0,  0,  0,  0,  0}};*/
 
 
     /**
@@ -28,25 +20,43 @@ public class Path_Logic {
     public Path_Logic(int[] start, int[] goal){
         this.start= start;
         this.goal= goal;
-        this.path= new Stack<Integer>();
+        this.path= new Stack<>();
         this.usedNodes= new ArrayList<>();
         this.unusedNodes = new PriorityQueue<>(new NodeComparator());
         this.floor = new SFS();
-
-        System.out.println("Start: " + this.start[0] + "," + this.start[1]+";");
-        System.out.println("Goal: " + this.goal[0] + "," + this.goal[1]+";");
-        System.out.println(" * * * *");
     }
 
 
     /**
      * Starts the algorithm in order to find the shortest path to the solution.
+     *
+     * @return  <code>true</code> if solution found.
      */
-    public void findPath() {
+    public boolean findPath() {
+        if(floor.sfsCells[start[0]][start[1]] == null) {
+            System.out.println("Invalid starting position.");
+            return false;
+        }
+        else if(floor.sfsCells[goal[0]][goal[1]] == null){
+            System.out.println("Invalid goal position.");
+            return false;
+        }
+        else{
+            System.out.println("Start: " + this.start[0] + "," + this.start[1]+";");
+            System.out.println("Goal: " + this.goal[0] + "," + this.goal[1]+";");
+            System.out.println(" * * * *");
+        }
+
         Node parentNode= new Node(null, this.nodeIdentification, start, 0,manhattanDistance(start[0],start[1]), 0); this.nodeIdentification++;
         unusedNodes.add(parentNode);
-        if(solve()) System.out.println("Shortest path found.");
-        else System.out.println("No path found.");
+        if(solve()) {
+            System.out.println("Shortest path found.");
+            return true;
+        }
+        else {
+            System.out.println("No path found.");
+            return false;
+        }
     }
 
 
@@ -112,9 +122,9 @@ public class Path_Logic {
     private void addChildren(Node parentNode) {
         int positionY=parentNode.getPosition()[0];
         int positionX=parentNode.getPosition()[1];
-        int [] childPosition= new int[2];
 
         for(int i=0; i < 4; i++) {
+            int [] childPosition= new int[2];
             switch (i) {
                 case 0:
                     childPosition[0]= positionY;
@@ -143,8 +153,7 @@ public class Path_Logic {
 
             if(parentNode.getParentNode () != null) {
                 if (inBoundsOfArray(childPosition[0], childPosition[1]) && !Arrays.equals(childPosition, parentNode.getParentNode().getPosition()) && (floor.sfsCells[childPosition[0]][childPosition[1]] != null)) {
-                    int[] childPositionAux=cloneArray(childPosition);
-                    Node childNode= new Node(parentNode, this.nodeIdentification, childPositionAux, parentNode.getCost()+1, manhattanDistance(childPosition[0], childPosition[1]), parentNode.getDepth() + 1); this.nodeIdentification++;
+                    Node childNode= new Node(parentNode, this.nodeIdentification, childPosition, parentNode.getCost()+1, manhattanDistance(childPosition[0], childPosition[1]), parentNode.getDepth() + 1); this.nodeIdentification++;
                     if (!unusedNodes.contains(childNode) && !usedNodes.contains(childNode)) {
                         unusedNodes.add(childNode);
                         System.out.println("  [ADDED]  " + childNode);
@@ -153,8 +162,7 @@ public class Path_Logic {
             }
             else {
                 if (inBoundsOfArray(childPosition[0], childPosition[1]) && (floor.sfsCells[childPosition[0]][childPosition[1]] != null)) {
-                    int[] childPositionAux=cloneArray(childPosition);
-                    Node childNode= new Node(parentNode, this.nodeIdentification, childPositionAux, parentNode.getCost()+1, manhattanDistance(childPosition[0], childPosition[1]), parentNode.getDepth() + 1); this.nodeIdentification++;
+                    Node childNode= new Node(parentNode, this.nodeIdentification, childPosition, parentNode.getCost()+1, manhattanDistance(childPosition[0], childPosition[1]), parentNode.getDepth() + 1); this.nodeIdentification++;
                     if (!unusedNodes.contains(childNode) && !usedNodes.contains(childNode)) {
                         unusedNodes.add(childNode);
                         System.out.println("  [ADDED]  " + childNode);
@@ -173,8 +181,7 @@ public class Path_Logic {
     private void addPathToStack() {
         Node node = solutionFound;
         while(node != null){
-            path.push(node.getPosition()[1]);
-            path.push(node.getPosition()[0]);
+            path.push(node);
             node = node.getParentNode();
         }
     }
@@ -223,7 +230,36 @@ public class Path_Logic {
      * Gets the LIFO stack.
      * @return Stack, with ordered positions of the path found.
      */
-    public Stack<Integer> getPath() {
+    public Stack<Node> getPath() {
         return this.path;
+    }
+
+    private boolean checkRulesToCreateNode(int [] childPosition, Node parentNode){
+        //Check if position is in bounds of Array;
+        boolean ArrayInBounds = inBoundsOfArray(childPosition[0], childPosition[1]);
+        //Check if it's not going back from where it came
+        boolean goingBack=Arrays.equals(childPosition, parentNode.getParentNode().getPosition());
+        //Check if it's not a null path
+        boolean validCell=(floor.sfsCells[childPosition[0]][childPosition[1]] != null);
+
+        if(parentNode.getParentNode () != null) {
+            if (inBoundsOfArray(childPosition[0], childPosition[1]) && !Arrays.equals(childPosition, parentNode.getParentNode().getPosition()) && (floor.sfsCells[childPosition[0]][childPosition[1]] != null)) {
+                Node childNode= new Node(parentNode, this.nodeIdentification, childPosition, parentNode.getCost()+1, manhattanDistance(childPosition[0], childPosition[1]), parentNode.getDepth() + 1); this.nodeIdentification++;
+                if (!unusedNodes.contains(childNode) && !usedNodes.contains(childNode)) {
+                    unusedNodes.add(childNode);
+                    System.out.println("  [ADDED]  " + childNode);
+                }
+            }
+        }
+        else {
+            if (inBoundsOfArray(childPosition[0], childPosition[1]) && (floor.sfsCells[childPosition[0]][childPosition[1]] != null)) {
+                Node childNode= new Node(parentNode, this.nodeIdentification, childPosition, parentNode.getCost()+1, manhattanDistance(childPosition[0], childPosition[1]), parentNode.getDepth() + 1); this.nodeIdentification++;
+                if (!unusedNodes.contains(childNode) && !usedNodes.contains(childNode)) {
+                    unusedNodes.add(childNode);
+                    System.out.println("  [ADDED]  " + childNode);
+                }
+            }
+        }
+    return true;
     }
 }
