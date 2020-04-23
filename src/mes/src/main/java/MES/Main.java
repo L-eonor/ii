@@ -76,7 +76,7 @@ public class Main {
         executorService.submit(server);
          */
 
-        /*
+
         int port = 54321;
 
         udpServer server = new udpServer(port);
@@ -84,6 +84,7 @@ public class Main {
 
         ExecutorService executorService = Executors.newFixedThreadPool(2);
         //executorService.submit(client);
-        executorService.submit(server); */
+        executorService.submit(server);
+
     }
 }
