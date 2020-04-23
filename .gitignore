@@ -1,7 +1,12 @@
 /src/mes/.idea/
 /src/mes/target/
 
-
+# Codesys aux files
+#*.opt
+#*.bootinfo
+#*.bootinfo_guids
+#*.bootinfo_compileinfo
+#*.compileinfo
 
 # Prerequisites
 *.d
