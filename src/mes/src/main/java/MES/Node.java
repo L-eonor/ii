@@ -1,4 +1,5 @@
-import java.util.Arrays;
+package MES;
+
 import java.util.Comparator;
 
 public class Node{
@@ -21,7 +22,7 @@ public class Node{
     }
 
     public String toString() {
-        String nodeString = "NodeId: "+ nodeId + " w/ position ["+getPosition()[0]+","+getPosition()[1]+"] and HeuristicValue "+getHeuristicValue()+".";
+        String nodeString = "NodeId: "+ nodeId + " w/ position ["+getPosition()[0]+","+getPosition()[1]+"] and AStarValue "+getAStarValue()+" ("+getHeuristicValue()+" + "+getCost()+").";
         return nodeString;
     }
 

@@ -1,11 +1,13 @@
+package MES;
+
 public class Rotator extends Cell {
 
     /*
-     * Class Rotator, that represents all the action related to the Rotator Cell on the shop floor simulator.
+     * Class MES.Rotator, that represents all the action related to the MES.Rotator MES.Cell on the shop floor simulator.
      */
 
     //Attributes
-    public String name="Rotator";
+    public String name="MES.Rotator";
     public boolean rotorState;
     public boolean isDirectionVertical;
     public boolean isDirectionHorizontal;
@@ -13,7 +15,7 @@ public class Rotator extends Cell {
     //Constructor
     public Rotator(int y, int x) {
         super(y,x);
-        super.setName("Rotator");
+        super.setName("MES.Rotator");
         this.rotorState=false;
         this.isDirectionHorizontal=true;
         this.isDirectionVertical=false;

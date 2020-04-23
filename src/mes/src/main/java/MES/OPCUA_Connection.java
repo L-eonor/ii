@@ -1,11 +1,11 @@
+package MES;
+
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 import org.eclipse.milo.opcua.sdk.client.OpcUaClient;
 import org.eclipse.milo.opcua.sdk.client.api.config.OpcUaClientConfig;
-import org.eclipse.milo.opcua.sdk.client.api.config.OpcUaClientConfigBuilder;
 import org.eclipse.milo.opcua.stack.client.DiscoveryClient;
-import org.eclipse.milo.opcua.stack.client.UaStackClient;
 import org.eclipse.milo.opcua.stack.core.types.builtin.DataValue;
 import org.eclipse.milo.opcua.stack.core.types.builtin.NodeId;
 import org.eclipse.milo.opcua.stack.core.types.builtin.Variant;
@@ -110,6 +110,7 @@ public class OPCUA_Connection {
             e.printStackTrace();
         }
     }
+
     static void setValue_int(String cellName, String VarName, int ValueSet) {
         //String aux2;
         //aux2 = aux + cellName + "." + VarName;

@@ -1,3 +1,5 @@
+package MES;
+
 import java.util.*;
 
 public class Path_Logic {
@@ -88,7 +90,7 @@ public class Path_Logic {
         }
 
         if (!checkGoal(node)) {
-            System.out.println("Creating children for Node: " + node.getNodeId() + " Position: [" + node.getPosition()[0] + "," + node.getPosition()[1] + "]     . . .");
+            System.out.println("Creating children for MES.Node: " + node.getNodeId() + " Position: [" + node.getPosition()[0] + "," + node.getPosition()[1] + "]     . . .");
             addChildren(node);
             usedNodes.add(node);
             return solve();
@@ -149,44 +151,100 @@ public class Path_Logic {
                     throw new IllegalStateException("Unexpected value: " + i);
             }
 
-
-            if (parentNode.getParentNode() != null) {
-                if (inBoundsOfArray(childPosition[0], childPosition[1]) && !Arrays.equals(childPosition, parentNode.getParentNode().getPosition()) && (floor.sfsCells[childPosition[0]][childPosition[1]] != null)) {
-                    System.out.println("Different than machine: "+ floor.getCell(childPosition[0], childPosition[1]).name);
-                    if(!floor.getCell(childPosition[0], childPosition[1]).name.equals("Machine")){
-                        Node childNode = new Node(parentNode, this.nodeIdentification, childPosition, parentNode.getCost() + 1, manhattanDistance(childPosition[0], childPosition[1]), parentNode.getDepth() + 1);
-                        this.nodeIdentification++;
-                        if (!unusedNodes.contains(childNode) && !usedNodes.contains(childNode)) {
-                            unusedNodes.add(childNode);
-                            System.out.println("  [ADDED]  " + childNode);
+            if (checkGeneralRules(parentNode, childPosition)) {
+                //Regras de movimento de tapete para tapete
+                switch (floor.sfsCells[parentNode.getPosition()[0]][parentNode.getPosition()[1]].getName()){
+                    case "MES.Machine":
+                        if(floor.sfsCells[childPosition[0]][childPosition[1]].getName().equals("MES.Rotator")) {
+                            createChildNode(parentNode, childPosition);
                         }
-                    }
-                    else if (floor.getCell(childPosition[0], childPosition[1]).name.equals("Machine") && Arrays.equals(childPosition, goal)) {
-                        System.out.println("Equals to machine and goal: "+ !floor.getCell(childPosition[0], childPosition[1]).name.equals("Machine"));
-                        Node childNode = new Node(parentNode, this.nodeIdentification, childPosition, parentNode.getCost() + 1, manhattanDistance(childPosition[0], childPosition[1]), parentNode.getDepth() + 1);
-                        this.nodeIdentification++;
-                        if (!unusedNodes.contains(childNode) && !usedNodes.contains(childNode)) {
-                            unusedNodes.add(childNode);
-                            System.out.println("  [ADDED]  " + childNode);
-                        }
-                    }
+                        break;
 
-                }
-            } else {
-                if (inBoundsOfArray(childPosition[0], childPosition[1]) && (floor.sfsCells[childPosition[0]][childPosition[1]] != null)) {
-                    Node childNode = new Node(parentNode, this.nodeIdentification, childPosition, parentNode.getCost() + 1, manhattanDistance(childPosition[0], childPosition[1]), parentNode.getDepth() + 1);
-                    this.nodeIdentification++;
-                    if (!unusedNodes.contains(childNode) && !usedNodes.contains(childNode)) {
-                        unusedNodes.add(childNode);
-                        System.out.println("  [ADDED]  " + childNode);
-                    }
+                    case "Conveyor":
+                        if(floor.sfsCells[childPosition[0]][childPosition[1]].getName().equals("MES.Rotator") || floor.sfsCells[childPosition[0]][childPosition[1]].getName().equals("MES.Pusher")) {
+                            createChildNode(parentNode, childPosition);
+                        }
+                        break;
+
+                    case "MES.Rotator":
+                        if(floor.sfsCells[childPosition[0]][childPosition[1]].getName().equals("Conveyor") || floor.sfsCells[childPosition[0]][childPosition[1]].getName().equals("MES.Machine") || floor.sfsCells[childPosition[0]][childPosition[1]].getName().equals("MES.Rotator")) {
+                            createChildNode(parentNode, childPosition);
+                        }
+                        break;
+                    case "MES.Pusher":
+                        if(floor.sfsCells[childPosition[0]][childPosition[1]].getName().equals("Conveyor") || floor.sfsCells[childPosition[0]][childPosition[1]].getName().equals("MES.Slider")) {
+                            createChildNode(parentNode, childPosition);
+                        }
+                        break;
+                    case "MES.Slider":
+                        if(floor.sfsCells[childPosition[0]][childPosition[1]].getName().equals("MES.Pusher")) {
+                            createChildNode(parentNode, childPosition);
+                        }
+                        break;
+                    default:
+                        break;
+
                 }
             }
-
         }
         System.out.println("-  -  -");
     }
 
+    private int getCost(Node parentNode, int[] childPosition) {
+        // -> 1, caminho permanece na mesma direção;
+        //-> 2, caminho muda direção;
+
+        if(parentNode.getParentNode() == null) return 1;
+
+        boolean yChange1 = (parentNode.getParentNode().getPosition()[0] != parentNode.getPosition()[0]);
+        boolean xChange1 = (parentNode.getParentNode().getPosition()[1] != parentNode.getPosition()[1]);
+        boolean yChange2 = (parentNode.getPosition()[0] != childPosition[0]);
+        boolean xChange2 = (parentNode.getPosition()[1] != childPosition[1]);
+
+        boolean yChange = (yChange1 || yChange2);
+        boolean xChange = (xChange1 || xChange2);
+
+
+        if(xChange && yChange) return 2;
+        else return 1;
+    }
+
+    /**
+     * Determines if the indices are in the array boundaries.
+     *
+     * @param parentNode parent MES.Node.
+     * @param childPosition position vector of the new child.
+     * @return <code>true</code> if rules are checked, <code>false</code> otherwise.
+     */
+    private boolean checkGeneralRules(Node parentNode, int [] childPosition) {
+        boolean inArray = inBoundsOfArray(childPosition[0], childPosition[1]);
+
+        boolean goingBack;
+        if (parentNode.getParentNode() == null) goingBack=false;
+        else goingBack= Arrays.equals(childPosition, parentNode.getParentNode().getPosition());
+
+        boolean existsCell;
+        if(inArray) existsCell= floor.sfsCells[childPosition[0]][childPosition[1]] != null;
+        else existsCell=false;
+
+        return inArray && !goingBack && existsCell;
+    }
+
+    /**
+     * Determines if the indices are in the array boundaries.
+     *
+     * @param parentNode MES.Node to create child from.
+     * @param childPosition position vector of the new child.
+     */
+    private void createChildNode(Node parentNode, int [] childPosition) {
+        int cost=getCost(parentNode, childPosition);
+        Node childNode = new Node(parentNode, this.nodeIdentification, childPosition, parentNode.getCost() + cost, manhattanDistance(childPosition[0], childPosition[1]), parentNode.getDepth() + 1);
+        this.nodeIdentification++;
+        if (!unusedNodes.contains(childNode) && !usedNodes.contains(childNode)) {
+            unusedNodes.add(childNode);
+            System.out.println("  [ADDED]  " + childNode);
+        }
+    }
 
     /**
      * Adds the positions of the found path to a LIFO stack.
@@ -241,6 +299,12 @@ public class Path_Logic {
         return b;
     }
 
+    /**
+     * Reverses a 1D Array.
+     *
+     * @param a 1D Array to reverse.
+     * @return b , the reversed array.
+     */
     private int[] reverseArray(int[] a){
         int n = a.length;
         int[] b = new int[n];

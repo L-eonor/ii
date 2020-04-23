@@ -1,7 +1,9 @@
+package MES;
+
 public class Pusher extends Cell {
 
     /*
-     * Class Pusher, that represents all the action related to the Pusher cell on the shop floor simulator.
+     * Class MES.Pusher, that represents all the action related to the MES.Pusher cell on the shop floor simulator.
      */
 
     // Attributes
@@ -9,7 +11,7 @@ public class Pusher extends Cell {
     // Constructor
     public Pusher(int y, int x) {
         super(y,x);
-        super.setName("Pusher");
+        super.setName("MES.Pusher");
 
     }
 

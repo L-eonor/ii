@@ -1,7 +1,9 @@
+package MES;
+
 public class Cell {
 
     /*
-     * Class Cell, that represents all the action related to the machine cells on the shop floor simulator.
+     * Class MES.Cell, that represents all the action related to the machine cells on the shop floor simulator.
      * It's a generalization of all the existing cells and also represents the Conveyor cell, since it is the
       most simple one and all the others share the same characteristics as the Conveyor.
      */

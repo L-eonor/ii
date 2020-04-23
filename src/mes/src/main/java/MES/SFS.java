@@ -1,3 +1,5 @@
+package MES;
+
 public class SFS {
 
     //Attributes

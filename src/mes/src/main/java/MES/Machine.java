@@ -1,7 +1,9 @@
+package MES;
+
 public class Machine extends Cell {
 
     /*
-     * Class Machine, that represents all the action related to the machine cell on the shop floor simulator.
+     * Class MES.Machine, that represents all the action related to the machine cell on the shop floor simulator.
      */
 
     // Attributes
@@ -9,7 +11,7 @@ public class Machine extends Cell {
     // Constructor
     public Machine(int y, int x) {
         super(y,x);
-        super.setName("Machine");
+        super.setName("MES.Machine");
 
     }
 
