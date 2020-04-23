@@ -1,3 +1,5 @@
+package MES;
+
 import MES.*;
 import org.eclipse.milo.opcua.sdk.client.OpcUaClient;
 
@@ -27,8 +29,8 @@ public class Main {
         connection.connect().get();
 
 
-        int[] start = {5, 3};
-        int[] goal = {7, 2};
+        int[] start = {1, 1};
+        int[] goal = {5, 3};
 
         System.out.println(" - - - - - - - - - - - - - - - - - - - ");
         System.out.println("Starting shortest path finding . . .");
@@ -50,15 +52,15 @@ public class Main {
         //Inicialização das variáveis
         String cellName, variable;
         int value;
-        cellName = "";
+        cellName = "x";
         variable = "Hello";
         value= 234;
 
         //Funções: get_Value para saber o valor de uma variavel setValue para escrever o valor numa variavel
-        System.out.println("--------------Value Get--------------");
-        MES.OPCUA_Connection.get_Value(cellName,variable);
+        //System.out.println("--------------Value Get--------------");
+        //MES.OPCUA_Connection.get_Value(cellName,pathString);
         System.out.println("--------------Value Change--------------");
-        MES.OPCUA_Connection.setValue_int(cellName,variable,value); */
+        MES.OPCUA_Connection.setValue_int(cellName,variable,pathString);
 
 
         /*

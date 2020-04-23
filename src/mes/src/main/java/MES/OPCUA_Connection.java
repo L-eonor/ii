@@ -65,7 +65,7 @@ public class OPCUA_Connection {
      * String celulaName -> contém o nome do POU da célula
      * String VarName -> contém o nome da variavál que se pretende ler o valor
      */
-    static void get_Value(String cellName, String VarName) {
+    public static void get_Value(String cellName, String VarName) {
         //String aux1;
         //aux1 = aux + cellName + "." + VarName;
         NodeId nodeidstring = new NodeId(id_node, aux);
@@ -111,13 +111,13 @@ public class OPCUA_Connection {
         }
     }
 
-    static void setValue_int(String cellName, String VarName, int ValueSet) {
+    public static void setValue_int(String cellName, String VarName, Integer ValueSet) {
         //String aux2;
         //aux2 = aux + cellName + "." + VarName;
         NodeId nodeidstring = new NodeId(id_node, aux);
 
-        int i = ValueSet;
-        Variant v = new Variant((short) i);
+        Integer i = ValueSet;
+        Variant v = new Variant( i);
         DataValue dv = new DataValue(v);
 
         try {

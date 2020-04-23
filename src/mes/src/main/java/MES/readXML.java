@@ -11,8 +11,8 @@ import java.io.File;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import static MES.main.orderListTransformation;
-import static MES.main.orderListUnload;
+import static MES.Main.orderListTransformation;
+import static MES.Main.orderListUnload;
 import static MES.createXML.*;
 
 // This piece of code reads the XML and adds the orders to the respective list
