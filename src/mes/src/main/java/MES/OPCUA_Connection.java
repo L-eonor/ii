@@ -18,7 +18,7 @@ public class OPCUA_Connection {
     private static Object ValueL;
     private String Client_Name;
     private static int id_node = 4;
-    private static String aux = "|var|CODESYS Control Win V3 x64.Application.PLC_PRG.string_1";
+    private static String aux = "|var|CODESYS Control Win V3 x64.Application.MAIN_TASK.AT1_order_path_mes";
 
     public static OpcUaClient getClient() {
         return client;

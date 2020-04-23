@@ -19,7 +19,7 @@ public class Main {
     public static OpcUaClient client;
     public static String pathString="";
     public static String aux = "DESKTOP-LPATDUL";
-    public static String Client = "opc.tcp://LAPTOP-UGJ82VH1:4840";
+    public static String Client = "opc.tcp://DESKTOP-RNTM3PU:4840";
 
     public static void main(String[] args) throws Exception {
 
@@ -42,7 +42,7 @@ public class Main {
             int sizePath = path.getPath().size();
             for (int i = 0; i < sizePath; i++) {
                 Node nodePopped = path.getPath().pop();
-                pathString = pathString + Integer.toString(nodePopped.getPosition()[1]) + Integer.toString(nodePopped.getPosition()[0]);
+                if(i!=0) pathString = pathString + Integer.toString(nodePopped.getPosition()[1]) + Integer.toString(nodePopped.getPosition()[0]);
             }
         }
         System.out.println(pathString);
@@ -60,7 +60,7 @@ public class Main {
         //System.out.println("--------------Value Get--------------");
         //MES.OPCUA_Connection.get_Value(cellName,pathString);
         System.out.println("--------------Value Change--------------");
-        OPCUA_Connection.setValue_string(cellName,variable, "No");
+        OPCUA_Connection.setValue_string(cellName,variable, pathString);
 
 
         /*
