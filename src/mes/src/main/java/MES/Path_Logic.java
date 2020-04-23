@@ -325,4 +325,17 @@ public class Path_Logic {
     public Stack<Node> getPath() {
         return this.path;
     }
+
+    public String getStringPath() {
+        String pathString = "";
+        if(findPath()){
+            int sizePath = getPath().size();
+            for (int i = 0; i < sizePath; i++) {
+                Node nodePopped = getPath().pop();
+                pathString = pathString + Integer.toString(nodePopped.getPosition()[1]) + Integer.toString(nodePopped.getPosition()[0]);
+            }
+            return pathString;
+        }
+        else return "-1";
+    }
 }
