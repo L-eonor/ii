@@ -19,12 +19,12 @@ public class Main {
     public static OpcUaClient client;
     public static String pathString="";
     public static String aux = "DESKTOP-LPATDUL";
-    public static String Client = "opc.tcp://DESKTOP-RNTM3PU:4840";
+    public static String Client = "opc.tcp://LAPTOP-UGJ82VH1:4840";
 
     public static void main(String[] args) throws Exception {
 
         // Creates object for connection and makes the connection
-        MyConnection = new MES.OPCUA_Connection(Client);
+        MyConnection = new OPCUA_Connection(Client);
         OpcUaClient connection = MyConnection.MakeConnection();
         connection.connect().get();
 
@@ -60,7 +60,7 @@ public class Main {
         //System.out.println("--------------Value Get--------------");
         //MES.OPCUA_Connection.get_Value(cellName,pathString);
         System.out.println("--------------Value Change--------------");
-        MES.OPCUA_Connection.setValue_int(cellName,variable,pathString);
+        OPCUA_Connection.setValue_string(cellName,variable, "No");
 
 
         /*

@@ -18,7 +18,7 @@ public class OPCUA_Connection {
     private static Object ValueL;
     private String Client_Name;
     private static int id_node = 4;
-    private static String aux = "|var|CODESYS Control Win V3 x64.Application.PLC_PRG.var_int";
+    private static String aux = "|var|CODESYS Control Win V3 x64.Application.PLC_PRG.string_1";
 
     public static OpcUaClient getClient() {
         return client;
@@ -123,6 +123,27 @@ public class OPCUA_Connection {
         try {
             getClient().writeValue(nodeidstring, dv).get();
             //System.out.println("Variavel alterada para: " + ((DataValue) client.readValue(0, TimestampsToReturn.Both, nodeidstring).get()).getValue().getValue());
+        } catch (InterruptedException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
+
+    public static void setValue_string(String cellName, String VarName, String ValueSet) {
+        //String aux2;
+        //aux2 = aux + cellName + "." + VarName;
+        NodeId nodeidstring = new NodeId(id_node, aux);
+
+        String i = ValueSet;
+        Variant v = new Variant( i);
+        DataValue dv = new DataValue(v);
+
+        try {
+            getClient().writeValue(nodeidstring, dv).get();
+            System.out.println("Variavel alterada para: " + ((DataValue) client.readValue(0, TimestampsToReturn.Both, nodeidstring).get()).getValue().getValue());
         } catch (InterruptedException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();

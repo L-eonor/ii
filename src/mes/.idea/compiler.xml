@@ -10,5 +10,8 @@
         <module name="mes" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="mes" target="8" />
+    </bytecodeTargetLevel>
   </component>
 </project>
