@@ -264,7 +264,7 @@
       <UserDefElement iecname="PUSHN__to__PUSHP" type="T_BOOL" byteoffset="1479" vartype="VAR" />
       <UserDefElement iecname="PUSHP__to__EMPTY" type="T_BOOL" byteoffset="1480" vartype="VAR" />
     </TypeUserDef>
-    <TypeUserDef name="T_WAREHOUSE_OUT" size="572" nativesize="1160" typeclass="Userdef" pouclass="FUNCTION_BLOCK" iecname="WAREHOUSE_OUT">
+    <TypeUserDef name="T_WAREHOUSE_OUT" size="524" nativesize="1176" typeclass="Userdef" pouclass="FUNCTION_BLOCK" iecname="WAREHOUSE_OUT">
       <UserDefElement iecname="SENSOR" type="T_BOOL" byteoffset="0" vartype="VAR_INPUT" />
       <UserDefElement iecname="UNITTYPE" type="T_INT" byteoffset="2" vartype="VAR_INPUT" />
       <UserDefElement iecname="MOTOR" type="T_BOOL" byteoffset="4" vartype="VAR_OUTPUT" />
@@ -274,12 +274,9 @@
       <UserDefElement iecname="_FREE" type="T_SFCActionType" byteoffset="92" vartype="VAR" />
       <UserDefElement iecname="_SEND_R" type="T_SFCActionType" byteoffset="220" vartype="VAR" />
       <UserDefElement iecname="_MOTOR" type="T_SFCActionType" byteoffset="348" vartype="VAR" />
-      <UserDefElement iecname="Init" type="T_SFCStepType" byteoffset="476" vartype="VAR" />
-      <UserDefElement iecname="EMPTY" type="T_SFCStepType" byteoffset="492" vartype="VAR" />
-      <UserDefElement iecname="FULL" type="T_SFCStepType" byteoffset="508" vartype="VAR" />
-      <UserDefElement iecname="SENDING" type="T_SFCStepType" byteoffset="524" vartype="VAR" />
-      <UserDefElement iecname="ORDER_INIT" type="T_SFCStepType" byteoffset="540" vartype="VAR" />
-      <UserDefElement iecname="REMOVING" type="T_SFCStepType" byteoffset="556" vartype="VAR" />
+      <UserDefElement iecname="INIT" type="T_SFCStepType" byteoffset="476" vartype="VAR" />
+      <UserDefElement iecname="REMOVING" type="T_SFCStepType" byteoffset="492" vartype="VAR" />
+      <UserDefElement iecname="SENDING" type="T_SFCStepType" byteoffset="508" vartype="VAR" />
     </TypeUserDef>
   </TypeList>
   <NodeList>
