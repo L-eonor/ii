@@ -11,7 +11,7 @@ public class Machine extends Cell {
     // Constructor
     public Machine(int y, int x) {
         super(y,x);
-        super.setName("MES.Machine");
+        super.setName("Machine");
 
     }
 

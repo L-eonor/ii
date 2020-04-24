@@ -6,12 +6,12 @@ public class Slider extends Cell {
      */
 
     // Attributes
-    private String name="MES.Slider";
+    private String name="Slider";
 
     // Constructor
     public Slider(int y, int x) {
         super(y,x);
-        super.setName("MES.Slider");
+        super.setName("Slider");
     }
 
     //Methods

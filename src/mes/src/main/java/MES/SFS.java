@@ -5,7 +5,7 @@ public class SFS {
     //Attributes
 
     static public Cell[][] sfsCells = {
-            {null, null, null, null, null, null, null, null},
+            {null, null, null, null, null, null, null, null, null},
             {new Cell(1, 0), new Cell(1, 1), new Rotator(1, 2), new Cell(1, 3), new Rotator(1, 4), new Cell(1, 5), new Rotator(1, 6), new Rotator(1, 7), new Cell(1, 8)},
             {null, null, new Cell(2, 2), null, new Cell(2, 4), null, new Cell(2, 6), new Cell(2, 7), null},
             {null, new Machine(3, 1), new Rotator(3, 2), new Machine(3, 3), new Rotator(3, 4), new Machine(3, 5), new Rotator(3, 6), new Pusher(3, 7), new Slider(3, 8)},

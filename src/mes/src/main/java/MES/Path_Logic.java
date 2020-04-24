@@ -90,7 +90,7 @@ public class Path_Logic {
         }
 
         if (!checkGoal(node)) {
-            System.out.println("Creating children for MES.Node: " + node.getNodeId() + " Position: [" + node.getPosition()[0] + "," + node.getPosition()[1] + "]     . . .");
+            System.out.println("Creating children for Node: " + node.getNodeId() + " Position: [" + node.getPosition()[0] + "," + node.getPosition()[1] + "]     . . .");
             addChildren(node);
             usedNodes.add(node);
             return solve();
@@ -154,30 +154,30 @@ public class Path_Logic {
             if (checkGeneralRules(parentNode, childPosition)) {
                 //Regras de movimento de tapete para tapete
                 switch (floor.sfsCells[parentNode.getPosition()[0]][parentNode.getPosition()[1]].getName()){
-                    case "MES.Machine":
-                        if(floor.sfsCells[childPosition[0]][childPosition[1]].getName().equals("MES.Rotator")) {
+                    case "Machine":
+                        if(floor.sfsCells[childPosition[0]][childPosition[1]].getName().equals("Rotator")) {
                             createChildNode(parentNode, childPosition);
                         }
                         break;
 
                     case "Conveyor":
-                        if(floor.sfsCells[childPosition[0]][childPosition[1]].getName().equals("MES.Rotator") || floor.sfsCells[childPosition[0]][childPosition[1]].getName().equals("MES.Pusher")) {
+                        if(floor.sfsCells[childPosition[0]][childPosition[1]].getName().equals("Rotator") || floor.sfsCells[childPosition[0]][childPosition[1]].getName().equals("Pusher")) {
                             createChildNode(parentNode, childPosition);
                         }
                         break;
 
-                    case "MES.Rotator":
-                        if(floor.sfsCells[childPosition[0]][childPosition[1]].getName().equals("Conveyor") || floor.sfsCells[childPosition[0]][childPosition[1]].getName().equals("MES.Machine") || floor.sfsCells[childPosition[0]][childPosition[1]].getName().equals("MES.Rotator")) {
+                    case "Rotator":
+                        if(floor.sfsCells[childPosition[0]][childPosition[1]].getName().equals("Conveyor") || floor.sfsCells[childPosition[0]][childPosition[1]].getName().equals("Machine") || floor.sfsCells[childPosition[0]][childPosition[1]].getName().equals("Rotator")) {
                             createChildNode(parentNode, childPosition);
                         }
                         break;
-                    case "MES.Pusher":
-                        if(floor.sfsCells[childPosition[0]][childPosition[1]].getName().equals("Conveyor") || floor.sfsCells[childPosition[0]][childPosition[1]].getName().equals("MES.Slider")) {
+                    case "Pusher":
+                        if(floor.sfsCells[childPosition[0]][childPosition[1]].getName().equals("Conveyor") || floor.sfsCells[childPosition[0]][childPosition[1]].getName().equals("Slider")) {
                             createChildNode(parentNode, childPosition);
                         }
                         break;
-                    case "MES.Slider":
-                        if(floor.sfsCells[childPosition[0]][childPosition[1]].getName().equals("MES.Pusher")) {
+                    case "Slider":
+                        if(floor.sfsCells[childPosition[0]][childPosition[1]].getName().equals("Pusher")) {
                             createChildNode(parentNode, childPosition);
                         }
                         break;
@@ -334,6 +334,7 @@ public class Path_Logic {
                 Node nodePopped = getPath().pop();
                 pathString = pathString + Integer.toString(nodePopped.getPosition()[1]) + Integer.toString(nodePopped.getPosition()[0]);
             }
+            System.out.println("------------------------------------------ " + pathString);
             return pathString;
         }
         else return "-1";

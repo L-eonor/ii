@@ -7,7 +7,7 @@ public class Rotator extends Cell {
      */
 
     //Attributes
-    public String name="MES.Rotator";
+    public String name="Rotator";
     public boolean rotorState;
     public boolean isDirectionVertical;
     public boolean isDirectionHorizontal;
@@ -15,7 +15,7 @@ public class Rotator extends Cell {
     //Constructor
     public Rotator(int y, int x) {
         super(y,x);
-        super.setName("MES.Rotator");
+        super.setName("Rotator");
         this.rotorState=false;
         this.isDirectionHorizontal=true;
         this.isDirectionVertical=false;

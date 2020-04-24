@@ -74,7 +74,7 @@ public class readXML {
                             0,
                             "C1T1");
 
-                    orderListUnload.add(order);
+                    orderListUnload.add((orderUnload) order);
                 }
 
                 if (((Element) node).getElementsByTagName("Transform").getLength() != 0) {
@@ -102,7 +102,7 @@ public class readXML {
                             Integer.parseInt(element1.getAttribute("MaxDelay")),
                             "C1T1");
 
-                    orderListTransformation.add(order);
+                    orderListTransformation.add((orderTransform) order);
                 }
             }
             if (orderListTransformation.size() != 0) System.out.println("The first element of the transformation list is:" + orderListTransformation.get(0).getId());

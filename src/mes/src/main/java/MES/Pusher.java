@@ -11,7 +11,7 @@ public class Pusher extends Cell {
     // Constructor
     public Pusher(int y, int x) {
         super(y,x);
-        super.setName("MES.Pusher");
+        super.setName("Pusher");
 
     }
 
