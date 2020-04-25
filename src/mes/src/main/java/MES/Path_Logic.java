@@ -81,7 +81,7 @@ public class Path_Logic {
         */
 
         Node node = unusedNodes.poll();
-        System.out.println("  [POLLED]  " + node);
+        //System.out.println("  [POLLED]  " + node);
 
 
         if (node == null) {
@@ -90,7 +90,7 @@ public class Path_Logic {
         }
 
         if (!checkGoal(node)) {
-            System.out.println("Creating children for Node: " + node.getNodeId() + " Position: [" + node.getPosition()[0] + "," + node.getPosition()[1] + "]     . . .");
+            //System.out.println("Creating children for Node: " + node.getNodeId() + " Position: [" + node.getPosition()[0] + "," + node.getPosition()[1] + "]     . . .");
             addChildren(node);
             usedNodes.add(node);
             return solve();
@@ -127,24 +127,21 @@ public class Path_Logic {
         for (int i = 0; i < 4; i++) {
             int[] childPosition = new int[2];
             switch (i) {
-                case 0:
-                    childPosition[0] = positionY;
-                    childPosition[1] = positionX + 1;
+                case 0: //cima
+                    childPosition[0] = positionY + 1;
+                    childPosition[1] = positionX;
                     break;
-
-                case 1:
+                case 1: //baixo
                     childPosition[0] = positionY - 1;
                     childPosition[1] = positionX;
                     break;
-
-                case 2:
+                case 2: //direita
+                    childPosition[0] = positionY;
+                    childPosition[1] = positionX + 1;
+                    break;
+                case 3: //esquerda
                     childPosition[0] = positionY;
                     childPosition[1] = positionX - 1;
-                    break;
-
-                case 3:
-                    childPosition[0] = positionY + 1;
-                    childPosition[1] = positionX;
                     break;
 
                 default:
@@ -187,7 +184,7 @@ public class Path_Logic {
                 }
             }
         }
-        System.out.println("-  -  -");
+        //System.out.println("-  -  -");
     }
 
     private int getCost(Node parentNode, int[] childPosition) {
@@ -242,7 +239,7 @@ public class Path_Logic {
         this.nodeIdentification++;
         if (!unusedNodes.contains(childNode) && !usedNodes.contains(childNode)) {
             unusedNodes.add(childNode);
-            System.out.println("  [ADDED]  " + childNode);
+            //System.out.println("  [ADDED]  " + childNode);
         }
     }
 
@@ -333,10 +330,13 @@ public class Path_Logic {
             for (int i = 0; i < sizePath; i++) {
                 Node nodePopped = getPath().pop();
                 pathString = pathString + Integer.toString(nodePopped.getPosition()[1]) + Integer.toString(nodePopped.getPosition()[0]);
+                if(this.floor.getCell(nodePopped.getPosition()[0], nodePopped.getPosition()[1]).name.equals("Machine") && ( i>1 && i<(sizePath-1))){
+                    pathString=pathString+"000";
+                }
             }
-            System.out.println("------------------------------------------ " + pathString);
             return pathString;
         }
         else return "-1";
     }
+
 }

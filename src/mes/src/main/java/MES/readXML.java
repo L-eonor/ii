@@ -105,11 +105,11 @@ public class readXML {
                     orderListTransformation.add((orderTransform) order);
                 }
             }
-            if (orderListTransformation.size() != 0) System.out.println("The first element of the transformation list is:" + orderListTransformation.get(0).getId());
-            System.out.println("The size of the transformation list is:" + orderListTransformation.size());
+            //if (orderListTransformation.size() != 0) System.out.println("The first element of the transformation list is:" + orderListTransformation.get(0).getId());
+            //System.out.println("The size of the transformation list is:" + orderListTransformation.size());
 
-            if (orderListUnload.size() != 0) System.out.println("The first element of the unload list is:" + orderListUnload.get(0).getId());
-            System.out.println("The size of the transformation list is:" + orderListUnload.size());
+            //if (orderListUnload.size() != 0) System.out.println("The first element of the unload list is:" + orderListUnload.get(0).getId());
+            //System.out.println("The size of the transformation list is:" + orderListUnload.size());
         }
     }
 
