@@ -31,18 +31,18 @@ public class TransformationsGraph {
         graph.addVertex("P8");
         graph.addVertex("P9");
 
-        graph.addEdge("P1","P2", "Ma", "T1","15");
-        graph.addEdge("P1","P3", "Mb", "T1","20");
-        graph.addEdge("P1","P4", "Mc", "T1","10");
-        graph.addEdge("P2","P3", "Ma", "T1","15");
-        graph.addEdge("P2","P6", "Ma", "T2","15");
-        graph.addEdge("P3","P4", "Mb", "T1","15");
-        graph.addEdge("P3","P7", "Mb", "T2","20");
-        graph.addEdge("P4","P5", "Mc", "T1","30");
-        graph.addEdge("P4","P8", "Mc", "T2","10");
-        graph.addEdge("P6","P9", "Ma", "T3","15");
-        graph.addEdge("P7","P9", "Mb", "T3","20");
-        graph.addEdge("P8","P9", "Mc", "T3","10");
+        graph.addEdge("P1","P2", "Ma", "1","15");
+        graph.addEdge("P1","P3", "Mb", "1","20");
+        graph.addEdge("P1","P4", "Mc", "1","10");
+        graph.addEdge("P2","P3", "Ma", "1","15");
+        graph.addEdge("P2","P6", "Ma", "2","15");
+        graph.addEdge("P3","P4", "Mb", "1","15");
+        graph.addEdge("P3","P7", "Mb", "2","20");
+        graph.addEdge("P4","P5", "Mc", "1","30");
+        graph.addEdge("P4","P8", "Mc", "2","10");
+        graph.addEdge("P6","P9", "Ma", "3","15");
+        graph.addEdge("P7","P9", "Mb", "3","20");
+        graph.addEdge("P8","P9", "Mc", "3","10");
 
 
     }

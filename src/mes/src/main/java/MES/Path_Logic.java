@@ -158,7 +158,8 @@ public class Path_Logic {
                         break;
 
                     case "Conveyor":
-                        if(floor.sfsCells[childPosition[0]][childPosition[1]].getName().equals("Rotator") || floor.sfsCells[childPosition[0]][childPosition[1]].getName().equals("Pusher")) {
+                        if(floor.sfsCells[childPosition[0]][childPosition[1]].getName().equals("Rotator") || floor.sfsCells[childPosition[0]][childPosition[1]].getName().equals("Pusher") ||
+                                floor.sfsCells[childPosition[0]][childPosition[1]].getName().equals("WarehouseIn") || floor.sfsCells[childPosition[0]][childPosition[1]].getName().equals("WarehouseOut")) {
                             createChildNode(parentNode, childPosition);
                         }
                         break;
@@ -324,14 +325,16 @@ public class Path_Logic {
     }
 
     public String getStringPath() {
+
         String pathString = "";
         if(findPath()){
+            getPath().pop(); //remove first position of the path because we don't want to send it
             int sizePath = getPath().size();
             for (int i = 0; i < sizePath; i++) {
                 Node nodePopped = getPath().pop();
                 pathString = pathString + Integer.toString(nodePopped.getPosition()[1]) + Integer.toString(nodePopped.getPosition()[0]);
                 if(this.floor.getCell(nodePopped.getPosition()[0], nodePopped.getPosition()[1]).name.equals("Machine") && ( i>1 && i<(sizePath-1))){
-                    pathString=pathString+"000";
+                    pathString=pathString+"011";
                 }
             }
             return pathString;

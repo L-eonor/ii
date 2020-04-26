@@ -24,9 +24,22 @@ public class Cell {
         this.setName("Conveyor");
     }
 
+    public Cell(int y, int x, String name) {
+        this.motorState=false;
+        this.unitPresence=false;
+        this.position[0]=y;
+        this.position[1]=x;
+        this.setName(name);
+    }
+
+
     //Methods
     public String getName(){
         return this.name;
+    }
+
+    public int[] getPosition() {
+        return this.position;
     }
 
     public void setName(String a){

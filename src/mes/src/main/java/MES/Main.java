@@ -21,6 +21,9 @@ public class Main {
     public static String pathString="";
     public static String aux = "DESKTOP-LPATDUL";
     public static String Client = "opc.tcp://DESKTOP-RNTM3PU:4840";
+    public static SFS floor = new SFS();
+
+
 
     public static void main(String[] args) throws Exception {
 
@@ -42,11 +45,10 @@ public class Main {
 
         while(true) {
 
-
+            //Example for transformation order
 
             int[] start = {1, 1};
-            int[] stop = {1, 3};
-            int[] goal = {8, 1};
+            int[] end = {0, 7};
 
             if(!orderListTransformation.isEmpty()){
 
@@ -55,31 +57,42 @@ public class Main {
                 String orderPy = order.getPy();
                 System.out.println(orderPy);
                 if(transformTable.searchTransformations(orderPx, orderPy)) {
-                    System.out.println("Searched transformations. ");
-                    System.out.println("Found "+ transformTable.solutions.size() +" solutions");
+                    System.out.println("Searched transformations. Found "+ transformTable.solutions.size() +" solutions.");
+                    /* prints all transformations
                     Iterator value = transformTable.solutions.iterator();
                     while(value.hasNext()) {
                         System.out.println(transformTable.solutions.poll());
-                    }
+                    }*/
+
                 }
                 else  System.out.println(" No need for transformations. ");
 
 
-
-                if ((orderPy.equals("P2")) && orderPx.equals("P1")) {
-                    Path_Logic path1 = new Path_Logic(start, stop);
-                    String path1StringPath = path1.getStringPath();
-                    path1StringPath = path1StringPath.replaceFirst("11", "");
-                    Path_Logic path2 = new Path_Logic(stop, goal);
-                    String path2StringPath = path2.getStringPath();
-                    path2StringPath = path2StringPath.replaceFirst("13", "");
-                    String s=path1StringPath+"115"+path2StringPath;
-                    System.out.println("Esta é a string: " + s);
-                    OPCUA_Connection.setValue_string("", "", s);
+                //String do caminho total conforme transformação
+                StringBuilder pathString = new StringBuilder();
+                GraphSolution transformationResult = transformTable.solutions.poll();
+                for(int j=0; j < transformationResult.transformations.size(); j++) {
+                    //Identify machine
+                    String machine = transformationResult.machines.get(j);
+                    //Relate machine type with respective position
+                    int[] goal = floor.getMachinePositions(machine);
+                    //Calculate path to Machine
+                    Path_Logic path = new Path_Logic(start, goal);
+                    pathString.append(path.getStringPath());
+                    //Add Tool and Time to string respectively
+                    pathString.append(transformationResult.tool.get(j)).append(transformationResult.timeCost.get(j));
+                    start = goal;
                 }
-            }
+                //Path to Warehouse In cell
 
+                Path_Logic pathEnd = new Path_Logic(start, end);
+                pathString.append(pathEnd.getStringPath());
+
+                System.out.println("Esta é a string: " + pathString);
+                OPCUA_Connection.setValue_string("", "", pathString.toString());
+            }
         }
+
 
 
         /*
