@@ -79,7 +79,7 @@ public class OPCUA_Connection {
             value = client.readValue(0, TimestampsToReturn.Both, nodeidstring).get();
             setValueL(value);
             ValueL = ((DataValue)getValueL()).getValue().getValue();
-            System.out.println("O valor da variável é: " + ValueL);
+            //System.out.println("O valor da variável é: " + ValueL);
         } catch (InterruptedException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -90,7 +90,7 @@ public class OPCUA_Connection {
 
     }
 
-    public static UShort getValueInt(String cellName, String VarName) {
+    public static int getValueInt(String cellName, String VarName) {
         String aux1;
         aux1 = aux + cellName + "." + VarName;
         NodeId nodeidstring = new NodeId(id_node, aux1);
@@ -99,7 +99,7 @@ public class OPCUA_Connection {
             value = client.readValue(0, TimestampsToReturn.Both, nodeidstring).get();
             setValueL(value);
             ValueL = ((DataValue)getValueL()).getValue().getValue();
-            System.out.println("O valor da variável é: " + ValueL);
+            //System.out.println("O valor da variável é: " + ValueL);
 
         } catch (InterruptedException e) {
             // TODO Auto-generated catch block
@@ -108,7 +108,10 @@ public class OPCUA_Connection {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-        return (UShort) ValueL;
+
+        String vString = String.valueOf(ValueL); //Passar do tipo UShort para String
+        int vInt =  Integer.parseInt(vString); //Passar de String para int (não encontrámos forma direta)
+        return vInt;
     }
 
 
@@ -121,7 +124,7 @@ public class OPCUA_Connection {
             value = client.readValue(0, TimestampsToReturn.Both, nodeidstring).get();
             setValueL(value);
             ValueL = ((DataValue)getValueL()).getValue().getValue();
-            System.out.println("O valor da variável é: " + ValueL);
+            //System.out.println("O valor da variável é: " + ValueL);
 
         } catch (InterruptedException e) {
             // TODO Auto-generated catch block
@@ -150,7 +153,7 @@ public class OPCUA_Connection {
 
         try {
             getClient().writeValue(nodeidstring, dv).get();
-            System.out.println("Variavel alterada para: " + ((DataValue) client.readValue(0, TimestampsToReturn.Both, nodeidstring).get()).getValue().getValue());
+            //System.out.println("Variavel alterada para: " + ((DataValue) client.readValue(0, TimestampsToReturn.Both, nodeidstring).get()).getValue().getValue());
         } catch (InterruptedException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -160,17 +163,17 @@ public class OPCUA_Connection {
         }
     }
 
-    public static void setValueInt(String cellName, String VarName, UShort ValueSet) {
+    public static void setValueInt(String cellName, String VarName, int ValueSet) {
         String aux2;
         aux2 = aux + cellName + "." + VarName;
         NodeId nodeidstring = new NodeId(id_node,aux2);
 
-        Variant v = new Variant(ValueSet);
+        Variant v = new Variant(UShort.valueOf(ValueSet));
         DataValue dv = new DataValue(v);
 
         try {
             getClient().writeValue(nodeidstring, dv).get();
-            System.out.println("Variável alterada para: " + ((DataValue) client.readValue(0, TimestampsToReturn.Both, nodeidstring).get()).getValue().getValue());
+            //System.out.println("Variável alterada para: " + ((DataValue) client.readValue(0, TimestampsToReturn.Both, nodeidstring).get()).getValue().getValue());
         } catch (InterruptedException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -190,7 +193,7 @@ public class OPCUA_Connection {
 
         try {
             getClient().writeValue(nodeidstring, dv).get();
-            System.out.println("Variável alterada para: " + ((DataValue) client.readValue(0, TimestampsToReturn.Both, nodeidstring).get()).getValue().getValue());
+            //System.out.println("Variável alterada para: " + ((DataValue) client.readValue(0, TimestampsToReturn.Both, nodeidstring).get()).getValue().getValue());
         } catch (InterruptedException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();

@@ -12,8 +12,8 @@ public class Machine extends Cell {
      */
 
     // Attributes
-    private UShort processTime;
-    private UShort tool;
+    private int processTime;
+    private int tool;
 
     // Constructor
 
@@ -26,21 +26,21 @@ public class Machine extends Cell {
     //Methods
 
     //Setters
-    public void setProcessTime(UShort processTime) {
+    public void setProcessTime(int processTime) {
         this.processTime = processTime;
     }
 
-    public void setTool(UShort tool) {
+    public void setTool(int tool) {
         this.tool = tool;
     }
 
     //Getters
-    /*public int getProcessTime() {
+    public int getProcessTime() {
         return processTime;
     }
 
     public int getTool() {
         return tool;
-    }*/
+    }
 
 }

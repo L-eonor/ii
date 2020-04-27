@@ -15,8 +15,8 @@ import java.util.concurrent.Executors;
 
 public class Main {
 
-    public static List<orderTransform> orderListTransformation = Collections.synchronizedList( new ArrayList<orderTransform>());
-    public static List<orderUnload> orderListUnload = Collections.synchronizedList( new ArrayList<orderUnload>());
+    public static List<orderTransform> orderListTransformation = Collections.synchronizedList(new ArrayList<>());
+    public static List<orderUnload> orderListUnload = Collections.synchronizedList(new ArrayList<>());
 
     public static SFS floor = new SFS();
     //public static String aux = "DESKTOP-LPATDUL";
@@ -28,7 +28,7 @@ public class Main {
 
         //Creates object for connection and makes the connection
         OpcUaClient connection = MyConnection.MakeConnection();
-        final UaClient uaClient = connection.connect().get();
+        connection.connect().get();
 
 
         int port = 54321;
@@ -46,12 +46,19 @@ public class Main {
 
 
         TransformationsGraph transformTable = new TransformationsGraph();
-        // (funcionar) getValue, getValueBoolean, setValueBoolean, getValueString, setValueString, getValueInt
-        // (não Funcionar)  setValueInt
+
+        /* TESTE DE FUNÇÕES PARA OPC-UA
+        // (funcionar) getValue, getValueBoolean, setValueBoolean, getValueString, setValueString, getValueInt, setValueInt
+        // (não Funcionar)
         System.out.println("--------------Value Change--------------");
         OPCUA_Connection.getValueBoolean("MAIN_TASK","AT1.SENSOR");
         System.out.println("--------------Value Change--------------");
-        OPCUA_Connection.setValueInt("MAIN_TASK","UNIT_COUNT_MES", UShort.valueOf(10));
+        int x = OPCUA_Connection.getValueInt("MAIN_TASK","UNIT_COUNT_MES");
+        System.out.println("----" + x);
+         */
+
+        Thread threadReadSystem = new Thread(new readSystem());
+        threadReadSystem.start();
 
 
 
@@ -135,7 +142,7 @@ public class Main {
                 pathString.append(pathEnd.getStringPath());
 
                 System.out.println("[Transformation] Esta é a string: " + pathString);
-                MyConnection.setValueString("MAIN_TASK", "AT1_order_path_mes", pathString.toString());
+                OPCUA_Connection.setValueString("MAIN_TASK", "AT1_order_path_mes", pathString.toString());
             }
 
 
@@ -143,19 +150,22 @@ public class Main {
             StringBuilder pathStringLoad2 = new StringBuilder();
 
             if(floor.getCell(1,8).getUnitPresence()) {
-                start = floor.getCell(1,8).getPosition();
-                Path_Logic pathLoad = new Path_Logic(start, end);
+                int[] load1 = {7,1};
+                Path_Logic pathLoad = new Path_Logic(load1, end);
                 pathStringLoad1.append(pathLoad.getStringPath());
                 System.out.println("[Load] Esta é a string: " + pathStringLoad1);
-                //OPCUA_Connection.setValueString("", "", pathStringLoad1.toString());
+                OPCUA_Connection.setValueString("MAIN_TASK", "C7T1b_order_path_mes", pathStringLoad1.toString());
             }
             if(floor.getCell(7,8).getUnitPresence()) {
-                start = floor.getCell(1,8).getPosition();
-                Path_Logic pathLoad = new Path_Logic(start, end);
+                int[] load2 = {7,7};
+                Path_Logic pathLoad = new Path_Logic(load2, end);
                 pathStringLoad2.append(pathLoad.getStringPath());
                 System.out.println("[Load] Esta é a string: " + pathStringLoad2);
-                //OPCUA_Connection.setValueString("", "", pathStringLoad2.toString());
+                OPCUA_Connection.setValueString("MAIN_TASK", "C7T7b_order_path_mes", pathStringLoad2.toString());
             }
+
+            System.out.println("[Test] Elemento no tapete rotativo C2T1: "+floor.getCell(1,2).getUnitPresence());
+
 
         }
 
@@ -178,6 +188,6 @@ public class Main {
         //executorService.submit(client);
         executorService.submit(server);
          */
-
     }
+
 }
