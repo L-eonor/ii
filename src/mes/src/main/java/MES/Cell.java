@@ -34,9 +34,6 @@ public class Cell {
 
 
     //Methods
-    public String getName(){
-        return this.name;
-    }
 
     public int[] getPosition() {
         return this.position;
@@ -54,6 +51,14 @@ public class Cell {
     public boolean stopMotor() {
         if(motorState=false) return true;
         else return false;
+    }
+
+    public boolean getUnitPresence() {
+        return unitPresence;
+    }
+
+    public void setUnitPresence(boolean unitPresence) {
+        this.unitPresence=unitPresence;
     }
 
 }

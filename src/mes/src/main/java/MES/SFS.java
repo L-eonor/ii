@@ -30,14 +30,27 @@ public class SFS {
     public int[] getMachinePositions(String nameMachine) {
         switch (nameMachine){
             case "Ma":
-                return new int[]{3, 1};
+                return new int[]{1, 3};
             case "Mb":
-                return new int[]{4, 1};
+                return new int[]{1, 4};
 
             case "Mc":
-                return new int[]{5, 1};
+                return new int[]{1, 5};
 
-            default: return new int[]{-1, -1};
+            default: return null;
+        }
+    }
+
+    public int[] getUnloadPosition(String Dy) {
+        switch (Dy) {
+            case "D1":
+                return new int[]{8, 3};
+            case "D2":
+                return new int[]{8, 4};
+            case "D3":
+                return new int[]{8, 5};
+            default:
+                return null;
         }
     }
 }
