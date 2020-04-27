@@ -1,5 +1,10 @@
 package MES;
 
+import org.bouncycastle.asn1.eac.UnsignedInteger;
+import org.eclipse.milo.opcua.stack.core.types.builtin.unsigned.UShort;
+
+import java.net.URLStreamHandler;
+
 public class Machine extends Cell {
 
     /*
@@ -7,8 +12,11 @@ public class Machine extends Cell {
      */
 
     // Attributes
+    private UShort processTime;
+    private UShort tool;
 
     // Constructor
+
     public Machine(int y, int x) {
         super(y,x);
         super.setName("Machine");
@@ -17,5 +25,22 @@ public class Machine extends Cell {
 
     //Methods
 
+    //Setters
+    public void setProcessTime(UShort processTime) {
+        this.processTime = processTime;
+    }
+
+    public void setTool(UShort tool) {
+        this.tool = tool;
+    }
+
+    //Getters
+    /*public int getProcessTime() {
+        return processTime;
+    }
+
+    public int getTool() {
+        return tool;
+    }*/
 
 }

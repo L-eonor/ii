@@ -1,7 +1,9 @@
 package MES;
 
-import MES.*;
+import org.bouncycastle.asn1.eac.UnsignedInteger;
 import org.eclipse.milo.opcua.sdk.client.OpcUaClient;
+import org.eclipse.milo.opcua.sdk.client.api.UaClient;
+import org.eclipse.milo.opcua.stack.core.types.builtin.unsigned.UShort;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -16,37 +18,27 @@ public class Main {
     public static List<orderTransform> orderListTransformation = Collections.synchronizedList( new ArrayList<orderTransform>());
     public static List<orderUnload> orderListUnload = Collections.synchronizedList( new ArrayList<orderUnload>());
 
-    public static OPCUA_Connection MyConnection;
-    public static OpcUaClient client;
-    public static String pathString="";
-    public static String aux = "DESKTOP-LPATDUL";
-<<<<<<< Updated upstream
-    public static String Client = "opc.tcp://DESKTOP-RNTM3PU:4840";
     public static SFS floor = new SFS();
-
-
-=======
-    public static String Client = "opc.tcp://LAPTOP-UGJ82VH1:4840";
->>>>>>> Stashed changes
+    //public static String aux = "DESKTOP-LPATDUL";
+    public static String Client = "opc.tcp://DESKTOP-RNTM3PU:4840";
+    //public static String Client = "opc.tcp://LAPTOP-UGJ82VH1:4840";
+    public static OPCUA_Connection MyConnection = new OPCUA_Connection(Client);
 
     public static void main(String[] args) throws Exception {
 
-
-        // Creates object for connection and makes the connection
-        MyConnection = new OPCUA_Connection(Client);
+        //Creates object for connection and makes the connection
         OpcUaClient connection = MyConnection.MakeConnection();
-        connection.connect().get();
+        final UaClient uaClient = connection.connect().get();
+
 
         int port = 54321;
 
         udpServer server = new udpServer(port);
         //sendXML client = new sendXML(port, "C:\\XML\\received_data.xml"); // linha de testes
 
-        ExecutorService executorService = Executors.newFixedThreadPool(2);
-
+        ExecutorService executorService = Executors.newFixedThreadPool(3);
         //executorService.submit(client);
         executorService.submit(server);
-
         //executorService.submit(client); //linha de testes
         //executorService.submit(server);
         passPath passPath = new passPath();
@@ -54,11 +46,13 @@ public class Main {
 
 
         TransformationsGraph transformTable = new TransformationsGraph();
+        // (funcionar) getValue, getValueBoolean, setValueBoolean, getValueString, setValueString, getValueInt
+        // (não Funcionar)  setValueInt
+        System.out.println("--------------Value Change--------------");
+        OPCUA_Connection.getValueBoolean("MAIN_TASK","AT1.SENSOR");
+        System.out.println("--------------Value Change--------------");
+        OPCUA_Connection.setValueInt("MAIN_TASK","UNIT_COUNT_MES", UShort.valueOf(10));
 
-        System.out.println("--------------Value Change--------------");
-        OPCUA_Connection.setValue_int("MAIN_TASK","UNIT_COUNT_MES", 2);
-        System.out.println("--------------Value Change--------------");
-        OPCUA_Connection.setValue_int("MAIN_TASK","unit_type", 2);
 
 
         while(true) {
@@ -73,7 +67,7 @@ public class Main {
             if(!orderListUnload.isEmpty()) {
 
                 StringBuilder pathString = new StringBuilder();
-                System.out.println("Tamanho "+orderListUnload.size());
+                System.out.println("Size of ListUnload: "+orderListUnload.size());
                 orderUnload  order= orderListUnload.remove(0);
 
 
@@ -91,7 +85,7 @@ public class Main {
                 pathString.append(path.getStringPath());
 
                 System.out.println("[Unload] Esta é a string: " + pathString);
-                //OPCUA_Connection.setValue_string("", "", pathString.toString());
+                //MyConnection.setValue_string("", "", pathString.toString());
 
             }
 
@@ -118,8 +112,11 @@ public class Main {
 
                 //String with the whole path of the Transformation order
                 StringBuilder pathString = new StringBuilder();
+
                 GraphSolution transformationResult = transformTable.solutions.poll();
-                for(int j=0; j < transformationResult.transformations.size(); j++) {
+                if (transformationResult == null) throw new AssertionError("Error: transformationResult null pointer. ");
+
+                for(int j = 0; j < transformationResult.transformations.size(); j++) {
                     //Identify machine
                     String machine = transformationResult.machines.get(j);
                     //Relate machine type with respective position
@@ -138,32 +135,35 @@ public class Main {
                 pathString.append(pathEnd.getStringPath());
 
                 System.out.println("[Transformation] Esta é a string: " + pathString);
-                OPCUA_Connection.setValue_string("", "", pathString.toString());
+                MyConnection.setValueString("MAIN_TASK", "AT1_order_path_mes", pathString.toString());
             }
 
-            boolean cell81=floor.getCell(1,8).getUnitPresence();
-            boolean cell87=floor.getCell(7,8).getUnitPresence();
-            StringBuilder pathStringLoad = new StringBuilder();
-            if(cell81) {
-                start = floor.getCell(1,8).position;
+
+            StringBuilder pathStringLoad1 = new StringBuilder();
+            StringBuilder pathStringLoad2 = new StringBuilder();
+
+            if(floor.getCell(1,8).getUnitPresence()) {
+                start = floor.getCell(1,8).getPosition();
                 Path_Logic pathLoad = new Path_Logic(start, end);
-                pathStringLoad.append(pathLoad.getStringPath());
+                pathStringLoad1.append(pathLoad.getStringPath());
+                System.out.println("[Load] Esta é a string: " + pathStringLoad1);
+                //OPCUA_Connection.setValueString("", "", pathStringLoad1.toString());
             }
-            else if(cell87) {
-                start = floor.getCell(1,8).position;
+            if(floor.getCell(7,8).getUnitPresence()) {
+                start = floor.getCell(1,8).getPosition();
                 Path_Logic pathLoad = new Path_Logic(start, end);
-                pathStringLoad.append(pathLoad.getStringPath());
+                pathStringLoad2.append(pathLoad.getStringPath());
+                System.out.println("[Load] Esta é a string: " + pathStringLoad2);
+                //OPCUA_Connection.setValueString("", "", pathStringLoad2.toString());
             }
-            //System.out.println("[Load] Esta é a string: " + pathStringLoad);
-            //OPCUA_Connection.setValue_string("", "", pathStringLoad.toString());
 
         }
 
         //Funções: get_Value para saber o valor de uma variavel setValue para escrever o valor numa variavel
         //System.out.println("--------------Value Get--------------");
-        //MES.OPCUA_Connection.get_Value(cellName,pathString);
+        //MyConnection.get_Value(cellName,pathString);
         //System.out.println("--------------Value Change--------------");
-        //OPCUA_Connection.setValue_int("MAIN_TASK","UNIT_COUNT_MES", 2);
+        //MyConnection.setValue_int("MAIN_TASK","UNIT_COUNT_MES", 2);
 
 
         /*

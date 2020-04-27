@@ -12,7 +12,6 @@ public class Pusher extends Cell {
     public Pusher(int y, int x) {
         super(y,x);
         super.setName("Pusher");
-
     }
 
     //Methods

@@ -11,7 +11,7 @@ public class Path_Logic {
     private ArrayList<Node> usedNodes;
     private PriorityQueue<Node> unusedNodes;
     public Node solutionFound;
-    private SFS floor;
+    private SFS floor = MES.Main.floor;
 
 
     /**
@@ -28,7 +28,6 @@ public class Path_Logic {
         this.path = new Stack<>();
         this.usedNodes = new ArrayList<>();
         this.unusedNodes = new PriorityQueue<>(new NodeComparator());
-        this.floor = new SFS();
     }
 
 

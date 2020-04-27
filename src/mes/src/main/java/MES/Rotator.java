@@ -8,29 +8,37 @@ public class Rotator extends Cell {
 
     //Attributes
     public String name="Rotator";
-    public boolean rotorState;
-    public boolean isDirectionVertical;
-    public boolean isDirectionHorizontal;
 
+    public boolean isDirectionVertical;
+
+    public boolean isDirectionHorizontal;
     //Constructor
+
     public Rotator(int y, int x) {
         super(y,x);
         super.setName("Rotator");
-        this.rotorState=false;
         this.isDirectionHorizontal=true;
         this.isDirectionVertical=false;
 
     }
 
     //Methods
-
-    public boolean startRotor() {
-        if(rotorState=true) return true;
-        else return false;
+    //Setters
+    public void setDirectionVertical(boolean directionVertical) {
+        isDirectionVertical = directionVertical;
     }
 
-    public boolean stopRotor() {
-        if(rotorState=false) return true;
-        else return false;
+    public void setDirectionHorizontal(boolean directionHorizontal) {
+        isDirectionHorizontal = directionHorizontal;
     }
+
+    //Getters
+    public boolean isDirectionHorizontal() {
+        return isDirectionHorizontal;
+    }
+
+    public boolean isDirectionVertical() {
+        return isDirectionVertical;
+    }
+
 }

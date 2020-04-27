@@ -2,6 +2,7 @@ package MES;
 
 public class Cell {
 
+
     /*
      * Class MES.Cell, that represents all the action related to the machine cells on the shop floor simulator.
      * It's a generalization of all the existing cells and also represents the Conveyor cell, since it is the
@@ -10,14 +11,12 @@ public class Cell {
 
     //Attributes
     public String name;
-    public int[] position = new int[2];
+    private int[] position = new int[2];
     public boolean unitPresence;
-    public boolean motorState;
 
 
     // Constructor
     public Cell(int y, int x) {
-        this.motorState=false;
         this.unitPresence=false;
         this.position[0]=y;
         this.position[1]=x;
@@ -25,7 +24,6 @@ public class Cell {
     }
 
     public Cell(int y, int x, String name) {
-        this.motorState=false;
         this.unitPresence=false;
         this.position[0]=y;
         this.position[1]=x;
@@ -35,59 +33,35 @@ public class Cell {
 
     //Methods
 
-    public int[] getPosition() {
-        return this.position;
-    }
+    //Setters
 
     public void setName(String a){
         this.name=a;
     }
 
-    //GETTERS
-    public int[] getPosition() {
-        return position;
-    }
-    public boolean isUnitPresence() {
-        return unitPresence;
-    }
-    public boolean isMotorState() {
-        return motorState;
-    }
-
-    //SETTERS
     public void setUnitPresence(boolean unitPresence) {
         this.unitPresence = unitPresence;
     }
 
-    public void setMotorState(boolean motorState) {
-        this.motorState = motorState;
+    //Getters
+
+    public String getName() {
+        return this.name;
     }
 
-
-
-
-    public boolean startMotor() {
-        if(motorState=true) return true;
-        else return false;
-    }
-
-    public boolean stopMotor() {
-        if(motorState=false) return true;
-        else return false;
-    }
-
-<<<<<<< Updated upstream
     public boolean getUnitPresence() {
         return unitPresence;
     }
 
-    public void setUnitPresence(boolean unitPresence) {
-        this.unitPresence=unitPresence;
+    public int[] getPosition() {
+        return position;
     }
-=======
 
->>>>>>> Stashed changes
 
+    public void updateOPCUA() {
+
+    }
 }
+
 
 
