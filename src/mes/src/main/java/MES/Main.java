@@ -20,12 +20,17 @@ public class Main {
     public static OpcUaClient client;
     public static String pathString="";
     public static String aux = "DESKTOP-LPATDUL";
+<<<<<<< Updated upstream
     public static String Client = "opc.tcp://DESKTOP-RNTM3PU:4840";
     public static SFS floor = new SFS();
 
 
+=======
+    public static String Client = "opc.tcp://LAPTOP-UGJ82VH1:4840";
+>>>>>>> Stashed changes
 
     public static void main(String[] args) throws Exception {
+
 
         // Creates object for connection and makes the connection
         MyConnection = new OPCUA_Connection(Client);
@@ -35,13 +40,26 @@ public class Main {
         int port = 54321;
 
         udpServer server = new udpServer(port);
-        //sendXML client = new sendXML(port, "C:\\XML\\received_data.xml");
+        //sendXML client = new sendXML(port, "C:\\XML\\received_data.xml"); // linha de testes
 
         ExecutorService executorService = Executors.newFixedThreadPool(2);
+
         //executorService.submit(client);
         executorService.submit(server);
 
+        //executorService.submit(client); //linha de testes
+        //executorService.submit(server);
+        passPath passPath = new passPath();
+        executorService.submit(passPath);
+
+
         TransformationsGraph transformTable = new TransformationsGraph();
+
+        System.out.println("--------------Value Change--------------");
+        OPCUA_Connection.setValue_int("MAIN_TASK","UNIT_COUNT_MES", 2);
+        System.out.println("--------------Value Change--------------");
+        OPCUA_Connection.setValue_int("MAIN_TASK","unit_type", 2);
+
 
         while(true) {
 
@@ -141,6 +159,11 @@ public class Main {
 
         }
 
+        //Funções: get_Value para saber o valor de uma variavel setValue para escrever o valor numa variavel
+        //System.out.println("--------------Value Get--------------");
+        //MES.OPCUA_Connection.get_Value(cellName,pathString);
+        //System.out.println("--------------Value Change--------------");
+        //OPCUA_Connection.setValue_int("MAIN_TASK","UNIT_COUNT_MES", 2);
 
 
         /*

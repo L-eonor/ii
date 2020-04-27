@@ -18,7 +18,7 @@ public class OPCUA_Connection {
     private static Object ValueL;
     private String Client_Name;
     private static int id_node = 4;
-    private static String aux = "|var|CODESYS Control Win V3 x64.Application.MAIN_TASK.AT1_order_path_mes";
+    private static String aux = "|var|CODESYS Control Win V3 x64.Application.";
 
     public static OpcUaClient getClient() {
         return client;
@@ -66,8 +66,8 @@ public class OPCUA_Connection {
      * String VarName -> contém o nome da variavál que se pretende ler o valor
      */
     public static void get_Value(String cellName, String VarName) {
-        //String aux1;
-        //aux1 = aux + cellName + "." + VarName;
+        String aux1;
+        aux1 = aux + cellName + "." + VarName;
         NodeId nodeidstring = new NodeId(id_node, aux);
         DataValue value;
         try {
@@ -82,6 +82,28 @@ public class OPCUA_Connection {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
+
+    }
+
+    public static boolean get_Value_bool(String cellName, String VarName) {
+        String aux1;
+        aux1 = aux + cellName + "." + VarName;
+        NodeId nodeidstring = new NodeId(id_node, aux);
+        DataValue value;
+        try {
+            value = client.readValue(0, TimestampsToReturn.Both, nodeidstring).get();
+            setValueL(value);
+            ValueL = ((DataValue)getValueL()).getValue().getValue();
+            System.out.println("O valor da variável é: " + ValueL);
+
+        } catch (InterruptedException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        return (boolean) ValueL;
 
     }
 
@@ -112,8 +134,8 @@ public class OPCUA_Connection {
     }
 
     public static void setValue_int(String cellName, String VarName, Integer ValueSet) {
-        //String aux2;
-        //aux2 = aux + cellName + "." + VarName;
+        String aux2;
+        aux2 = aux + cellName + "." + VarName;
         NodeId nodeidstring = new NodeId(id_node, aux);
 
         Integer i = ValueSet;

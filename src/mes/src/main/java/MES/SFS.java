@@ -24,7 +24,7 @@ public class SFS {
     }
 
     public Cell getCell(int y, int x){
-        return this.sfsCells[y][x];
+        return sfsCells[y][x];
     }
 
     public int[] getMachinePositions(String nameMachine) {

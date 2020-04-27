@@ -43,6 +43,29 @@ public class Cell {
         this.name=a;
     }
 
+    //GETTERS
+    public int[] getPosition() {
+        return position;
+    }
+    public boolean isUnitPresence() {
+        return unitPresence;
+    }
+    public boolean isMotorState() {
+        return motorState;
+    }
+
+    //SETTERS
+    public void setUnitPresence(boolean unitPresence) {
+        this.unitPresence = unitPresence;
+    }
+
+    public void setMotorState(boolean motorState) {
+        this.motorState = motorState;
+    }
+
+
+
+
     public boolean startMotor() {
         if(motorState=true) return true;
         else return false;
@@ -53,6 +76,7 @@ public class Cell {
         else return false;
     }
 
+<<<<<<< Updated upstream
     public boolean getUnitPresence() {
         return unitPresence;
     }
@@ -60,6 +84,9 @@ public class Cell {
     public void setUnitPresence(boolean unitPresence) {
         this.unitPresence=unitPresence;
     }
+=======
+
+>>>>>>> Stashed changes
 
 }
 
