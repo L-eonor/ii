@@ -14,7 +14,6 @@ public class Machine extends Cell {
     // Attributes
     private int processTime;
     private int tool;
-    private int weight;
 
     // Constructor
 
@@ -27,13 +26,6 @@ public class Machine extends Cell {
     //Methods
 
     //Setters
-    @Override
-    public void setUnitPresence(boolean unitPresence) {
-        if(!unitPresence && this.unitPresence) {
-            removeWeight();
-        }
-        this.unitPresence = unitPresence;
-    }
 
     public void setProcessTime(int processTime) {
         this.processTime = processTime;
@@ -43,9 +35,6 @@ public class Machine extends Cell {
         this.tool = tool;
     }
 
-    public void setWeight(int weight) {
-        this.weight = weight;
-    }
 
     //Getters
     public int getProcessTime() {
@@ -56,18 +45,6 @@ public class Machine extends Cell {
         return tool;
     }
 
-    public int getWeight() {
-        return weight;
-    }
 
-    //+Methods
-
-    public void addWeight() {
-        this.weight++;
-    }
-
-    public void removeWeight() {
-        this.weight--;
-    }
 
 }

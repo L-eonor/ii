@@ -18,9 +18,7 @@ public class Main {
     public static List<orderTransform> orderListTransformation = Collections.synchronizedList(new ArrayList<>());
     public static List<orderUnload> orderListUnload = Collections.synchronizedList(new ArrayList<>());
 
-    static int unitCount;
-    static int[] warehouseOut = {1, 1};
-    static int[] warehouseIn = {0, 7};
+    public static int unitCount;
     public static SFS floor = new SFS();
     //public static String aux = "DESKTOP-LPATDUL";
     public static String Client = "opc.tcp://DESKTOP-RNTM3PU:4840";

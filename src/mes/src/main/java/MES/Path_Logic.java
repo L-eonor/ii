@@ -44,9 +44,9 @@ public class Path_Logic {
             System.out.println("Invalid goal position.");
             return false;
         } else {
-            System.out.println("Start: " + this.start[0] + "," + this.start[1] + ";");
-            System.out.println("Goal: " + this.goal[0] + "," + this.goal[1] + ";");
-            System.out.println(" * * * *");
+            System.out.println("Start: " + this.start[1] + "," + this.start[0] + ";");
+            System.out.println("Goal: " + this.goal[1] + "," + this.goal[0] + ";");
+            System.out.println();
         }
 
         Node parentNode = new Node(null, this.nodeIdentification, start, 0, manhattanDistance(start[0], start[1]), 0);
@@ -187,9 +187,17 @@ public class Path_Logic {
         //System.out.println("-  -  -");
     }
 
+    /**
+     * Returns cost of turn + weight of Child node = total cost
+     *
+     * @param parentNode parent node in which the functions will create the children from.
+     * @param childPosition position vector of the new child.
+     * @return total cost.
+     */
     private int getCost(Node parentNode, int[] childPosition) {
         // -> 1, caminho permanece na mesma direção;
         //-> 2, caminho muda direção;
+        //-> adiciona peso dos nós criados
 
         if(parentNode.getParentNode() == null) return 1;
 
@@ -202,8 +210,8 @@ public class Path_Logic {
         boolean xChange = (xChange1 || xChange2);
 
 
-        if(xChange && yChange) return 2;
-        else return 1;
+        if(xChange && yChange) return 2 + floor.getCell(childPosition[0],childPosition[1]).getWeight();
+        else return 1 + floor.getCell(childPosition[0],childPosition[1]).getWeight();
     }
 
     /**
@@ -249,6 +257,7 @@ public class Path_Logic {
     private void addPathToStack() {
         Node node = solutionFound;
         while (node != null) {
+            floor.getCell(node.getPosition()[0], node.getPosition()[1]).addWeight();
             path.push(node);
             node = node.getParentNode();
         }

@@ -13,10 +13,12 @@ public class Cell {
     public String name;
     private int[] position = new int[2];
     public boolean unitPresence;
+    private int weight;
 
 
     // Constructor
     public Cell(int y, int x) {
+        this.weight=0;
         this.unitPresence=false;
         this.position[0]=y;
         this.position[1]=x;
@@ -40,7 +42,17 @@ public class Cell {
     }
 
     public void setUnitPresence(boolean unitPresence) {
-        this.unitPresence = unitPresence;
+        //If cell gets free, removes 1 from weight
+        if(!unitPresence && this.unitPresence) {
+            removeWeight();
+        }
+        //XOR - only change if they're different
+        boolean different = this.unitPresence ^ unitPresence;
+        if(different) this.unitPresence=unitPresence;
+    }
+
+    public void setWeight(int weight) {
+        this.weight = weight;
     }
 
     //Getters
@@ -58,8 +70,18 @@ public class Cell {
     }
 
 
-    public void updateOPCUA() {
+    public int getWeight() {
+        return weight;
+    }
 
+    //+Methods
+
+    public void addWeight() {
+        this.weight++;
+    }
+
+    public void removeWeight() {
+        this.weight--;
     }
 }
 

@@ -8,7 +8,7 @@ public class TransformationThread implements Runnable {
     //Attributes
     static int[] warehouseOut = {1, 1};
     static int[] warehouseIn = {0, 7};
-    int unitCount=0;
+
     TransformationsGraph transformTable = new TransformationsGraph();
     List<orderTransform> orderListTransformation=Main.orderListTransformation;
     SFS floor = Main.floor;
@@ -31,6 +31,7 @@ public class TransformationThread implements Runnable {
                 String orderPy = order.getPy();
 
                 for (int a=0; a < orderUnits ; a++) {
+                    System.out.println(" # # # # # # # # # # # # ");
                     if (transformTable.searchTransformations(orderPx, orderPy)) {
                         System.out.println("Searched transformations. Found " + transformTable.solutions.size() + " solutions.");
                         /* prints all transformations
@@ -55,7 +56,7 @@ public class TransformationThread implements Runnable {
                         String machine = transformationResult.machines.get(j);
                         //Relate machine type with respective position
                         Machine machineToGo = floor.getMachineToSendPiece(machine);
-                        int[] goal = machineToGo.getPosition();
+                        int[] goal = reverseArray(machineToGo.getPosition());
                         if (goal == null) System.out.println("Error: order machine input not valid. ");
                         else {
                             machineToGo.addWeight();
@@ -75,8 +76,10 @@ public class TransformationThread implements Runnable {
                     System.out.println("[Transformation] Esta é a string: " + pathString);
                     OPCUA_Connection.setValueString("MAIN_TASK", "AT1_order_path_mes", pathString.toString());
                     OPCUA_Connection.setValueInt("MAIN_TASK", "unit_type", unitTypeIdentifier(orderPx));
-                    OPCUA_Connection.setValueInt("MAIN_TASK", "UNIT_COUNT_MES", ++unitCount);
+                    OPCUA_Connection.setValueInt("MAIN_TASK", "UNIT_COUNT_MES", ++Main.unitCount);
 
+                    System.out.println(" # # # # # # # # # # # # ");
+                    System.out.println();
 
                 }
             }
@@ -98,4 +101,16 @@ public class TransformationThread implements Runnable {
             default: return 0;
         }
     }
+
+    private int[] reverseArray(int[] a){
+        int n = a.length;
+        int[] b = new int[n];
+        int j = n;
+        for (int i = 0; i < n; i++) {
+            b[j - 1] = a[i];
+            j = j - 1;
+        }
+        return b;
+    }
+
 }
