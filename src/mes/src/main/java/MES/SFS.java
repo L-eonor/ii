@@ -6,6 +6,9 @@ import java.util.ArrayList;
 public class SFS {
 
     //Attributes
+    ArrayList<Machine> MachinesA = new ArrayList<>();
+    ArrayList<Machine> MachinesB = new ArrayList<>();
+    ArrayList<Machine> MachinesC = new ArrayList<>();
 
     static public Cell[][] sfsCells = {
             {null, null, null, null, null, null, null, null, null},
@@ -20,25 +23,20 @@ public class SFS {
 
     //Constructor
     public SFS() {
-
+        //Add machines to respective list
+        MachinesA.add((Machine) getCell(3,1));
+        MachinesA.add((Machine) getCell(3,3));
+        MachinesA.add((Machine) getCell(3,5));
+        MachinesB.add((Machine) getCell(4,1));
+        MachinesB.add((Machine) getCell(4,3));
+        MachinesB.add((Machine) getCell(4,5));
+        MachinesC.add((Machine) getCell(5,1));
+        MachinesC.add((Machine) getCell(5,3));
+        MachinesC.add((Machine) getCell(5,5));
     }
 
     public Cell getCell(int y, int x){
         return sfsCells[y][x];
-    }
-
-    public int[] getMachinePositions(String nameMachine) {
-        switch (nameMachine){
-            case "Ma":
-                return new int[]{1, 3};
-            case "Mb":
-                return new int[]{1, 4};
-
-            case "Mc":
-                return new int[]{1, 5};
-
-            default: return null;
-        }
     }
 
     public int[] getUnloadPosition(String Dy) {
@@ -53,4 +51,33 @@ public class SFS {
                 return null;
         }
     }
+
+    public Machine getMachineToSendPiece(String M) {
+        Machine toSend;
+        switch (M){
+            case "Ma":
+                toSend= getLowerWeight(MachinesA);
+                return toSend;
+            case "Mb":
+                toSend= getLowerWeight(MachinesB);
+                return toSend;
+
+            case "Mc":
+                toSend= getLowerWeight(MachinesC);
+                return toSend;
+        }
+        return null;
+    }
+
+    public Machine getLowerWeight(ArrayList<Machine> Machine) {
+        Machine low = Machine.get(0);
+        for(int i=0; i < Machine.size(); i++) {
+            if(Machine.get(i).getWeight() < low.getWeight()) {
+                low = Machine.get(i);
+            }
+        }
+
+        return low;
+    }
+
 }
