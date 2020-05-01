@@ -218,11 +218,5 @@ public class readSystem implements Runnable {
 
     }
 
-    public void readSystemTest() {
 
-        //System.out.println("---------------------------------------------------------------------------------");
-        //System.out.println("|"+AT1.getUnitPresence()+"  |"+C1T1.getUnitPresence() +"  |"+C2T1.getUnitPresence() +"  |"+C3T1.getUnitPresence() +"  |"+C4T1.getUnitPresence() +"  |"+C5T1.getUnitPresence() +"  |"+C6T1.getUnitPresence() +"  |"+ C7T1a.getUnitPresence()+"  |"+ C7T1b.getUnitPresence()+" |");
-        //System.out.println("|"+"null "+"  |"+C1T2.getUnitPresence() +"  |"+C2T2.getUnitPresence() +"  |"+C3T2.getUnitPresence() +"  |"+C4T2.getUnitPresence() +"  |"+C5T2.getUnitPresence() +"  |"+C6T2.getUnitPresence() +"  |"+ C7T2.getUnitPresence()+"  |slider  |");
-
-    }
 }

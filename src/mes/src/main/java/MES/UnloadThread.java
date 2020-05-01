@@ -2,6 +2,9 @@ package MES;
 
 import java.util.List;
 
+import static MES.Main.threadTransformation;
+import static java.lang.Thread.*;
+
 public class UnloadThread implements Runnable {
 
     //Attributes
@@ -16,36 +19,51 @@ public class UnloadThread implements Runnable {
     }
     public void run() {
         System.out.println("--------------[Executing] UnloadThread is Running [Executing]--------------");
+        //Tells TransformationThread to immediately wait
 
         while(true) {
 
             if(!orderListUnload.isEmpty()) {
 
-                StringBuilder pathString = new StringBuilder();
-                orderUnload  order= orderListUnload.remove(0);
+               orderUnload  order= orderListUnload.remove(0);
 
 
                 //Order attributes
+
                 int orderUnits = order.getQuantity();
                 String orderPx = order.getPx();
-                String orderDy = order.getDy(); //variável está a null
+                //Identify and relate Dy with respective position of Slider
+                String orderDy = order.getDy();
+                int[] goal = floor.getUnloadPosition(orderDy);
+                if (goal == null) System.out.println("Error: order machine input not valid. ");
 
                 for (int a=0; a < orderUnits ; a++) {
+                    System.out.println(" # # # # # # # # # # # # ");
 
-                    //Identify and relate Dy with respective position of Slider
-                    int[] goal = floor.getUnloadPosition(orderDy);
-                    if (goal == null) System.out.println("Error: order machine input not valid. ");
+                    int beforeUnitCount = OPCUA_Connection.getValueInt("MAIN_TASK", "UNIT_COUNT_MES");
+
+                    StringBuilder pathString = new StringBuilder();
 
                     //Calculate path to Slider and send via OPC-UA
                     Path_Logic path = new Path_Logic(warehouseOut, goal);
                     pathString.append(path.getStringPath());
-                    pathString.append(actionPush);
-                    System.out.println("[Unload] Esta é a string: " + pathString);
-                    OPCUA_Connection.setValueString("MAIN_TASK", "AT1_order_path_mes", pathString.toString());
+                    String pathS = pathString.toString().replaceFirst(".{2}$", actionPush);
+                    System.out.println("[Unload] Esta é a string: " + pathS);
                     OPCUA_Connection.setValueInt("MAIN_TASK", "unit_type", unitTypeIdentifier(orderPx));
+                    OPCUA_Connection.setValueString("MAIN_TASK", "AT1_order_path_mes", pathString.toString());
+                    try {
+                        Thread.sleep(1500);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                     OPCUA_Connection.setValueInt("MAIN_TASK", "UNIT_COUNT_MES", ++Main.unitCount);
+                    
+                    System.out.println(" # # # # # # # # # # # # ");
+                    System.out.println();
                 }
+
             }
+
         }
 
     }

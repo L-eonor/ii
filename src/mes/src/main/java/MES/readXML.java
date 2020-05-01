@@ -14,6 +14,7 @@ import java.util.concurrent.Executors;
 import static MES.Main.orderListTransformation;
 import static MES.Main.orderListUnload;
 import static MES.createXML.*;
+import static MES.Main.ordersPriority;
 
 // This piece of code reads the XML and adds the orders to the respective list
 // The parameters are just mockups
@@ -45,21 +46,16 @@ public class readXML {
         for (int i = 0; i < list.getLength(); i++) {
             Node node = list.item(i);
 
-            System.out.println("\nCurrent Element: " + node.getNodeName());
 
             if (node.getNodeType() == Node.ELEMENT_NODE) {
                 Element element = (Element) node;
-                System.out.println("Number: " + element.getAttribute("Number"));
 
                 if (((Element) node).getElementsByTagName("Unload").getLength() != 0) {
-                    System.out.println("Ordem do tipo descarga!");
                     NodeList list2 = ((Element) node).getElementsByTagName("Unload");
 
                     Node node2 = list2.item(0);
                     Element element2 = (Element) node2;
-                    System.out.println("Type: " + element2.getAttribute("Type"));
-                    System.out.println("Destination: " + element2.getAttribute("Destination"));
-                    System.out.println("Quantity: " + element2.getAttribute("Quantity"));
+                    System.out.println("[Unload Order] Type: " + element2.getAttribute("Type") + " | Destination: " + element2.getAttribute("Destination") +" | Quantity: " + element2.getAttribute("Quantity"));
 
                     order = new orderUnload(Integer.parseInt(element.getAttribute("Number")),
                             0,
@@ -78,14 +74,10 @@ public class readXML {
                 }
 
                 if (((Element) node).getElementsByTagName("Transform").getLength() != 0) {
-                    System.out.println("Ordem do tipo transformação!");
                     NodeList list1 = ((Element) node).getElementsByTagName("Transform");
                     Node node1 = list1.item(0);
                     Element element1 = (Element) node1;
-                    System.out.println("From: " + element1.getAttribute("From"));
-                    System.out.println("To: " + element1.getAttribute("To"));
-                    System.out.println("Quantity: " + element1.getAttribute("Quantity"));
-                    System.out.println("MaxDelay: " + element1.getAttribute("MaxDelay"));
+                    System.out.println("[Transformation Order] From: " + element1.getAttribute("From") + " | To: " + element1.getAttribute("To")+ " | Quantity: " + element1.getAttribute("Quantity") + " | MaxDelay: " + element1.getAttribute("MaxDelay"));
 
                     order = new orderTransform(Integer.parseInt(element.getAttribute("Number")),
                             Integer.parseInt(element1.getAttribute("MaxDelay")),

@@ -32,6 +32,7 @@ public class TransformationThread implements Runnable {
 
                 for (int a=0; a < orderUnits ; a++) {
                     System.out.println(" # # # # # # # # # # # # ");
+
                     if (transformTable.searchTransformations(orderPx, orderPy)) {
                         System.out.println("Searched transformations. Found " + transformTable.solutions.size() + " solutions.");
                         /* prints all transformations
@@ -74,8 +75,13 @@ public class TransformationThread implements Runnable {
                     pathString.append(pathEnd.getStringPath());
 
                     System.out.println("[Transformation] Esta é a string: " + pathString);
-                    OPCUA_Connection.setValueString("MAIN_TASK", "AT1_order_path_mes", pathString.toString());
                     OPCUA_Connection.setValueInt("MAIN_TASK", "unit_type", unitTypeIdentifier(orderPx));
+                    OPCUA_Connection.setValueString("MAIN_TASK", "AT1_order_path_mes", pathString.toString());
+                    try {
+                        Thread.sleep(1500);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                     OPCUA_Connection.setValueInt("MAIN_TASK", "UNIT_COUNT_MES", ++Main.unitCount);
 
                     System.out.println(" # # # # # # # # # # # # ");

@@ -62,7 +62,7 @@ public class Cell {
     }
 
     public boolean getUnitPresence() {
-        return unitPresence;
+        return this.unitPresence;
     }
 
     public int[] getPosition() {

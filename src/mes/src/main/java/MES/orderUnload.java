@@ -14,13 +14,17 @@ public class orderUnload extends order {
                        int endTime,
                        int type,
                        int status,
-                       String Py,
+                       String Px,
                        String Dy,
                        int quantity,
                        int maxDelay,
                        String path) {
 
         super(id, priority, submitTime, startTime, endTime, type, status);
+        this.Px=Px;
+        this.Dy=Dy;
+        this.quantity=quantity;
+        this.maxDelay=maxDelay;
     }
 
     public String getPx() {

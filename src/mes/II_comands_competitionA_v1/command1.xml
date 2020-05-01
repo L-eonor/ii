@@ -20,4 +20,8 @@
           Quantity    (CDATA) #REQUIRED
 >
 ]>
-<Request_Stores/> 
+<ORDERS>
+<Order Number="005">
+<Unload Type="P9" Destination="D2" Quantity="8"/>
+</Order>
+</ORDERS>

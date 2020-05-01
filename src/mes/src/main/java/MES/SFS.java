@@ -36,7 +36,8 @@ public class SFS {
     }
 
     public Cell getCell(int y, int x){
-        return sfsCells[y][x];
+        if(sfsCells[y][x] != null) return sfsCells[y][x];
+        else return null;
     }
 
     public int[] getUnloadPosition(String Dy) {
@@ -80,6 +81,17 @@ public class SFS {
         return low;
     }
 
+    public void readSystemTestFunction() {
 
+        System.out.println("---------------------------------------------------------------------------------");
+        System.out.println("|"+getCell(1,0).getUnitPresence()+"  |"+getCell(1,1).getUnitPresence() +"  |"+getCell(1,2).getUnitPresence() +"  |"+getCell(1,3).getUnitPresence() +"  |"+getCell(1,4).getUnitPresence() +"  |"+getCell(1,5).getUnitPresence() +"  |"+getCell(1,6).getUnitPresence() +"  |"+ getCell(1,7).getUnitPresence()+"  |"+ getCell(1,8).getUnitPresence()+" |");
+        System.out.println("| null"+"  |null  " +" |"+getCell(2,2).getUnitPresence() +" |null  " +"  |"+getCell(2,4).getUnitPresence() +" |null " +"  |"+getCell(2,6).getUnitPresence() +"  |"+ getCell(2,7).getUnitPresence()+"  |null"+" |");
+        System.out.println("| null" +"  |"+getCell(3,2).getUnitPresence() +"  |"+getCell(3,3).getUnitPresence() +"  |"+getCell(3,4).getUnitPresence() +"  |"+getCell(3,5).getUnitPresence() +"  |"+getCell(3,6).getUnitPresence() +"  |"+ getCell(3,7).getUnitPresence()+"  |"+ getCell(3,8).getUnitPresence()+" |");
+        System.out.println("| null"+"  |"+getCell(4,1).getUnitPresence() +"  |"+getCell(4,2).getUnitPresence() +"  |"+getCell(4,3).getUnitPresence() +"  |"+getCell(4,4).getUnitPresence() +"  |"+getCell(4,5).getUnitPresence() +"  |"+getCell(4,6).getUnitPresence() +"  |"+ getCell(4,7).getUnitPresence()+"  |"+ getCell(4,8).getUnitPresence()+" |");
+        System.out.println("| null"+"  |"+getCell(5,1).getUnitPresence() +"  |"+getCell(5,2).getUnitPresence() +"  |"+getCell(5,3).getUnitPresence() +"  |"+getCell(5,4).getUnitPresence() +"  |"+getCell(5,5).getUnitPresence() +"  |"+getCell(5,6).getUnitPresence() +"  |"+ getCell(5,7).getUnitPresence()+"  |"+ getCell(5,8).getUnitPresence()+" |");
+        System.out.println("| null"+"  |null  "+" |"+getCell(6,2).getUnitPresence() +" |null  " +"  |"+getCell(6,4).getUnitPresence() +" |null " +"  |"+getCell(6,6).getUnitPresence() +"  |"+ getCell(6,7).getUnitPresence()+"  |"+ "null"+" |");
+        System.out.println("|"+getCell(7,0).getUnitPresence()+"  |"+getCell(7,1).getUnitPresence() +"  |"+getCell(7,2).getUnitPresence() +"  |"+getCell(7,3).getUnitPresence() +"  |"+getCell(7,4).getUnitPresence() +"  |"+getCell(7,5).getUnitPresence() +"  |"+getCell(7,6).getUnitPresence() +"  |"+ getCell(7,7).getUnitPresence()+"  |"+ getCell(7,8).getUnitPresence()+" |");
+        System.out.println("---------------------------------------------------------------------------------");
+    }
 
 }

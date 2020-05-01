@@ -1,5 +1,7 @@
 package MES;
 
+import java.util.Comparator;
+
 public class order {
     private int id;
     private int priority;
@@ -59,3 +61,11 @@ public class order {
     }
 
 }
+
+class OrderComparator implements Comparator<order> {
+    public int compare(order o1, order o2) {
+        return (o1.getEndTime() - o2.getEndTime());
+    }
+}
+
+

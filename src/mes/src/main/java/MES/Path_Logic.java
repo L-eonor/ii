@@ -53,7 +53,7 @@ public class Path_Logic {
         this.nodeIdentification++;
         unusedNodes.add(parentNode);
         if (solve()) {
-            System.out.println("Shortest path found.");
+            //System.out.println("Shortest path found.");
             return true;
         } else {
             System.out.println("No path found.");
@@ -169,7 +169,7 @@ public class Path_Logic {
                         }
                         break;
                     case "Pusher":
-                        if(floor.sfsCells[childPosition[0]][childPosition[1]].getName().equals("Conveyor") || floor.sfsCells[childPosition[0]][childPosition[1]].getName().equals("Slider")) {
+                        if(floor.sfsCells[childPosition[0]][childPosition[1]].getName().equals("Conveyor") || floor.sfsCells[childPosition[0]][childPosition[1]].getName().equals("Slider") || floor.sfsCells[childPosition[0]][childPosition[1]].getName().equals("Pusher")) {
                             createChildNode(parentNode, childPosition);
                         }
                         break;
