@@ -203,4 +203,25 @@ public class OPCUA_Connection {
         }
     }
 
+    public static void setValueInt16(String cellName, String VarName, int ValueSet) {
+        String aux2;
+        aux2 = aux + cellName + "." + VarName;
+        NodeId nodeidstring = new NodeId(id_node,aux2);
+
+        short i = (short) ValueSet;
+        Variant v = new Variant(i);
+        DataValue dv = new DataValue(v);
+
+        try {
+            getClient().writeValue(nodeidstring, dv).get();
+            //System.out.println("Variável alterada para: " + ((DataValue) client.readValue(0, TimestampsToReturn.Both, nodeidstring).get()).getValue().getValue());
+        } catch (InterruptedException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
+
 }

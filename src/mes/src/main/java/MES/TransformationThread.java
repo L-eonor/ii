@@ -43,14 +43,16 @@ public class TransformationThread implements Runnable {
 
                     } else System.out.println(" No need for transformations. ");
 
-
                     //String with the whole path of the Transformation order
                     StringBuilder pathString = new StringBuilder();
 
+                    //Finds transformations to do
                     GraphSolution transformationResult = transformTable.solutions.poll();
                     if (transformationResult == null)
                         throw new AssertionError("Error: transformationResult null pointer. ");
 
+
+                    //Starts finding path according to transformations
                     int[] startTransformation = warehouseOut;
                     for (int j = 0; j < transformationResult.transformations.size(); j++) {
                         //Identify machine
@@ -70,11 +72,12 @@ public class TransformationThread implements Runnable {
                         startTransformation = goal;
                     }
                     //Path to Warehouse In cell
-
                     Path_Logic pathEnd = new Path_Logic(startTransformation, warehouseIn);
                     pathString.append(pathEnd.getStringPath());
-
                     System.out.println("[Transformation] Esta é a string: " + pathString);
+
+
+                    //Sends information to OPC-UA
                     OPCUA_Connection.setValueInt("MAIN_TASK", "unit_type", unitTypeIdentifier(orderPx));
                     OPCUA_Connection.setValueString("MAIN_TASK", "AT1_order_path_mes", pathString.toString());
                     try {
@@ -92,6 +95,8 @@ public class TransformationThread implements Runnable {
         }
 
     }
+
+
 
     public int unitTypeIdentifier(String Px){
         switch (Px){

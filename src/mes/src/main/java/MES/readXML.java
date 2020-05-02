@@ -11,6 +11,7 @@ import java.io.File;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import static MES.Main.stopWatch;
 import static MES.Main.orderListTransformation;
 import static MES.Main.orderListUnload;
 import static MES.createXML.*;
@@ -50,6 +51,8 @@ public class readXML {
             if (node.getNodeType() == Node.ELEMENT_NODE) {
                 Element element = (Element) node;
 
+                int submitTime = (int) stopWatch.getTimeElapsed();
+
                 if (((Element) node).getElementsByTagName("Unload").getLength() != 0) {
                     NodeList list2 = ((Element) node).getElementsByTagName("Unload");
 
@@ -58,31 +61,30 @@ public class readXML {
                     System.out.println("[Unload Order] Type: " + element2.getAttribute("Type") + " | Destination: " + element2.getAttribute("Destination") +" | Quantity: " + element2.getAttribute("Quantity"));
 
                     order = new orderUnload(Integer.parseInt(element.getAttribute("Number")),
-                            0,
-                            00,
-                            00,
-                            00,
+                            submitTime,
+                            stopWatch.getTimeElapsed(),
                             1,
                             1,
                             element2.getAttribute("Type"),
                             element2.getAttribute("Destination"),
                             Integer.parseInt(element2.getAttribute("Quantity")),
-                            0,
-                            "C1T1");
+                            0);
+
 
                     orderListUnload.add((orderUnload) order);
                 }
 
                 if (((Element) node).getElementsByTagName("Transform").getLength() != 0) {
+
                     NodeList list1 = ((Element) node).getElementsByTagName("Transform");
+
                     Node node1 = list1.item(0);
                     Element element1 = (Element) node1;
+
                     System.out.println("[Transformation Order] From: " + element1.getAttribute("From") + " | To: " + element1.getAttribute("To")+ " | Quantity: " + element1.getAttribute("Quantity") + " | MaxDelay: " + element1.getAttribute("MaxDelay"));
 
                     order = new orderTransform(Integer.parseInt(element.getAttribute("Number")),
-                            Integer.parseInt(element1.getAttribute("MaxDelay")),
-                            00,
-                            00,
+                            submitTime,
                             00,
                             1,
                             1,
@@ -91,17 +93,14 @@ public class readXML {
                             Integer.parseInt(element1.getAttribute("Quantity")),
                             00,
                             00,
-                            Integer.parseInt(element1.getAttribute("MaxDelay")),
-                            "C1T1");
+                            Integer.parseInt(element1.getAttribute("MaxDelay")));
 
-                    orderListTransformation.add((orderTransform) order);
+                    //orderListTransformation.add((orderTransform) order);
+                    ordersPriority.add((orderTransform) order);
                 }
-            }
-            //if (orderListTransformation.size() != 0) System.out.println("The first element of the transformation list is:" + orderListTransformation.get(0).getId());
-            //System.out.println("The size of the transformation list is:" + orderListTransformation.size());
 
-            //if (orderListUnload.size() != 0) System.out.println("The first element of the unload list is:" + orderListUnload.get(0).getId());
-            //System.out.println("The size of the transformation list is:" + orderListUnload.size());
+            }
+
         }
     }
 

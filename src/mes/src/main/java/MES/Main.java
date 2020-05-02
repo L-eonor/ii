@@ -16,8 +16,9 @@ public class Main {
     public static List<orderTransform> orderListTransformation = Collections.synchronizedList(new ArrayList<>());
     public static List<orderUnload> orderListUnload = Collections.synchronizedList(new ArrayList<>());
     public static Timer timer = new Timer();
-    public static PriorityQueue<order> ordersPriority = new PriorityQueue<>(new OrderComparator());
+    public static PriorityQueue<orderTransform> ordersPriority = new PriorityQueue<>(new OrderComparator());
 
+    public static StopWatch stopWatch = new StopWatch();
     public static int unitCount;
     public static SFS floor = new SFS();
     //public static String aux = "DESKTOP-LPATDUL";
@@ -34,6 +35,7 @@ public class Main {
 
     public static void main(String[] args) throws Exception {
         //Start Global Timer
+        stopWatch.start();
 
         //Creates object for connection and makes the connection
         OpcUaClient connection = MyConnection.MakeConnection();
@@ -45,13 +47,11 @@ public class Main {
         udpServer server = new udpServer(port);
         //sendXML client = new sendXML(port, "C:\\XML\\received_data.xml"); // linha de testes
 
-        ExecutorService executorService = Executors.newFixedThreadPool(3);
+        ExecutorService executorService = Executors.newFixedThreadPool(6);
         //executorService.submit(client);
         executorService.submit(server);
         //executorService.submit(client); //linha de testes
         //executorService.submit(server);
-        passPath passPath = new passPath();
-        executorService.submit(passPath);
 
 
         TransformationsGraph transformTable = new TransformationsGraph();
@@ -67,20 +67,31 @@ public class Main {
          */
 
         //Start thread that updates Floor
-        threadReadSystem = new Thread(new readSystem());
-        threadReadSystem.start();
+
+        readSystem floorUpdate = new readSystem();
+        executorService.submit(floorUpdate);
+
+        //threadReadSystem = new Thread(new readSystem());
+        //threadReadSystem.start();
 
         //Start thread that handles TransformationsOrders
-        threadTransformation = new Thread(new TransformationThread());
-        threadTransformation.start();
+        //TransformationThread transformationHandler = new TransformationThread();
+        //executorService.submit(transformationHandler);
+
+        //threadTransformation = new Thread(new TransformationThread());
+        //threadTransformation.start();
 
         //Start thread that handles Unload Orders
-        threadUnload = new Thread(new UnloadThread());
-        threadUnload.start();
+        UnloadThread unloadHandler = new UnloadThread();
+        executorService.submit(unloadHandler);
+        //threadUnload = new Thread(new UnloadThread());
+        //threadUnload.start();
 
         //Start thread that handles Load Orders
-        threadLoad = new Thread(new LoadThread());
-        threadLoad.start();
+        LoadThread loadHandler = new LoadThread();
+        executorService.submit(loadHandler);
+        //threadLoad = new Thread(new LoadThread());
+        //threadLoad.start();
 
 
     }

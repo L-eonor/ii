@@ -4,32 +4,25 @@ import java.util.Comparator;
 
 public class order {
     private int id;
-    private int priority;
-    private int submitTime;
-    private int startTime;
-    private int endTime;
-    private int type;
-    private int status;
+    private int submitTime; //System time a que a ordem chega
+    private int startTime; //Quando começa a ser processada
+    private int endTime; //Quando finalizas a ordem
+    private int type; //1-transform 2-Unload 3-Request 4-Load
+    private int status; //1-por iniciar 2-em processamento 3-concluida
+    private int maxDelay;
 
-    public order (int id, int priority,
-                  int submitTime, int startTime,
-                  int endTime, int type,
-                  int status) {
+    public order (int id, int submitTime, int startTime, int type, int status, int maxDelay) {
         this.id = id;
-        this.priority = priority;
         this.submitTime = submitTime;
         this.startTime = startTime;
-        this.endTime = endTime;
         this.type = type;
         this.status = status;
+        this.maxDelay=maxDelay;
+        this.endTime=0;
     }
 
     public int getId() {
         return id;
-    }
-
-    public int getPriority() {
-        return priority;
     }
 
     public int getSubmitTime() {
@@ -48,8 +41,8 @@ public class order {
         return endTime;
     }
 
-    public void setEndTime(int endTime) {
-        this.endTime = endTime;
+    public void setEndTime() {
+        this.endTime = this.startTime+maxDelay;
     }
 
     public int getType() {
@@ -60,10 +53,20 @@ public class order {
         return status;
     }
 
+    public int getMaxDelay() {
+        return maxDelay;
+    }
+
+    public void setMaxDelay(int maxDelay) {
+        this.maxDelay = maxDelay;
+    }
+
 }
 
-class OrderComparator implements Comparator<order> {
-    public int compare(order o1, order o2) {
+class OrderComparator implements Comparator<orderTransform> {
+
+    @Override
+    public int compare(orderTransform o1, orderTransform o2) {
         return (o1.getEndTime() - o2.getEndTime());
     }
 }
