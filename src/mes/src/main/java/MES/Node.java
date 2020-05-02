@@ -7,12 +7,12 @@ public class Node{
     private Node parentNode;
     private int nodeId;
     private int[] position;
-    private int cost;
+    private float cost;
     private int heuristicValue;
     private int depth;
 
 
-    public Node(Node parentNode, int nodeId, int[] position, int cost, int heuristicValue, int depth) {
+    public Node(Node parentNode, int nodeId, int[] position, float cost, int heuristicValue, int depth) {
         this.parentNode = parentNode;
         this.nodeId= nodeId;
         this.position = position;
@@ -59,7 +59,7 @@ public class Node{
         return this.position;
     }
 
-    public int getCost(){
+    public float getCost(){
         return this.cost;
     }
 
@@ -71,7 +71,7 @@ public class Node{
         return this.depth;
     }
 
-    public int getAStarValue(){
+    public float getAStarValue(){
         return this.heuristicValue + this.cost;
     }
 
@@ -79,7 +79,9 @@ public class Node{
 
 class NodeComparator implements Comparator<Node> {
     public int compare(Node n1, Node n2) {
-        return (n1.getAStarValue() - n2.getAStarValue());
+        if(n1.getAStarValue() < n2.getAStarValue()) return -1;
+        else if (n1.getAStarValue() > n2.getAStarValue()) return 1;
+        else return 0;
     }
 }
 

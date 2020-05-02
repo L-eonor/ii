@@ -12,7 +12,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import static MES.Main.stopWatch;
-import static MES.Main.orderListTransformation;
 import static MES.Main.orderListUnload;
 import static MES.createXML.*;
 import static MES.Main.ordersPriority;
@@ -85,17 +84,15 @@ public class readXML {
 
                     order = new orderTransform(Integer.parseInt(element.getAttribute("Number")),
                             submitTime,
-                            00,
+                            stopWatch.getTimeElapsed(),
                             1,
                             1,
                             element1.getAttribute("From"),
                             element1.getAttribute("To"),
                             Integer.parseInt(element1.getAttribute("Quantity")),
                             00,
-                            00,
                             Integer.parseInt(element1.getAttribute("MaxDelay")));
 
-                    //orderListTransformation.add((orderTransform) order);
                     ordersPriority.add((orderTransform) order);
                 }
 

@@ -13,9 +13,10 @@ public class UnloadThread implements Runnable {
     String actionPush = "99";
 
     TransformationsGraph transformTable = new TransformationsGraph();
-
-    List<orderTransform> orderListTransformation = Main.orderListTransformation;
+    /*
+    List<orderTransform> orderListTransformationEnded = Main.orderListTransformationEnded;
     List<orderUnload> orderListUnload = Main.orderListUnload;
+     */
 
     SFS floor = Main.floor;
 
@@ -30,22 +31,21 @@ public class UnloadThread implements Runnable {
 
         while (true) {
 
-
             if (!orderListUnload.isEmpty()) {
 
                 orderUnload order = orderListUnload.remove(0);
 
-
                 //Order attributes
-
-                int orderUnits = order.getQuantity();
+                int orderUnitsDone = order.getNDone();
+                int orderUnitsTotal = order.getQuantity();
                 String orderPx = order.getPx();
+
                 //Identify and relate Dy with respective position of Slider
                 String orderDy = order.getDy();
                 int[] goal = floor.getUnloadPosition(orderDy);
                 if (goal == null) System.out.println("Error: order machine input not valid. ");
 
-                for (int a = 0; a < orderUnits; a++) {
+                for (int a = 0; a < orderUnitsTotal; a++) {
                     System.out.println(" # # # # # # # # # # # # ");
 
                     StringBuilder pathStringBuilder = new StringBuilder();
@@ -61,22 +61,37 @@ public class UnloadThread implements Runnable {
                     //Sends information to OPC-UA
                     sendPathToOPC(unitTypeIdentifier(orderPx), pathString);
 
+                    //Updates Unload order information
+                    orderUnitsDone++;
+                    order.setNDone(orderUnitsDone);
+
                     System.out.println(" # # # # # # # # # # # # ");
 
                 }
+                if(order.getQuantity() == order.getNDone()) orderListUnloadEnded.add(order);
 
             } else if (!ordersPriority.isEmpty()) {
 
-                orderTransform order = ordersPriority.poll();
+                orderTransform order = ordersPriority.peek();
                 //Order attributes
-                int orderMaxDelay = order.getMaxDelay();
-                int orderUnits = order.getNTotal();
+                int orderUnitsDone = order.getNDone();
+                int orderUnitsTotal = order.getNTotal();
                 String orderPx = order.getPx();
                 String orderPy = order.getPy();
 
                 System.out.println("[ORDER TRANSFORM] END TIME: "+order.getEndTime());
-                for (int a = 0; a < orderUnits; a++) {
+
+                while(orderUnitsDone <= orderUnitsTotal) {
+                    //Verifies if an Unload Order came in
                     if (!orderListUnload.isEmpty()) break;
+                    //Verifies if orderUnitsDone = orderUnitsTotal and if yes, polls
+                    if(order.getNDone() == order.getNTotal()) {
+                        orderListTransformationEnded.add(ordersPriority.poll());
+                        break;
+                    }
+                    //Verifies if a Transform Order order with higher priority came in
+                    if(ordersPriority.peek() != order) break;
+
                     System.out.println(" # # # # # # # # # # # # ");
 
                     if (transformTable.searchTransformations(orderPx, orderPy)) {
@@ -117,6 +132,7 @@ public class UnloadThread implements Runnable {
                         pathString.append(transformationResult.tool.get(j)).append(transformationResult.timeCost.get(j));
                         startTransformation = goal;
                     }
+
                     //Path to Warehouse In cell
                     Path_Logic pathEnd = new Path_Logic(startTransformation, warehouseIn);
                     pathString.append(pathEnd.getStringPath());
@@ -126,10 +142,15 @@ public class UnloadThread implements Runnable {
                     //Sends information to OPC-UA
                     sendPathToOPC(unitTypeIdentifier(orderPx), pathString.toString());
 
+                    //Updates order information
+                    orderUnitsDone++;
+                    order.setNDone(orderUnitsDone);
+
                     System.out.println(" # # # # # # # # # # # # ");
                     System.out.println();
 
                 }
+
             }
 
         }

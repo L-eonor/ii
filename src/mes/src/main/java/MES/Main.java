@@ -13,24 +13,20 @@ import java.util.Timer;
 
 public class Main {
 
-    public static List<orderTransform> orderListTransformation = Collections.synchronizedList(new ArrayList<>());
+    public static List<orderTransform> orderListTransformationEnded = Collections.synchronizedList(new ArrayList<>());
+    public static List<orderUnload> orderListUnloadEnded = Collections.synchronizedList(new ArrayList<>());
     public static List<orderUnload> orderListUnload = Collections.synchronizedList(new ArrayList<>());
-    public static Timer timer = new Timer();
     public static PriorityQueue<orderTransform> ordersPriority = new PriorityQueue<>(new OrderComparator());
 
     public static StopWatch stopWatch = new StopWatch();
     public static int unitCount;
     public static SFS floor = new SFS();
+
+    //OPC-UA related
     //public static String aux = "DESKTOP-LPATDUL";
     public static String Client = "opc.tcp://DESKTOP-RNTM3PU:4840";
     //public static String Client = "opc.tcp://LAPTOP-UGJ82VH1:4840";
     public static OPCUA_Connection MyConnection = new OPCUA_Connection(Client);
-
-    static Thread threadReadSystem;
-    static Thread threadUnload;
-    static Thread threadLoad;
-    static Thread threadTransformation;
-
 
 
     public static void main(String[] args) throws Exception {
@@ -54,8 +50,6 @@ public class Main {
         //executorService.submit(server);
 
 
-        TransformationsGraph transformTable = new TransformationsGraph();
-
         /* TESTE DE FUNÇÕES PARA OPC-UA
         // (funcionar) getValue, getValueBoolean, setValueBoolean, getValueString, setValueString, getValueInt, setValueInt
         // (não Funcionar)
@@ -67,31 +61,17 @@ public class Main {
          */
 
         //Start thread that updates Floor
-
         readSystem floorUpdate = new readSystem();
         executorService.submit(floorUpdate);
-
-        //threadReadSystem = new Thread(new readSystem());
-        //threadReadSystem.start();
-
-        //Start thread that handles TransformationsOrders
-        //TransformationThread transformationHandler = new TransformationThread();
-        //executorService.submit(transformationHandler);
-
-        //threadTransformation = new Thread(new TransformationThread());
-        //threadTransformation.start();
 
         //Start thread that handles Unload Orders
         UnloadThread unloadHandler = new UnloadThread();
         executorService.submit(unloadHandler);
-        //threadUnload = new Thread(new UnloadThread());
-        //threadUnload.start();
 
         //Start thread that handles Load Orders
         LoadThread loadHandler = new LoadThread();
         executorService.submit(loadHandler);
-        //threadLoad = new Thread(new LoadThread());
-        //threadLoad.start();
+
 
 
     }

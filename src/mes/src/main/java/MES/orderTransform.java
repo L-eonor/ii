@@ -7,16 +7,13 @@ public class orderTransform extends order {
     private String Py;
     private int nTotal;
     private int nDone;
-    private int nProcessing;
 
-    public orderTransform(int id, int submitTime, int startTime, int type, int status, String Px, String Py, int nTotal, int nDone,
-                          int nProcessing, int maxDelay) {
+    public orderTransform(int id, int submitTime, int startTime, int type, int status, String Px, String Py, int nTotal, int nDone, int maxDelay) {
         super(id, submitTime, startTime, type, status, maxDelay);
         this.Px = Px;
         this.Py = Py;
         this.nTotal = nTotal;
         this.nDone = nDone;
-        this.nProcessing = nProcessing;
         setEndTime();
     }
 
@@ -42,10 +39,6 @@ public class orderTransform extends order {
         return nTotal;
     }
 
-    public void setNTotal(int nTotal) {
-        this.nTotal = nTotal;
-    }
-
     public int getNDone() {
         return nDone;
     }
@@ -54,12 +47,8 @@ public class orderTransform extends order {
         this.nDone = nDone;
     }
 
-    public int getNProcessing() {
-        return nProcessing;
-    }
-
-    public void setNProcessing(int nProcessing) {
-        this.nProcessing = nProcessing;
+    public int getNToProcess() {
+        return (this.nTotal - this.nDone);
     }
 
 

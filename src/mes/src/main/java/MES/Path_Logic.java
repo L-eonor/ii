@@ -194,7 +194,7 @@ public class Path_Logic {
      * @param childPosition position vector of the new child.
      * @return total cost.
      */
-    private int getCost(Node parentNode, int[] childPosition) {
+    private float getCost(Node parentNode, int[] childPosition) {
         // -> 1, caminho permanece na mesma direção;
         //-> 2, caminho muda direção;
         //-> adiciona peso dos nós criados
@@ -242,7 +242,7 @@ public class Path_Logic {
      * @param childPosition position vector of the new child.
      */
     private void createChildNode(Node parentNode, int [] childPosition) {
-        int cost=getCost(parentNode, childPosition);
+        float cost=getCost(parentNode, childPosition);
         Node childNode = new Node(parentNode, this.nodeIdentification, childPosition, parentNode.getCost() + cost, manhattanDistance(childPosition[0], childPosition[1]), parentNode.getDepth() + 1);
         this.nodeIdentification++;
         if (!unusedNodes.contains(childNode) && !usedNodes.contains(childNode)) {

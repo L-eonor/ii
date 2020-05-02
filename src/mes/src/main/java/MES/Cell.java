@@ -13,7 +13,7 @@ public class Cell {
     public String name;
     private int[] position = new int[2];
     public boolean unitPresence;
-    private int weight;
+    private float weight;
 
 
     // Constructor
@@ -70,19 +70,20 @@ public class Cell {
     }
 
 
-    public int getWeight() {
+    public float getWeight() {
         return weight;
     }
 
     //+Methods
 
     public void addWeight() {
-        this.weight++;
+        this.weight= (float) (this.weight + 0.4);
     }
 
     public void removeWeight() {
-        this.weight--;
+        this.weight= (float) (this.weight - 0.4);
     }
+
 }
 
 
