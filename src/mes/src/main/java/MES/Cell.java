@@ -77,11 +77,11 @@ public class Cell {
     //+Methods
 
     public void addWeight() {
-        this.weight= (float) (this.weight + 0.4);
+        this.weight= (float) (this.weight + 0.7);
     }
 
     public void removeWeight() {
-        this.weight= (float) (this.weight - 0.4);
+        this.weight= (float) (this.weight - 0.7);
     }
 
 }

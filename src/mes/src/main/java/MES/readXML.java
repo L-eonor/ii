@@ -31,11 +31,8 @@ public class readXML {
 
         // Envia info sobre as peças em armazém quando pedido
         if (document.getElementsByTagName("Request_Stores").getLength() != 0) {
-            CreateXML("C:\\XML\\requeststores.xml");
+            createXML xml = new createXML("C:\\Users\\kicop\\Desktop\\requeststores.xml");
             udpClient client = new udpClient(54321, "C:\\XML\\requeststores.xml");
-            ExecutorService executorService = Executors.newFixedThreadPool(2);
-            executorService.submit(client);
-            executorService.shutdown();
         }
 
         // Lê as ordens restantes do XML e cria um novo elemento do tipo ordem

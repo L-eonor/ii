@@ -22,7 +22,7 @@
 ]>
 <ORDERS>
 <Order Number="005">
-<Unload Type="P9" Destination="D1" Quantity="4"/>
+<Unload Type="P9" Destination="D1" Quantity="8"/>
 </Order>
 <Order Number="005">
 <Unload Type="P3" Destination="D2" Quantity="4"/>

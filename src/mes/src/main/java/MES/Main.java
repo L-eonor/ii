@@ -41,14 +41,12 @@ public class Main {
         int port = 54321;
 
         udpServer server = new udpServer(port);
-        //sendXML client = new sendXML(port, "C:\\XML\\received_data.xml"); // linha de testes
+        //createXML client = new createXML("C:\\Users\\kicop\\Desktop\\requeststores.xml"); // linha de testes
 
         ExecutorService executorService = Executors.newFixedThreadPool(6);
-        //executorService.submit(client);
-        executorService.submit(server);
-        //executorService.submit(client); //linha de testes
-        //executorService.submit(server);
 
+        //Starts thread that reads XML files with orders from ERP
+        executorService.submit(server);
 
         /* TESTE DE FUNÇÕES PARA OPC-UA
         // (funcionar) getValue, getValueBoolean, setValueBoolean, getValueString, setValueString, getValueInt, setValueInt

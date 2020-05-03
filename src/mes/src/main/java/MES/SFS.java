@@ -53,6 +53,7 @@ public class SFS {
         }
     }
 
+
     public Machine getMachineToSendPiece(String M) {
         Machine toSend;
         switch (M){

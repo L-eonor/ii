@@ -1,5 +1,7 @@
 package MES;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import static MES.Main.*;
@@ -10,6 +12,7 @@ public class UnloadThread implements Runnable {
     //Attributes
     static int[] warehouseOut = {1, 1};
     static int[] warehouseIn = {0, 7};
+    public static List<orderUnload> orderListUnloadInterrupted = Collections.synchronizedList(new ArrayList<>());
     String actionPush = "99";
 
     TransformationsGraph transformTable = new TransformationsGraph();
@@ -44,33 +47,45 @@ public class UnloadThread implements Runnable {
                 String orderDy = order.getDy();
                 int[] goal = floor.getUnloadPosition(orderDy);
                 if (goal == null) System.out.println("Error: order machine input not valid. ");
+                Slider slider = (Slider) floor.getCell(goal[1],goal[0]);
 
-                for (int a = 0; a < orderUnitsTotal; a++) {
-                    System.out.println(" # # # # # # # # # # # # ");
+                if(!slider.isFull()) {
+                    for (int a = 0; a < orderUnitsTotal; a++) {
+                        System.out.println(" # # # # # # # # # # # # ");
 
-                    StringBuilder pathStringBuilder = new StringBuilder();
+                        StringBuilder pathStringBuilder = new StringBuilder();
+
+                        //Calculate path to Slider
+                        Path_Logic path = new Path_Logic(warehouseOut, goal);
+                        pathStringBuilder.append(path.getStringPath());
+                        String pathString = pathStringBuilder.toString().replaceFirst(".{2}$", actionPush);
+                        System.out.println("[Unload] Esta é a string: " + pathString);
 
 
-                    //Calculate path to Slider
-                    Path_Logic path = new Path_Logic(warehouseOut, goal);
-                    pathStringBuilder.append(path.getStringPath());
-                    String pathString = pathStringBuilder.toString().replaceFirst(".{2}$", actionPush);
-                    System.out.println("[Unload] Esta é a string: " + pathString);
+                        //Sends information to OPC-UA
+                        sendPathToOPC(unitTypeIdentifier(orderPx), pathString);
 
+                        //Updates Unload order information
+                        orderUnitsDone++;
+                        order.setNDone(orderUnitsDone);
 
-                    //Sends information to OPC-UA
-                    sendPathToOPC(unitTypeIdentifier(orderPx), pathString);
+                        //Condition to verify when Slider is full
+                        if (slider.isFull()) {
+                            orderListUnload.add(order);
+                            break;
+                        }
 
-                    //Updates Unload order information
-                    orderUnitsDone++;
-                    order.setNDone(orderUnitsDone);
+                        System.out.println(" # # # # # # # # # # # # ");
 
-                    System.out.println(" # # # # # # # # # # # # ");
-
+                    }
                 }
+                else orderListUnload.add(order); //adds order to top of Unload List
+
+                //Checks if order is done
                 if(order.getQuantity() == order.getNDone()) orderListUnloadEnded.add(order);
 
-            } else if (!ordersPriority.isEmpty()) {
+            }
+            else if (!ordersPriority.isEmpty()) {
 
                 orderTransform order = ordersPriority.peek();
                 //Order attributes
@@ -195,7 +210,7 @@ public class UnloadThread implements Runnable {
 
     private void sendPathToOPC(int unitType, String path){
         //Sends information to OPC-UA
-        OPCUA_Connection.setValueInt16("MAIN_TASK", "unit_type", unitType);
+        OPCUA_Connection.setValueInt("MAIN_TASK", "unit_type", unitType);
         OPCUA_Connection.setValueString("MAIN_TASK", "AT1_order_path_mes", path);
 
         int aux = 1;
