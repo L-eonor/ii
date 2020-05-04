@@ -76,12 +76,12 @@ public class Cell {
 
     //+Methods
 
-    public void addWeight() {
-        this.weight= (float) (this.weight + 0.7);
+    public void addWeight(int nTimes) {
+        this.weight= (float) ((this.weight + 0.5)*nTimes);
     }
 
     public void removeWeight() {
-        this.weight= (float) (this.weight - 0.7);
+        this.weight= (float) (this.weight - 0.5);
     }
 
 }

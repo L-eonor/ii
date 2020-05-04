@@ -50,17 +50,16 @@ public class UnloadThread implements Runnable {
                 Slider slider = (Slider) floor.getCell(goal[1],goal[0]);
 
                 if(!slider.isFull()) {
+
+                    //Calculate path to Slider (every Unload order unit has the same path)
+                    StringBuilder pathStringBuilder = new StringBuilder();
+                    Path_Logic path = new Path_Logic(warehouseOut, goal, (orderUnitsTotal-orderUnitsDone));
+                    pathStringBuilder.append(path.getStringPath());
+                    String pathString = pathStringBuilder.toString().replaceFirst(".{2}$", actionPush);
+                    System.out.println("[Unload] Esta é a string: " + pathString);
+
                     for (int a = 0; a < orderUnitsTotal; a++) {
                         System.out.println(" # # # # # # # # # # # # ");
-
-                        StringBuilder pathStringBuilder = new StringBuilder();
-
-                        //Calculate path to Slider
-                        Path_Logic path = new Path_Logic(warehouseOut, goal);
-                        pathStringBuilder.append(path.getStringPath());
-                        String pathString = pathStringBuilder.toString().replaceFirst(".{2}$", actionPush);
-                        System.out.println("[Unload] Esta é a string: " + pathString);
-
 
                         //Sends information to OPC-UA
                         sendPathToOPC(unitTypeIdentifier(orderPx), pathString);
@@ -138,7 +137,7 @@ public class UnloadThread implements Runnable {
                         int[] goal = reverseArray(machineToGo.getPosition());
                         if (goal == null) System.out.println("Error: order machine input not valid. ");
                         else {
-                            machineToGo.addWeight();
+                            machineToGo.addWeight(1);
                         }
                         //Calculate path to Machine
                         Path_Logic path = new Path_Logic(startTransformation, goal);

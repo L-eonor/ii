@@ -5,6 +5,7 @@ import java.util.*;
 public class Path_Logic {
 
     public int nodeIdentification = 0;
+    public int nTimes;
     public int[] start;
     public int[] goal;
     private Stack<Node> path;
@@ -28,6 +29,18 @@ public class Path_Logic {
         this.path = new Stack<>();
         this.usedNodes = new ArrayList<>();
         this.unusedNodes = new PriorityQueue<>(new NodeComparator());
+        this.nTimes=1;
+    }
+
+    public Path_Logic(int[] start, int[] goal, int nTimes) {
+        // Reverse position array into Java matrix style -> y first, x second.
+        this.start= reverseArray(start);
+        this.goal= reverseArray(goal);
+
+        this.path = new Stack<>();
+        this.usedNodes = new ArrayList<>();
+        this.unusedNodes = new PriorityQueue<>(new NodeComparator());
+        this.nTimes=nTimes;
     }
 
 
@@ -212,6 +225,22 @@ public class Path_Logic {
 
         if(xChange && yChange) return 2 + floor.getCell(childPosition[0],childPosition[1]).getWeight();
         else return 1 + floor.getCell(childPosition[0],childPosition[1]).getWeight();
+
+        /*
+        if(xChange && yChange) {
+            floor.getCell(childPosition[0],childPosition[1]).getWeight();
+            return (float) 1.5;
+        }
+        else{
+            if(!floor.getCell(parentNode.getPosition()[0],parentNode.getPosition()[1]).getName().equals("Conveyor")){
+                return 1;
+            }
+            else return (float) 0.5 + ;
+        }
+
+         */
+
+
     }
 
     /**
@@ -257,7 +286,7 @@ public class Path_Logic {
     private void addPathToStack() {
         Node node = solutionFound;
         while (node != null) {
-            floor.getCell(node.getPosition()[0], node.getPosition()[1]).addWeight();
+            floor.getCell(node.getPosition()[0], node.getPosition()[1]).addWeight(nTimes);
             path.push(node);
             node = node.getParentNode();
         }
