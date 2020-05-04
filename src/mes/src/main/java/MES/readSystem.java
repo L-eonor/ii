@@ -11,6 +11,7 @@ public class readSystem implements Runnable {
         System.out.println("--------------[Executing] ReadSystem is Running [Executing]--------------");
 
         while(true) {
+
             /* --------------------------- COLLUMN 0 --------------------------------*/
             //WarehouseOut AT1
             Cell AT1 = floor.getCell(1, 0);
@@ -213,6 +214,25 @@ public class readSystem implements Runnable {
             //LoadIn C7T7b
             Cell C7T7b = floor.getCell(7, 8);
             C7T7b.setUnitPresence(!OPCUA_Connection.getValueBoolean("MAIN_TASK", "C7T7b.Init.x"));
+
+            /* ---------------------------- SLIDERS ---------------------------------*/
+            //Slider PM1 PM11
+            Slider PM1 = (Slider) floor.getCell(3,8);
+            PM1.setSensorLevel4(OPCUA_Connection.getValueBoolean("MAIN_TASK", "PM11"));
+            PM1.setSensorLevel3(OPCUA_Connection.getValueBoolean("MAIN_TASK", "PM12"));
+            PM1.setSensorLevel2(OPCUA_Connection.getValueBoolean("MAIN_TASK", "PM13"));
+            //Slider PM2
+            Slider PM2 = (Slider) floor.getCell(4,8);
+            PM2.setSensorLevel4(OPCUA_Connection.getValueBoolean("MAIN_TASK", "PM21"));
+            PM2.setSensorLevel3(OPCUA_Connection.getValueBoolean("MAIN_TASK", "PM22"));
+            PM2.setSensorLevel2(OPCUA_Connection.getValueBoolean("MAIN_TASK", "PM23"));
+
+            //Slider PM3
+            Slider PM3 = (Slider) floor.getCell(4,8);
+            PM3.setSensorLevel4(OPCUA_Connection.getValueBoolean("MAIN_TASK", "PM31"));
+            PM3.setSensorLevel3(OPCUA_Connection.getValueBoolean("MAIN_TASK", "PM32"));
+            PM3.setSensorLevel2(OPCUA_Connection.getValueBoolean("MAIN_TASK", "PM33"));
+
         }
 
 

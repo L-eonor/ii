@@ -82,6 +82,7 @@ public class Cell {
 
     public void removeWeight() {
         this.weight= (float) (this.weight - 0.5);
+        if(this.weight < 0) this.weight=0;
     }
 
 }

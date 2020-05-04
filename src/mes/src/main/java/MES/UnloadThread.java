@@ -215,11 +215,10 @@ public class UnloadThread implements Runnable {
         int aux = 1;
         while (true){
             if(aux == 1 && !floor.getCell(1,0).unitPresence) {
-                OPCUA_Connection.setValueInt("MAIN_TASK", "UNIT_COUNT_MES", ++Main.unitCount);
+                OPCUA_Connection.setValueInt("MAIN_TASK", "UNIT_COUNT_AT1", ++Main.unitCount);
                 aux++;
             }
-            if(aux == 2 && OPCUA_Connection.getValueInt("MAIN_TASK", "UNIT_COUNT_MES") == Main.unitCount){
-
+            if(aux == 2 && OPCUA_Connection.getValueInt("MAIN_TASK", "UNIT_COUNT_AT1") == Main.unitCount){
                 aux++;
             }
             if(aux == 3 && floor.getCell(1,0).unitPresence) break;

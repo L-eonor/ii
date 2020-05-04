@@ -70,8 +70,6 @@ public class Main {
         LoadThread loadHandler = new LoadThread();
         executorService.submit(loadHandler);
 
-
-
     }
 
 }
