@@ -13,6 +13,8 @@ public class Path_Logic {
     private PriorityQueue<Node> unusedNodes;
     public Node solutionFound;
     private SFS floor = MES.Main.floor;
+    private Cell[][] sfsCells;
+
 
 
     /**
@@ -21,7 +23,7 @@ public class Path_Logic {
      * @param start initial position, where start[0] is in the Y axis and start[1] is in the X axis.
      * @param goal  final position, where goal[0] is in the Y axis and goal[1] is in the X axis.
      */
-    public Path_Logic(int[] start, int[] goal) {
+    public Path_Logic(int[] start, int[] goal, String plantType) {
         // Reverse position array into Java matrix style -> y first, x second.
         this.start= reverseArray(start);
         this.goal= reverseArray(goal);
@@ -30,9 +32,20 @@ public class Path_Logic {
         this.usedNodes = new ArrayList<>();
         this.unusedNodes = new PriorityQueue<>(new NodeComparator());
         this.nTimes=1;
+
+        if(plantType.equals("Load")){
+            sfsCells=floor.getSfsCellsLoad();
+        }
+        else if(plantType.equals("Transformation")){
+            sfsCells=floor.getSfsCellsTransformation();
+        }
+        else {
+            sfsCells=floor.getSfsCells();
+        }
+
     }
 
-    public Path_Logic(int[] start, int[] goal, int nTimes) {
+    public Path_Logic(int[] start, int[] goal, String plantType, int nTimes) {
         // Reverse position array into Java matrix style -> y first, x second.
         this.start= reverseArray(start);
         this.goal= reverseArray(goal);
@@ -41,6 +54,13 @@ public class Path_Logic {
         this.usedNodes = new ArrayList<>();
         this.unusedNodes = new PriorityQueue<>(new NodeComparator());
         this.nTimes=nTimes;
+
+        if(plantType.equals("Load")){
+            sfsCells=floor.getSfsCellsLoad();
+        }
+        else {
+            sfsCells=floor.getSfsCells();
+        }
     }
 
 
@@ -50,10 +70,10 @@ public class Path_Logic {
      * @return <code>true</code> if solution found.
      */
     public boolean findPath() {
-        if (floor.sfsCells[start[0]][start[1]] == null) {
+        if (sfsCells[start[0]][start[1]] == null) {
             System.out.println("Invalid starting position.");
             return false;
-        } else if (floor.sfsCells[goal[0]][goal[1]] == null) {
+        } else if (sfsCells[goal[0]][goal[1]] == null) {
             System.out.println("Invalid goal position.");
             return false;
         } else {
@@ -162,32 +182,32 @@ public class Path_Logic {
 
             if (checkGeneralRules(parentNode, childPosition)) {
                 //Regras de movimento de tapete para tapete
-                switch (floor.sfsCells[parentNode.getPosition()[0]][parentNode.getPosition()[1]].getName()){
+                switch (sfsCells[parentNode.getPosition()[0]][parentNode.getPosition()[1]].getName()){
                     case "Machine":
-                        if(floor.sfsCells[childPosition[0]][childPosition[1]].getName().equals("Rotator")) {
+                        if(sfsCells[childPosition[0]][childPosition[1]].getName().equals("Rotator")) {
                             createChildNode(parentNode, childPosition);
                         }
                         break;
 
                     case "Conveyor":
-                        if(floor.sfsCells[childPosition[0]][childPosition[1]].getName().equals("Rotator") || floor.sfsCells[childPosition[0]][childPosition[1]].getName().equals("Pusher") ||
-                                floor.sfsCells[childPosition[0]][childPosition[1]].getName().equals("WarehouseIn") || floor.sfsCells[childPosition[0]][childPosition[1]].getName().equals("WarehouseOut")) {
+                        if(sfsCells[childPosition[0]][childPosition[1]].getName().equals("Rotator") || sfsCells[childPosition[0]][childPosition[1]].getName().equals("Pusher") ||
+                                sfsCells[childPosition[0]][childPosition[1]].getName().equals("WarehouseIn") || sfsCells[childPosition[0]][childPosition[1]].getName().equals("WarehouseOut")) {
                             createChildNode(parentNode, childPosition);
                         }
                         break;
 
                     case "Rotator":
-                        if(floor.sfsCells[childPosition[0]][childPosition[1]].getName().equals("Conveyor") || floor.sfsCells[childPosition[0]][childPosition[1]].getName().equals("Machine") || floor.sfsCells[childPosition[0]][childPosition[1]].getName().equals("Rotator")) {
+                        if(sfsCells[childPosition[0]][childPosition[1]].getName().equals("Conveyor") || sfsCells[childPosition[0]][childPosition[1]].getName().equals("Machine") || sfsCells[childPosition[0]][childPosition[1]].getName().equals("Rotator")) {
                             createChildNode(parentNode, childPosition);
                         }
                         break;
                     case "Pusher":
-                        if(floor.sfsCells[childPosition[0]][childPosition[1]].getName().equals("Conveyor") || floor.sfsCells[childPosition[0]][childPosition[1]].getName().equals("Slider") || floor.sfsCells[childPosition[0]][childPosition[1]].getName().equals("Pusher")) {
+                        if(sfsCells[childPosition[0]][childPosition[1]].getName().equals("Conveyor") || sfsCells[childPosition[0]][childPosition[1]].getName().equals("Slider") || sfsCells[childPosition[0]][childPosition[1]].getName().equals("Pusher")) {
                             createChildNode(parentNode, childPosition);
                         }
                         break;
                     case "Slider":
-                        if(floor.sfsCells[childPosition[0]][childPosition[1]].getName().equals("Pusher")) {
+                        if(sfsCells[childPosition[0]][childPosition[1]].getName().equals("Pusher")) {
                             createChildNode(parentNode, childPosition);
                         }
                         break;
@@ -258,7 +278,7 @@ public class Path_Logic {
         else goingBack= Arrays.equals(childPosition, parentNode.getParentNode().getPosition());
 
         boolean existsCell;
-        if(inArray) existsCell= floor.sfsCells[childPosition[0]][childPosition[1]] != null;
+        if(inArray) existsCell= sfsCells[childPosition[0]][childPosition[1]] != null;
         else existsCell=false;
 
         return inArray && !goingBack && existsCell;
@@ -301,7 +321,7 @@ public class Path_Logic {
      * @return <code>true</code> if positions are valid, <code>false</code> otherwise.
      */
     public boolean inBoundsOfArray(int childPositionY, int childPositionX) {
-        return ((childPositionX >= 0) && (childPositionX < floor.sfsCells[0].length) && (childPositionY >= 0) && (childPositionY < floor.sfsCells.length));
+        return ((childPositionX >= 0) && (childPositionX < sfsCells[0].length) && (childPositionY >= 0) && (childPositionY < sfsCells.length));
     }
 
 

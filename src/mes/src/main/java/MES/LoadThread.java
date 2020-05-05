@@ -23,10 +23,12 @@ public class LoadThread implements Runnable {
 
             StringBuilder pathStringLoad1 = new StringBuilder();
             StringBuilder pathStringLoad2 = new StringBuilder();
-
-            if(floor.getCell(1,8).getUnitPresence() && aux1 == 1) {
+            boolean C7T1b = floor.getCell(1,8).getUnitPresence();
+            boolean C7T7b = floor.getCell(7,8).getUnitPresence();
+            System.out.println("Load thread executing...");
+            if(C7T1b && aux1 == 1) {
                 //Calculates path
-                Path_Logic pathLoad = new Path_Logic(loadP1, warehouseIn);
+                Path_Logic pathLoad = new Path_Logic(loadP1, warehouseIn, "Load");
                 pathStringLoad1.append(pathLoad.getStringPath());
                 System.out.println("[Load1] Esta é a string: " + pathStringLoad1);
                 //Sends via OPC-UA
@@ -37,9 +39,9 @@ public class LoadThread implements Runnable {
                 aux1=1;
             }
 
-            if(floor.getCell(7,8).getUnitPresence() && aux2 == 1) {
+            if(C7T7b && aux2 == 1) {
                 //Calculates path
-                Path_Logic pathLoad = new Path_Logic(loadP2, warehouseIn);
+                Path_Logic pathLoad = new Path_Logic(loadP2, warehouseIn, "Load");
                 pathStringLoad2.append(pathLoad.getStringPath());
                 System.out.println("[Load2] Esta é a string: " + pathStringLoad2);
 

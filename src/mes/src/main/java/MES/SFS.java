@@ -10,6 +10,8 @@ public class SFS {
     ArrayList<Machine> MachinesB = new ArrayList<>();
     ArrayList<Machine> MachinesC = new ArrayList<>();
 
+
+
     static public Cell[][] sfsCells = {
             {null, null, null, null, null, null, null, null, null},
             {new Cell(1, 0, "WarehouseOut"), new Cell(1, 1), new Rotator(1, 2), new Cell(1, 3), new Rotator(1, 4), new Cell(1, 5), new Rotator(1, 6), new Rotator(1, 7), new Cell(1, 8)},
@@ -20,6 +22,32 @@ public class SFS {
             {null, null, new Cell(6, 2), null, new Cell(6, 4), null, new Cell(6, 6), new Cell(6, 7), null},
             {new Cell(7, 0, "WarehouseIn"), new Cell(7, 1), new Rotator(7, 2), new Cell(7, 3), new Rotator(7, 4), new Cell(7, 5), new Rotator(7, 6), new Rotator(7, 7), new Cell(7, 8)},
     };
+
+    static final public Cell[][] sfsCellsLoad = {
+            {null, null, null, null, null, null, null, null, null},
+            {null, null, null, null, null, null, (Rotator) sfsCells[1][6], (Rotator) sfsCells[1][7], sfsCells[1][8]},
+            {null, null, null, null, null, null, sfsCells[2][6], sfsCells[2][7], null},
+            {null, null, null, null, null, null, (Rotator) sfsCells[3][6], (Pusher) sfsCells[3][7], (Slider) sfsCells[3][8]},
+            {null, null, null, null, null, null, (Rotator) sfsCells[4][6], (Pusher) sfsCells[4][7], (Slider) sfsCells[4][8]},
+            {null, null, null, null, null, null, (Rotator) sfsCells[5][6], (Pusher) sfsCells[5][7], (Slider) sfsCells[5][8]},
+            {null, null, null, null, null, null, sfsCells[6][6], sfsCells[6][7], null},
+            {sfsCells[7][0], sfsCells[7][1], (Rotator) sfsCells[7][2], sfsCells[7][3], (Rotator) sfsCells[7][4], sfsCells[7][5], (Rotator) sfsCells[7][6], (Rotator) sfsCells[7][7], sfsCells[7][8]},
+    };
+
+    static public Cell[][] sfsCellsTransformation = {
+            {null, null, null, null, null, null, null, null, null},
+            {sfsCells[1][0], sfsCells[1][1], (Rotator) sfsCells[1][2], sfsCells[1][3], (Rotator) sfsCells[1][4], sfsCells[1][5], (Rotator) sfsCells[1][6], null, null},
+            {null, null, sfsCells[2][2], null, sfsCells[2][4], null, sfsCells[2][6], null, null},
+            {null, (Machine) sfsCells[3][1], (Rotator) sfsCells[3][2], (Machine) sfsCells[3][3], (Rotator) sfsCells[3][4], (Machine) sfsCells[3][5], (Rotator) sfsCells[3][6],null, null},
+            {null, (Machine) sfsCells[4][1], (Rotator) sfsCells[4][2], (Machine) sfsCells[4][3], (Rotator) sfsCells[4][4], (Machine) sfsCells[4][5], (Rotator) sfsCells[4][6], null, null},
+            {null, (Machine) sfsCells[5][1], (Rotator) sfsCells[5][2], (Machine) sfsCells[5][3], (Rotator) sfsCells[5][4], (Machine) sfsCells[5][5], (Rotator) sfsCells[5][6], null, null},
+            {null, null, sfsCells[6][2], null, sfsCells[6][4], null, sfsCells[6][6], null, null},
+            {sfsCells[7][0], sfsCells[7][1], (Rotator) sfsCells[7][2], sfsCells[7][3], (Rotator) sfsCells[7][4], sfsCells[7][5], (Rotator) sfsCells[7][6], null, null},
+    };
+
+
+
+
 
     //Constructor
     public SFS() {
@@ -39,6 +67,20 @@ public class SFS {
         if(sfsCells[y][x] != null) return sfsCells[y][x];
         else return null;
     }
+
+    public Cell[][] getSfsCells() {
+        return sfsCells;
+    }
+
+
+    public Cell[][] getSfsCellsLoad() {
+        return sfsCellsLoad;
+    }
+
+    public Cell[][] getSfsCellsTransformation() {
+        return sfsCellsTransformation;
+    }
+
 
     public int[] getUnloadPosition(String Dy) {
         switch (Dy) {
@@ -94,5 +136,6 @@ public class SFS {
         System.out.println("|"+getCell(7,0).getUnitPresence()+"  |"+getCell(7,1).getUnitPresence() +"  |"+getCell(7,2).getUnitPresence() +"  |"+getCell(7,3).getUnitPresence() +"  |"+getCell(7,4).getUnitPresence() +"  |"+getCell(7,5).getUnitPresence() +"  |"+getCell(7,6).getUnitPresence() +"  |"+ getCell(7,7).getUnitPresence()+"  |"+ getCell(7,8).getUnitPresence()+" |");
         System.out.println("---------------------------------------------------------------------------------");
     }
+
 
 }

@@ -48,17 +48,19 @@ public class UnloadThread implements Runnable {
                 int[] goal = floor.getUnloadPosition(orderDy);
                 if (goal == null) System.out.println("Error: order machine input not valid. ");
                 Slider slider = (Slider) floor.getCell(goal[1],goal[0]);
+                System.out.println("Calculating path.......");
 
                 if(!slider.isFull()) {
 
                     //Calculate path to Slider (every Unload order unit has the same path)
                     StringBuilder pathStringBuilder = new StringBuilder();
-                    Path_Logic path = new Path_Logic(warehouseOut, goal, (orderUnitsTotal-orderUnitsDone));
+                    System.out.println("Calculating path.......");
+                    Path_Logic path = new Path_Logic(warehouseOut, goal, "Unload", (orderUnitsTotal-orderUnitsDone));
                     pathStringBuilder.append(path.getStringPath());
                     String pathString = pathStringBuilder.toString().replaceFirst(".{2}$", actionPush);
                     System.out.println("[Unload] Esta é a string: " + pathString);
 
-                    for (int a = 0; a < orderUnitsTotal; a++) {
+                    for (int a = orderUnitsDone; a < orderUnitsTotal; a++) {
                         System.out.println(" # # # # # # # # # # # # ");
 
                         //Sends information to OPC-UA
@@ -140,7 +142,7 @@ public class UnloadThread implements Runnable {
                             machineToGo.addWeight(1);
                         }
                         //Calculate path to Machine
-                        Path_Logic path = new Path_Logic(startTransformation, goal);
+                        Path_Logic path = new Path_Logic(startTransformation, goal, "Transformation");
                         pathString.append(path.getStringPath());
                         //Add Tool and Time to string respectively
                         pathString.append(transformationResult.tool.get(j)).append(transformationResult.timeCost.get(j));
@@ -148,7 +150,7 @@ public class UnloadThread implements Runnable {
                     }
 
                     //Path to Warehouse In cell
-                    Path_Logic pathEnd = new Path_Logic(startTransformation, warehouseIn);
+                    Path_Logic pathEnd = new Path_Logic(startTransformation, warehouseIn,"Transformation");
                     pathString.append(pathEnd.getStringPath());
                     System.out.println("[Transformation] Esta é a string: " + pathString);
 
