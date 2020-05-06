@@ -390,7 +390,7 @@ public class Path_Logic {
             for (int i = 0; i < sizePath; i++) {
                 Node nodePopped = getPath().pop();
                 pathString = pathString + Integer.toString(nodePopped.getPosition()[1]) + Integer.toString(nodePopped.getPosition()[0]);
-                if(this.floor.getCell(nodePopped.getPosition()[0], nodePopped.getPosition()[1]).name.equals("Machine") && ( i>1 && i<(sizePath-1))){
+                if(this.floor.getCell(nodePopped.getPosition()[0], nodePopped.getPosition()[1]).getName().equals("Machine") && ( i>1 && i<(sizePath-1))){
                     pathString=pathString+"011";
                 }
             }

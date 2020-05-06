@@ -10,7 +10,7 @@ public class Cell {
      */
 
     //Attributes
-    public String name;
+    private String name;
     private int[] position = new int[2];
     public boolean unitPresence;
     private float weight;

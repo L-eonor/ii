@@ -31,6 +31,7 @@ public class LoadThread implements Runnable {
                 Path_Logic pathLoad = new Path_Logic(loadP1, warehouseIn, "Load");
                 pathStringLoad1.append(pathLoad.getStringPath());
                 System.out.println("[Load1] Esta é a string: " + pathStringLoad1);
+
                 //Sends via OPC-UA
                 sendPathToOPCLoad(pathStringLoad1.toString(),1);
                 aux1++;
