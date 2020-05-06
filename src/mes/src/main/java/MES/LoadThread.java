@@ -25,7 +25,7 @@ public class LoadThread implements Runnable {
             StringBuilder pathStringLoad2 = new StringBuilder();
             boolean C7T1b = floor.getCell(1,8).getUnitPresence();
             boolean C7T7b = floor.getCell(7,8).getUnitPresence();
-            System.out.println("Load thread executing...");
+            //System.out.println("Load thread executing...");
             if(C7T1b && aux1 == 1) {
                 //Calculates path
                 Path_Logic pathLoad = new Path_Logic(loadP1, warehouseIn, "Load");

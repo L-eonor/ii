@@ -21,11 +21,8 @@
 >
 ]>
 <ORDERS>
-<Order Number="005">
-<Unload Type="P9" Destination="D1" Quantity="15"/>
-</Order>
-<Order Number="005">
-<Unload Type="P3" Destination="D2" Quantity="4"/>
+<Order Number="001">
+<Transform From="P1" To="P9" Quantity="3" MaxDelay="60"/>
 </Order>
 </ORDERS>
 

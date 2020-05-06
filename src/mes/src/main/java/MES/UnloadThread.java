@@ -130,23 +130,38 @@ public class UnloadThread implements Runnable {
 
 
                     //Starts finding path according to transformations
+                    Machine machineToGo;
                     int[] startTransformation = warehouseOut;
+                    int[] goalTransformation={0,0};
+                    String previousMachine="";
+
                     for (int j = 0; j < transformationResult.transformations.size(); j++) {
+
                         //Identify machine
-                        String machine = transformationResult.machines.get(j);
+                        String machineNow = transformationResult.machines.get(j);
+
                         //Relate machine type with respective position
-                        Machine machineToGo = floor.getMachineToSendPiece(machine);
-                        int[] goal = reverseArray(machineToGo.getPosition());
-                        if (goal == null) System.out.println("Error: order machine input not valid. ");
-                        else {
-                            machineToGo.addWeight(1);
+                        if(!previousMachine.equals(machineNow)){
+                            machineToGo = floor.getMachineToSendPiece(machineNow);
+                            goalTransformation = reverseArray(machineToGo.getPosition());
+                            if (goalTransformation == null) System.out.println("Error: order machine input not valid. ");
+                            else {
+                                machineToGo.addWeight(1);
+                            }
+
+                            //Calculate path to Machine
+                            Path_Logic path = new Path_Logic(startTransformation, goalTransformation, "Transformation");
+                            pathString.append(path.getStringPath());
+                            previousMachine=machineNow;
                         }
-                        //Calculate path to Machine
-                        Path_Logic path = new Path_Logic(startTransformation, goal, "Transformation");
-                        pathString.append(path.getStringPath());
+                        else{
+                            String machinePositionString = String.valueOf(goalTransformation[0])+String.valueOf(goalTransformation[1]);
+                            pathString.append(machinePositionString);
+                        }
+
                         //Add Tool and Time to string respectively
                         pathString.append(transformationResult.tool.get(j)).append(transformationResult.timeCost.get(j));
-                        startTransformation = goal;
+                        startTransformation = goalTransformation;
                     }
 
                     //Path to Warehouse In cell
