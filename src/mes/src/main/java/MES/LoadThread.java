@@ -7,7 +7,6 @@ public class LoadThread implements Runnable {
     static int[] loadP1 = {7,1};
     static int[] loadP2 = {7,7};
 
-    SFS floor = Main.floor;
 
     public LoadThread() {
 
@@ -23,9 +22,9 @@ public class LoadThread implements Runnable {
 
             StringBuilder pathStringLoad1 = new StringBuilder();
             StringBuilder pathStringLoad2 = new StringBuilder();
-            boolean C7T1b = floor.getCell(1,8).getUnitPresence();
-            boolean C7T7b = floor.getCell(7,8).getUnitPresence();
-            //System.out.println("Load thread executing...");
+            boolean C7T1b = SFS.getCell(1,8).getUnitPresence();
+            boolean C7T7b = SFS.getCell(7,8).getUnitPresence();
+            //System.out.println("Peça: " + SFS.getCell(1,8).getUnitPresence() + " Aux: " + aux1 );
             if(C7T1b && aux1 == 1) {
                 //Calculates path
                 Path_Logic pathLoad = new Path_Logic(loadP1, warehouseIn, "Load");
@@ -36,7 +35,7 @@ public class LoadThread implements Runnable {
                 sendPathToOPCLoad(pathStringLoad1.toString(),1);
                 aux1++;
             }
-            if(!floor.getCell(1,8).getUnitPresence() && aux1 == 2) {
+            if(!SFS.getCell(1,8).getUnitPresence() && aux1 == 2) {
                 aux1=1;
             }
 
@@ -50,7 +49,7 @@ public class LoadThread implements Runnable {
                 sendPathToOPCLoad(pathStringLoad2.toString(),2);
                 aux2++;
             }
-            if(!floor.getCell(7,8).getUnitPresence() && aux2 == 2) {
+            if(!SFS.getCell(7,8).getUnitPresence() && aux2 == 2) {
                 aux2=1;
             }
         }
@@ -80,7 +79,7 @@ public class LoadThread implements Runnable {
 
         int aux = 1;
         while (true){
-            if(aux == 1 && floor.getCell(cell[0],cell[1]).unitPresence) {
+            if(aux == 1 && SFS.getCell(cell[0],cell[1]).unitPresence) {
                 OPCUA_Connection.setValueInt("MAIN_TASK", VarUCountName, ++Main.unitCount);
                 aux++;
             }

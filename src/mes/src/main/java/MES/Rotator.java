@@ -19,7 +19,6 @@ public class Rotator extends Cell {
         super.setName("Rotator");
         this.isDirectionHorizontal=true;
         this.isDirectionVertical=false;
-
     }
 
     //Methods

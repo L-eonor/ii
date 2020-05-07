@@ -11,7 +11,7 @@ public class Cell {
 
     //Attributes
     private String name;
-    private int[] position = new int[2];
+    private final int[] position = new int[2];
     public boolean unitPresence;
     private float weight;
 
@@ -26,6 +26,7 @@ public class Cell {
     }
 
     public Cell(int y, int x, String name) {
+        this.weight=0;
         this.unitPresence=false;
         this.position[0]=y;
         this.position[1]=x;
@@ -37,11 +38,11 @@ public class Cell {
 
     //Setters
 
-    public void setName(String a){
+    public synchronized void setName(String a){
         this.name=a;
     }
 
-    public void setUnitPresence(boolean unitPresence) {
+    public synchronized void setUnitPresence(boolean unitPresence) {
         //If cell gets free, removes 1 from weight
         if(!unitPresence && this.unitPresence) {
             removeWeight();
@@ -51,36 +52,36 @@ public class Cell {
         if(different) this.unitPresence=unitPresence;
     }
 
-    public void setWeight(int weight) {
+    public synchronized void setWeight(int weight) {
         this.weight = weight;
     }
 
     //Getters
 
-    public String getName() {
+    public synchronized String getName() {
         return this.name;
     }
 
-    public boolean getUnitPresence() {
+    public synchronized boolean getUnitPresence() {
         return this.unitPresence;
     }
 
-    public int[] getPosition() {
+    public synchronized int[] getPosition() {
         return position;
     }
 
 
-    public float getWeight() {
+    public synchronized float getWeight() {
         return weight;
     }
 
     //+Methods
 
-    public void addWeight(int nTimes) {
+    public synchronized void addWeight(int nTimes) {
         this.weight= (float) ((this.weight + 0.5)*nTimes);
     }
 
-    public void removeWeight() {
+    public synchronized void removeWeight() {
         this.weight= (float) (this.weight - 0.5);
         if(this.weight < 0) this.weight=0;
     }

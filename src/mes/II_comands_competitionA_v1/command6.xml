@@ -21,6 +21,13 @@
 >
 ]>
 <ORDERS>
-<Request_Stores/>
+<Order Number="008">
+<Unload Type="P9" Destination="D1" Quantity="4"/>
+</Order>
+<Order Number="009">
+<Unload Type="P3" Destination="D2" Quantity="4"/>
+</Order>
+<Order Number="010">
+<Unload Type="P6" Destination="D3" Quantity="4"/>
+</Order>
 </ORDERS>
-

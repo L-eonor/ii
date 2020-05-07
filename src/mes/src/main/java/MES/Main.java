@@ -20,7 +20,7 @@ public class Main {
 
     public static StopWatch stopWatch = new StopWatch();
     public static int unitCount;
-    public static SFS floor = new SFS();
+
 
     //OPC-UA related
     //public static String aux = "DESKTOP-LPATDUL";
@@ -47,16 +47,6 @@ public class Main {
 
         //Starts thread that reads XML files with orders from ERP
         executorService.submit(server);
-
-        /* TESTE DE FUNÇÕES PARA OPC-UA
-        // (funcionar) getValue, getValueBoolean, setValueBoolean, getValueString, setValueString, getValueInt, setValueInt
-        // (não Funcionar)
-        System.out.println("--------------Value Change--------------");
-        OPCUA_Connection.getValueBoolean("MAIN_TASK","AT1.SENSOR");
-        System.out.println("--------------Value Change--------------");
-        int x = OPCUA_Connection.getValueInt("MAIN_TASK","UNIT_COUNT_MES");
-        System.out.println("----" + x);
-         */
 
         //Start thread that updates Floor
         readSystem floorUpdate = new readSystem();

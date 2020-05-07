@@ -1,18 +1,12 @@
 package MES;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class SFS {
 
     //Attributes
-    ArrayList<Machine> MachinesA = new ArrayList<>();
-    ArrayList<Machine> MachinesB = new ArrayList<>();
-    ArrayList<Machine> MachinesC = new ArrayList<>();
 
-
-
-    static public Cell[][] sfsCells = {
+    static final public Cell[][] sfsCells = new Cell[][]{
             {null, null, null, null, null, null, null, null, null},
             {new Cell(1, 0, "WarehouseOut"), new Cell(1, 1), new Rotator(1, 2), new Cell(1, 3), new Rotator(1, 4), new Cell(1, 5), new Rotator(1, 6), new Rotator(1, 7), new Cell(1, 8)},
             {null, null, new Cell(2, 2), null, new Cell(2, 4), null, new Cell(2, 6), new Cell(2, 7), null},
@@ -23,7 +17,7 @@ public class SFS {
             {new Cell(7, 0, "WarehouseIn"), new Cell(7, 1), new Rotator(7, 2), new Cell(7, 3), new Rotator(7, 4), new Cell(7, 5), new Rotator(7, 6), new Rotator(7, 7), new Cell(7, 8)},
     };
 
-    static final public Cell[][] sfsCellsLoad = {
+    static final public Cell[][] sfsCellsLoad = new Cell[][]{
             {null, null, null, null, null, null, null, null, null},
             {null, null, null, null, null, null, (Rotator) sfsCells[1][6], (Rotator) sfsCells[1][7], sfsCells[1][8]},
             {null, null, null, null, null, null, sfsCells[2][6], sfsCells[2][7], null},
@@ -34,7 +28,7 @@ public class SFS {
             {sfsCells[7][0], sfsCells[7][1], (Rotator) sfsCells[7][2], sfsCells[7][3], (Rotator) sfsCells[7][4], sfsCells[7][5], (Rotator) sfsCells[7][6], (Rotator) sfsCells[7][7], sfsCells[7][8]},
     };
 
-    static public Cell[][] sfsCellsTransformation = {
+    static final public Cell[][] sfsCellsTransformation = new Cell[][]{
             {null, null, null, null, null, null, null, null, null},
             {sfsCells[1][0], sfsCells[1][1], (Rotator) sfsCells[1][2], sfsCells[1][3], (Rotator) sfsCells[1][4], sfsCells[1][5], (Rotator) sfsCells[1][6], null, null},
             {null, null, sfsCells[2][2], null, sfsCells[2][4], null, sfsCells[2][6], null, null},
@@ -45,44 +39,49 @@ public class SFS {
             {sfsCells[7][0], sfsCells[7][1], (Rotator) sfsCells[7][2], sfsCells[7][3], (Rotator) sfsCells[7][4], sfsCells[7][5], (Rotator) sfsCells[7][6], null, null},
     };
 
+    static final ArrayList<Machine> MachinesA = new ArrayList<Machine>() {
+        {
+            add((Machine) sfsCells[3][1]);
+            add((Machine) sfsCells[3][3]);
+            add((Machine) sfsCells[3][5]);
+        }
+    };
+    static final ArrayList<Machine> MachinesB = new ArrayList<Machine>() {
+        {
+            add((Machine) sfsCells[4][1]);
+            add((Machine) sfsCells[4][3]);
+            add((Machine) sfsCells[4][5]);
+        }
+    };
+    static final ArrayList<Machine> MachinesC = new ArrayList<Machine>() {
+        {
+            add((Machine) sfsCells[5][1]);
+            add((Machine) sfsCells[5][3]);
+            add((Machine) sfsCells[5][5]);
+        }
+    };
 
 
+    public static Cell getCell(int y, int x){
+        return sfsCells[y][x];
 
-
-    //Constructor
-    public SFS() {
-        //Add machines to respective list
-        MachinesA.add((Machine) getCell(3,1));
-        MachinesA.add((Machine) getCell(3,3));
-        MachinesA.add((Machine) getCell(3,5));
-        MachinesB.add((Machine) getCell(4,1));
-        MachinesB.add((Machine) getCell(4,3));
-        MachinesB.add((Machine) getCell(4,5));
-        MachinesC.add((Machine) getCell(5,1));
-        MachinesC.add((Machine) getCell(5,3));
-        MachinesC.add((Machine) getCell(5,5));
     }
 
-    public Cell getCell(int y, int x){
-        if(sfsCells[y][x] != null) return sfsCells[y][x];
-        else return null;
-    }
-
-    public Cell[][] getSfsCells() {
+    public static Cell[][] getSfsCells() {
         return sfsCells;
     }
 
 
-    public Cell[][] getSfsCellsLoad() {
+    public static Cell[][] getSfsCellsLoad() {
         return sfsCellsLoad;
     }
 
-    public Cell[][] getSfsCellsTransformation() {
+    public static Cell[][] getSfsCellsTransformation() {
         return sfsCellsTransformation;
     }
 
 
-    public int[] getUnloadPosition(String Dy) {
+    public static int[] getUnloadPosition(String Dy) {
         switch (Dy) {
             case "D1":
                 return new int[]{8, 3};
@@ -96,7 +95,7 @@ public class SFS {
     }
 
 
-    public Machine getMachineToSendPiece(String M) {
+    public static Machine getMachineToSendPiece(String M) {
         Machine toSend;
         switch (M){
             case "Ma":
@@ -113,7 +112,7 @@ public class SFS {
         return null;
     }
 
-    public Machine getLowerWeight(ArrayList<Machine> Machine) {
+    public static Machine getLowerWeight(ArrayList<Machine> Machine) {
         Machine low = Machine.get(0);
         for(int i=0; i < Machine.size(); i++) {
             if(Machine.get(i).getWeight() < low.getWeight()) {

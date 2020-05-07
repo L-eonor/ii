@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import static MES.Main.*;
 import static java.lang.Thread.*;
 
 public class UnloadThread implements Runnable {
@@ -21,9 +20,6 @@ public class UnloadThread implements Runnable {
     List<orderUnload> orderListUnload = Main.orderListUnload;
      */
 
-    SFS floor = Main.floor;
-
-
     public UnloadThread() {
 
     }
@@ -34,9 +30,10 @@ public class UnloadThread implements Runnable {
 
         while (true) {
 
-            if (!orderListUnload.isEmpty()) {
 
-                orderUnload order = orderListUnload.remove(0);
+            if (!Main.orderListUnload.isEmpty() && !checkIfWaiting()) {
+
+                orderUnload order = Main.orderListUnload.remove(0);
 
                 //Order attributes
                 int orderUnitsDone = order.getNDone();
@@ -45,10 +42,9 @@ public class UnloadThread implements Runnable {
 
                 //Identify and relate Dy with respective position of Slider
                 String orderDy = order.getDy();
-                int[] goal = floor.getUnloadPosition(orderDy);
+                int[] goal = SFS.getUnloadPosition(orderDy);
                 if (goal == null) System.out.println("Error: order machine input not valid. ");
-                Slider slider = (Slider) floor.getCell(goal[1],goal[0]);
-                System.out.println("Calculating path.......");
+                Slider slider = (Slider) SFS.getCell(goal[1],goal[0]);
 
                 if(!slider.isFull()) {
 
@@ -72,7 +68,7 @@ public class UnloadThread implements Runnable {
 
                         //Condition to verify when Slider is full
                         if (slider.isFull()) {
-                            orderListUnload.add(order);
+                            Main.orderListUnload.add(order);
                             break;
                         }
 
@@ -80,15 +76,18 @@ public class UnloadThread implements Runnable {
 
                     }
                 }
-                else orderListUnload.add(order); //adds order to top of Unload List
+                else {
+                    System.out.println("Slider position ["+slider.getPosition()[1]+slider.getPosition()[0]+"] is full.");
+                    Main.orderListUnload.add(order); //adds order to top of Unload List
+                }
 
                 //Checks if order is done
-                if(order.getQuantity() == order.getNDone()) orderListUnloadEnded.add(order);
+                if(order.getQuantity() == order.getNDone()) Main.orderListUnloadEnded.add(order);
 
             }
-            else if (!ordersPriority.isEmpty()) {
+            else if (!Main.ordersPriority.isEmpty()) {
 
-                orderTransform order = ordersPriority.peek();
+                orderTransform order = Main.ordersPriority.peek();
                 //Order attributes
                 int orderUnitsDone = order.getNDone();
                 int orderUnitsTotal = order.getNTotal();
@@ -99,14 +98,14 @@ public class UnloadThread implements Runnable {
 
                 while(orderUnitsDone <= orderUnitsTotal) {
                     //Verifies if an Unload Order came in
-                    if (!orderListUnload.isEmpty()) break;
+                    if (!Main.orderListUnload.isEmpty() && !checkIfWaiting()) break;
                     //Verifies if orderUnitsDone = orderUnitsTotal and if yes, polls
                     if(order.getNDone() == order.getNTotal()) {
-                        orderListTransformationEnded.add(ordersPriority.poll());
+                        Main.orderListTransformationEnded.add(Main.ordersPriority.poll());
                         break;
                     }
                     //Verifies if a Transform Order order with higher priority came in
-                    if(ordersPriority.peek() != order) break;
+                    if(Main.ordersPriority.peek() != order) break;
 
                     System.out.println(" # # # # # # # # # # # # ");
 
@@ -142,7 +141,7 @@ public class UnloadThread implements Runnable {
 
                         //Relate machine type with respective position
                         if(!previousMachine.equals(machineNow)){
-                            machineToGo = floor.getMachineToSendPiece(machineNow);
+                            machineToGo = SFS.getMachineToSendPiece(machineNow);
                             goalTransformation = reverseArray(machineToGo.getPosition());
                             if (goalTransformation == null) System.out.println("Error: order machine input not valid. ");
                             else {
@@ -231,16 +230,29 @@ public class UnloadThread implements Runnable {
 
         int aux = 1;
         while (true){
-            if(aux == 1 && !floor.getCell(1,0).unitPresence) {
+            if(aux == 1 && !SFS.getCell(1,0).unitPresence) {
                 OPCUA_Connection.setValueInt("MAIN_TASK", "UNIT_COUNT_AT1", ++Main.unitCount);
                 aux++;
             }
             if(aux == 2 && OPCUA_Connection.getValueInt("MAIN_TASK", "UNIT_COUNT_AT1") == Main.unitCount){
                 aux++;
             }
-            if(aux == 3 && floor.getCell(1,0).unitPresence) break;
+            if(aux == 3 && SFS.getCell(1,0).unitPresence) break;
 
         }
 
+    }
+
+    private boolean checkIfWaiting(){
+        boolean waiting=true;
+        for(int i=0; i < Main.orderListUnload.size(); i++){
+            int[] position = SFS.getUnloadPosition(Main.orderListUnload.get(i).getDy());
+            Slider slider = (Slider) SFS.getCell(position[1], position[0]);
+            if(!slider.isFull()) {
+                waiting=false;
+                break;
+            }
+        }
+        return waiting;
     }
 }

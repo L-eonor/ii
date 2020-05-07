@@ -12,8 +12,7 @@ public class Path_Logic {
     private ArrayList<Node> usedNodes;
     private PriorityQueue<Node> unusedNodes;
     public Node solutionFound;
-    private SFS floor = MES.Main.floor;
-    private Cell[][] sfsCells;
+    private final Cell[][] sfsCells;
 
 
 
@@ -34,13 +33,13 @@ public class Path_Logic {
         this.nTimes=1;
 
         if(plantType.equals("Load")){
-            sfsCells=floor.getSfsCellsLoad();
+            sfsCells=SFS.getSfsCellsLoad();
         }
         else if(plantType.equals("Transformation")){
-            sfsCells=floor.getSfsCellsTransformation();
+            sfsCells=SFS.getSfsCellsTransformation();
         }
         else {
-            sfsCells=floor.getSfsCells();
+            sfsCells=SFS.getSfsCells();
         }
 
     }
@@ -56,10 +55,13 @@ public class Path_Logic {
         this.nTimes=nTimes;
 
         if(plantType.equals("Load")){
-            sfsCells=floor.getSfsCellsLoad();
+            sfsCells=SFS.getSfsCellsLoad();
+        }
+        else if(plantType.equals("Transformation")){
+            sfsCells=SFS.getSfsCellsTransformation();
         }
         else {
-            sfsCells=floor.getSfsCells();
+            sfsCells=SFS.getSfsCells();
         }
     }
 
@@ -243,8 +245,8 @@ public class Path_Logic {
         boolean xChange = (xChange1 || xChange2);
 
 
-        if(xChange && yChange) return 2 + floor.getCell(childPosition[0],childPosition[1]).getWeight();
-        else return 1 + floor.getCell(childPosition[0],childPosition[1]).getWeight();
+        if(xChange && yChange) return 2 + SFS.getCell(childPosition[0],childPosition[1]).getWeight();
+        else return 1 + SFS.getCell(childPosition[0],childPosition[1]).getWeight();
 
         /*
         if(xChange && yChange) {
@@ -306,7 +308,7 @@ public class Path_Logic {
     private void addPathToStack() {
         Node node = solutionFound;
         while (node != null) {
-            floor.getCell(node.getPosition()[0], node.getPosition()[1]).addWeight(nTimes);
+            SFS.getCell(node.getPosition()[0], node.getPosition()[1]).addWeight(nTimes);
             path.push(node);
             node = node.getParentNode();
         }
@@ -390,7 +392,7 @@ public class Path_Logic {
             for (int i = 0; i < sizePath; i++) {
                 Node nodePopped = getPath().pop();
                 pathString = pathString + Integer.toString(nodePopped.getPosition()[1]) + Integer.toString(nodePopped.getPosition()[0]);
-                if(this.floor.getCell(nodePopped.getPosition()[0], nodePopped.getPosition()[1]).getName().equals("Machine") && ( i>1 && i<(sizePath-1))){
+                if(SFS.getCell(nodePopped.getPosition()[0], nodePopped.getPosition()[1]).getName().equals("Machine") && ( i>1 && i<(sizePath-1))){
                     pathString=pathString+"011";
                 }
             }

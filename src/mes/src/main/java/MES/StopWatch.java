@@ -2,22 +2,22 @@ package MES;
 
 public class StopWatch {
 
-    private long executionTime;
+    private static long executionTime;
 
     public StopWatch() {
-        this.executionTime = 0;
+        executionTime = 0;
     }
 
     public void start() {
-        this.executionTime = System.nanoTime();
+        executionTime = System.nanoTime();
     }
 
     public void stop() {
-        this.executionTime = System.nanoTime() - this.executionTime;
+        executionTime = System.nanoTime() - executionTime;
     }
 
     public void reset() {
-        this.executionTime = 0;
+        executionTime = 0;
     }
 
     public int getTimeElapsed() {
