@@ -12,7 +12,7 @@ public class Path_Logic {
     private ArrayList<Node> usedNodes;
     private PriorityQueue<Node> unusedNodes;
     public Node solutionFound;
-    private final Cell[][] sfsCells;
+    private Cell[][] sfsCells;
 
 
 
@@ -38,9 +38,10 @@ public class Path_Logic {
         else if(plantType.equals("Transformation")){
             sfsCells=SFS.getSfsCellsTransformation();
         }
-        else {
-            sfsCells=SFS.getSfsCells();
+        else if(plantType.equals("Unload")){
+            sfsCells=SFS.getSfsCellsUnload();
         }
+        else sfsCells=SFS.getSfsCells();
 
     }
 
@@ -60,9 +61,10 @@ public class Path_Logic {
         else if(plantType.equals("Transformation")){
             sfsCells=SFS.getSfsCellsTransformation();
         }
-        else {
-            sfsCells=SFS.getSfsCells();
+        else if(plantType.equals("Unload")){
+            sfsCells=SFS.getSfsCellsUnload();
         }
+        else sfsCells=SFS.getSfsCells();
     }
 
 
@@ -392,7 +394,7 @@ public class Path_Logic {
             for (int i = 0; i < sizePath; i++) {
                 Node nodePopped = getPath().pop();
                 pathString = pathString + Integer.toString(nodePopped.getPosition()[1]) + Integer.toString(nodePopped.getPosition()[0]);
-                if(SFS.getCell(nodePopped.getPosition()[0], nodePopped.getPosition()[1]).getName().equals("Machine") && ( i>1 && i<(sizePath-1))){
+                if(SFS.getCell(nodePopped.getPosition()[0], nodePopped.getPosition()[1]).getName().equals("Machine") && ( i>=1 && i<(sizePath-1))){
                     pathString=pathString+"011";
                 }
             }

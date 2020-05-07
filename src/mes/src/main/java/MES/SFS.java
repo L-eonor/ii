@@ -39,6 +39,17 @@ public class SFS {
             {sfsCells[7][0], sfsCells[7][1], (Rotator) sfsCells[7][2], sfsCells[7][3], (Rotator) sfsCells[7][4], sfsCells[7][5], (Rotator) sfsCells[7][6], null, null},
     };
 
+    static final public Cell[][] sfsCellsUnload = new Cell[][]{
+            {null, null, null, null, null, null, null, null, null},
+            {sfsCells[1][0], sfsCells[1][1], (Rotator) sfsCells[1][2], sfsCells[1][3], (Rotator) sfsCells[1][4], sfsCells[1][5], (Rotator) sfsCells[1][6], (Rotator) sfsCells[1][7], sfsCells[1][8]},
+            {null, null, null, null, null, null, sfsCells[2][6], sfsCells[2][7], null},
+            {null, null, null, null, null, null, (Rotator) sfsCells[3][6], (Pusher) sfsCells[3][7], (Slider) sfsCells[3][8]},
+            {null, null, null, null, null, null, (Rotator) sfsCells[4][6], (Pusher) sfsCells[4][7], (Slider) sfsCells[4][8]},
+            {null, null, null, null, null, null, (Rotator) sfsCells[5][6], (Pusher) sfsCells[5][7], (Slider) sfsCells[5][8]},
+            {null, null, null, null, null, null, sfsCells[6][6], sfsCells[6][7], null},
+            {null, null, null, null, null, null, (Rotator) sfsCells[7][6], (Rotator) sfsCells[7][7], null},
+    };
+
     static final ArrayList<Machine> MachinesA = new ArrayList<Machine>() {
         {
             add((Machine) sfsCells[3][1]);
@@ -78,6 +89,10 @@ public class SFS {
 
     public static Cell[][] getSfsCellsTransformation() {
         return sfsCellsTransformation;
+    }
+
+    public static Cell[][] getSfsCellsUnload() {
+        return sfsCellsUnload;
     }
 
 
