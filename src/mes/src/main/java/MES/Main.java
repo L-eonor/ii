@@ -31,7 +31,7 @@ public class Main {
 
     public static void main(String[] args) throws Exception {
         //Start Global Timer
-        stopWatch.start();
+        StopWatch.start();
 
         //Creates object for connection and makes the connection
         OpcUaClient connection = MyConnection.MakeConnection();

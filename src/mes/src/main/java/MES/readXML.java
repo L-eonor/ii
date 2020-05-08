@@ -47,7 +47,7 @@ public class readXML {
             if (node.getNodeType() == Node.ELEMENT_NODE) {
                 Element element = (Element) node;
 
-                int submitTime = (int) stopWatch.getTimeElapsed();
+                float submitTime = StopWatch.getTimeElapsed();
 
                 if (((Element) node).getElementsByTagName("Unload").getLength() != 0) {
                     NodeList list2 = ((Element) node).getElementsByTagName("Unload");
@@ -58,8 +58,7 @@ public class readXML {
 
                     order = new orderUnload(Integer.parseInt(element.getAttribute("Number")),
                             submitTime,
-                            stopWatch.getTimeElapsed(),
-                            1,
+                            2,
                             1,
                             element2.getAttribute("Type"),
                             element2.getAttribute("Destination"),
@@ -81,13 +80,12 @@ public class readXML {
 
                     order = new orderTransform(Integer.parseInt(element.getAttribute("Number")),
                             submitTime,
-                            stopWatch.getTimeElapsed(),
                             1,
                             1,
                             element1.getAttribute("From"),
                             element1.getAttribute("To"),
                             Integer.parseInt(element1.getAttribute("Quantity")),
-                            00,
+                            0,
                             Integer.parseInt(element1.getAttribute("MaxDelay")));
 
                     ordersPriority.add((orderTransform) order);

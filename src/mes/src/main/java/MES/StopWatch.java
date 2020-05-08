@@ -4,24 +4,20 @@ public class StopWatch {
 
     private static long executionTime;
 
-    public StopWatch() {
-        executionTime = 0;
-    }
-
-    public void start() {
+    public synchronized static void start() {
         executionTime = System.nanoTime();
     }
 
-    public void stop() {
+    public synchronized static void stop() {
         executionTime = System.nanoTime() - executionTime;
     }
 
-    public void reset() {
+    public synchronized static void reset() {
         executionTime = 0;
     }
 
-    public int getTimeElapsed() {
+    public synchronized static float getTimeElapsed() {
         //gets time in seconds
-        return (int) (System.nanoTime() - executionTime) / 1000000000;
+        return (float) (System.nanoTime() - executionTime) / 1000000000;
     }
 }

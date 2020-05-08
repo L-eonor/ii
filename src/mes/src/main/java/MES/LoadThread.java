@@ -3,6 +3,7 @@ package MES;
 public class LoadThread implements Runnable {
 
     //Attributes
+    static int loadOrderCount;
     static int[] warehouseIn = {0, 7};
     static int[] loadP1 = {7,1};
     static int[] loadP2 = {7,7};
@@ -14,6 +15,9 @@ public class LoadThread implements Runnable {
 
     public void run() {
         System.out.println("--------------[Executing] LoadThread is Running [Executing]--------------");
+
+        //Get loadOrderCount from dataBase if possible otherwise set as 0
+        loadOrderCount=0;
 
         int aux1=1;
         int aux2=1;
@@ -29,6 +33,11 @@ public class LoadThread implements Runnable {
                 //Calculates path
                 Path_Logic pathLoad = new Path_Logic(loadP1, warehouseIn, "Load");
                 pathStringLoad1.append(pathLoad.getStringPath());
+
+                // Adds order info to the end
+                String orderInfo = "P1L" + (++loadOrderCount);
+                pathStringLoad1.append(orderInfo);
+
                 System.out.println("[Load1] Esta é a string: " + pathStringLoad1);
 
                 //Sends via OPC-UA
@@ -43,6 +52,11 @@ public class LoadThread implements Runnable {
                 //Calculates path
                 Path_Logic pathLoad = new Path_Logic(loadP2, warehouseIn, "Load");
                 pathStringLoad2.append(pathLoad.getStringPath());
+
+                // Adds order info to the end
+                String orderInfo = "P2L" + (++loadOrderCount);
+                pathStringLoad2.append(orderInfo);
+
                 System.out.println("[Load2] Esta é a string: " + pathStringLoad2);
 
                 //Sends via OPC-UA

@@ -48,12 +48,24 @@ public class UnloadThread implements Runnable {
 
                 if(!slider.isFull()) {
 
+                    if(orderUnitsDone == 0) order.setStartTime(StopWatch.getTimeElapsed());
+
+                    if(order.getStatus() != 2) {
+                        order.setStatus(2);//Update order status to "in progress".
+                    }
+
                     //Calculate path to Slider (every Unload order unit has the same path)
                     StringBuilder pathStringBuilder = new StringBuilder();
                     System.out.println("Calculating path.......");
                     Path_Logic path = new Path_Logic(warehouseOut, goal, "Unload", (orderUnitsTotal-orderUnitsDone));
                     pathStringBuilder.append(path.getStringPath());
+
+                    //Adds "99" action to the pusher
                     String pathString = pathStringBuilder.toString().replaceFirst(".{2}$", actionPush);
+
+                    // Adds order info to the end
+                    pathString += order.getPx() + "U" + order.getId();
+
                     System.out.println("[Unload] Esta é a string: " + pathString);
 
                     for (int a = orderUnitsDone; a < orderUnitsTotal; a++) {
@@ -68,6 +80,7 @@ public class UnloadThread implements Runnable {
 
                         //Condition to verify when Slider is full
                         if (slider.isFull()) {
+                            order.setStatus(1);
                             Main.orderListUnload.add(order);
                             break;
                         }
@@ -81,34 +94,54 @@ public class UnloadThread implements Runnable {
                     Main.orderListUnload.add(order); //adds order to top of Unload List
                 }
 
-                //Checks if order is done
-                if(order.getQuantity() == order.getNDone()) Main.orderListUnloadEnded.add(order);
+                //Checks if order is done and updates Order
+                if(order.getQuantity() == order.getNDone()) {
+                    order.setEndTime(StopWatch.getTimeElapsed());
+                    order.setStatus(3); //Set order status to "Done".
+                    //System.out.println(order);
+                    Main.orderListUnloadEnded.add(order);
+                }
 
             }
             else if (!Main.ordersPriority.isEmpty()) {
 
                 orderTransform order = Main.ordersPriority.peek();
+
                 //Order attributes
                 int orderUnitsDone = order.getNDone();
                 int orderUnitsTotal = order.getNTotal();
                 String orderPx = order.getPx();
                 String orderPy = order.getPy();
 
-                System.out.println("[ORDER TRANSFORM] END TIME: "+order.getEndTime());
-
                 while(orderUnitsDone <= orderUnitsTotal) {
-                    //Verifies if an Unload Order came in
-                    if (!Main.orderListUnload.isEmpty() && !checkIfWaiting()) break;
-                    //Verifies if orderUnitsDone = orderUnitsTotal and if yes, polls
+
+                    //Verifies if orderUnitsDone = orderUnitsTotal and if yes, polls and updates Order
                     if(order.getNDone() == order.getNTotal()) {
+                        order.setEndTime(StopWatch.getTimeElapsed());
+                        order.setStatus(3); //Set order status to "Done".
+                        //System.out.println(order);
                         Main.orderListTransformationEnded.add(Main.ordersPriority.poll());
                         break;
                     }
+
+                    //Verifies if an Unload Order came in
+                    if (!Main.orderListUnload.isEmpty() && !checkIfWaiting()) {
+                        order.setStatus(1); //Set order status to "in pause".
+                        break;
+                    }
+
                     //Verifies if a Transform Order order with higher priority came in
-                    if(Main.ordersPriority.peek() != order) break;
+                    if(Main.ordersPriority.peek() != order) {
+                        order.setStatus(1); //Set order status to "in pause".
+                        break;
+                    }
 
                     System.out.println(" # # # # # # # # # # # # ");
 
+                    if(orderUnitsDone == 0) order.setStartTime(StopWatch.getTimeElapsed()); //Set order start Time
+                    if(order.getStatus() != 2) order.setStatus(2); //Set order status to "in progress".
+
+                    //Finds transformations to do
                     if (transformTable.searchTransformations(orderPx, orderPy)) {
                         System.out.println("Searched transformations. Found " + transformTable.solutions.size() + " solutions.");
                         /* prints all transformations
@@ -122,10 +155,10 @@ public class UnloadThread implements Runnable {
                     //String with the whole path of the Transformation order
                     StringBuilder pathString = new StringBuilder();
 
-                    //Finds transformations to do
+                    //Retrieves transformations with lowest time cost
                     GraphSolution transformationResult = transformTable.solutions.poll();
                     if (transformationResult == null)
-                        throw new AssertionError("Error: transformationResult null pointer. ");
+                        throw new AssertionError("Error: transformationResult null pointer.");
 
 
                     //Starts finding path according to transformations
@@ -166,6 +199,10 @@ public class UnloadThread implements Runnable {
                     //Path to Warehouse In cell
                     Path_Logic pathEnd = new Path_Logic(startTransformation, warehouseIn,"Transformation");
                     pathString.append(pathEnd.getStringPath());
+                    // Adds order info to the end
+                    String orderInfo = order.getPy() + "T" + order.getId();
+                    pathString.append(orderInfo);
+
                     System.out.println("[Transformation] Esta é a string: " + pathString);
 
 
