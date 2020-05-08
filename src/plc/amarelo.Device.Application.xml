@@ -166,15 +166,17 @@
       <UserDefElement iecname="SEND_LEFT" type="T_SFCStepType" byteoffset="188" vartype="VAR" />
       <UserDefElement iecname="ERRO" type="T_SFCStepType" byteoffset="204" vartype="VAR" />
     </TypeUserDef>
-    <TypeUserDef name="T_WAREHOUSE_IN" size="56" nativesize="936" typeclass="Userdef" pouclass="FUNCTION_BLOCK" iecname="WAREHOUSE_IN">
+    <TypeUserDef name="T_WAREHOUSE_IN" size="140" nativesize="1104" typeclass="Userdef" pouclass="FUNCTION_BLOCK" iecname="WAREHOUSE_IN">
       <UserDefElement iecname="INCOMING" type="T_BOOL" byteoffset="0" vartype="VAR_INPUT" />
       <UserDefElement iecname="SENSOR" type="T_BOOL" byteoffset="1" vartype="VAR_INPUT" />
       <UserDefElement iecname="FREE" type="T_BOOL" byteoffset="2" vartype="VAR_OUTPUT" />
       <UserDefElement iecname="MOTOR_L" type="T_BOOL" byteoffset="3" vartype="VAR_OUTPUT" />
       <UserDefElement iecname="WAREHOUSE_IN" type="T_BOOL" byteoffset="4" vartype="VAR_OUTPUT" />
-      <UserDefElement iecname="EMPTY" type="T_SFCStepType" byteoffset="8" vartype="VAR" />
-      <UserDefElement iecname="RECEIVING" type="T_SFCStepType" byteoffset="24" vartype="VAR" />
-      <UserDefElement iecname="FULL" type="T_SFCStepType" byteoffset="40" vartype="VAR" />
+      <UserDefElement iecname="UNIT_TYPE" type="T_UINT" byteoffset="6" vartype="VAR_OUTPUT" />
+      <UserDefElement iecname="ORDER_TYPE" type="T_STRING" byteoffset="8" vartype="VAR_OUTPUT" />
+      <UserDefElement iecname="EMPTY" type="T_SFCStepType" byteoffset="92" vartype="VAR" />
+      <UserDefElement iecname="RECEIVING" type="T_SFCStepType" byteoffset="108" vartype="VAR" />
+      <UserDefElement iecname="FULL" type="T_SFCStepType" byteoffset="124" vartype="VAR" />
     </TypeUserDef>
     <TypeUserDef name="T_SFCActionType" size="128" nativesize="288" typeclass="Userdef" pouclass="STRUCTURE" iecname="SFCActionType">
       <UserDefElement iecname="x" type="T_BOOL" byteoffset="0" vartype="VAR" />
@@ -207,7 +209,7 @@
       <UserDefElement iecname="SEND__to__Init" type="T_BOOL" byteoffset="512" vartype="VAR" />
       <UserDefElement iecname="Branch1__LOADING__to__Init" type="T_BOOL" byteoffset="513" vartype="VAR" />
     </TypeUserDef>
-    <TypeUserDef name="T_PUSHER" size="1485" nativesize="2784" typeclass="Userdef" pouclass="FUNCTION_BLOCK" iecname="PUSHER">
+    <TypeUserDef name="T_PUSHER" size="1569" nativesize="2864" typeclass="Userdef" pouclass="FUNCTION_BLOCK" iecname="PUSHER">
       <UserDefElement iecname="ORDER_PATH_L" type="T_STRING" byteoffset="0" vartype="VAR_INPUT" />
       <UserDefElement iecname="ORDER_PATH_R" type="T_STRING" byteoffset="81" vartype="VAR_INPUT" />
       <UserDefElement iecname="SENSOR" type="T_BOOL" byteoffset="162" vartype="VAR_INPUT" />
@@ -231,42 +233,45 @@
       <UserDefElement iecname="PUSH_N" type="T_BOOL" byteoffset="182" vartype="VAR_OUTPUT" />
       <UserDefElement iecname="PUSH_P" type="T_BOOL" byteoffset="183" vartype="VAR_OUTPUT" />
       <UserDefElement iecname="PATH" type="T_STRING" byteoffset="184" vartype="VAR_OUTPUT" />
-      <UserDefElement iecname="_MOTOR_R" type="T_SFCActionType" byteoffset="268" vartype="VAR" />
-      <UserDefElement iecname="_RECEIVE_L" type="T_SFCActionType" byteoffset="396" vartype="VAR" />
-      <UserDefElement iecname="_MOTOR_L" type="T_SFCActionType" byteoffset="524" vartype="VAR" />
-      <UserDefElement iecname="_RECEIVE_R" type="T_SFCActionType" byteoffset="652" vartype="VAR" />
-      <UserDefElement iecname="_SEND_L" type="T_SFCActionType" byteoffset="780" vartype="VAR" />
-      <UserDefElement iecname="_SEND_R" type="T_SFCActionType" byteoffset="908" vartype="VAR" />
-      <UserDefElement iecname="_PUSH_N" type="T_SFCActionType" byteoffset="1036" vartype="VAR" />
-      <UserDefElement iecname="_PUSH_P" type="T_SFCActionType" byteoffset="1164" vartype="VAR" />
-      <UserDefElement iecname="EMPTY" type="T_SFCStepType" byteoffset="1292" vartype="VAR" />
-      <UserDefElement iecname="RECEIVING" type="T_SFCStepType" byteoffset="1308" vartype="VAR" />
-      <UserDefElement iecname="RECEIVINGR" type="T_SFCStepType" byteoffset="1324" vartype="VAR" />
-      <UserDefElement iecname="FULL" type="T_SFCStepType" byteoffset="1340" vartype="VAR" />
-      <UserDefElement iecname="wait_to_send_l" type="T_SFCStepType" byteoffset="1356" vartype="VAR" />
-      <UserDefElement iecname="SEND_LEFT" type="T_SFCStepType" byteoffset="1372" vartype="VAR" />
-      <UserDefElement iecname="wait_to_send_R" type="T_SFCStepType" byteoffset="1388" vartype="VAR" />
-      <UserDefElement iecname="SENDING" type="T_SFCStepType" byteoffset="1404" vartype="VAR" />
-      <UserDefElement iecname="STEP" type="T_SFCStepType" byteoffset="1420" vartype="VAR" />
-      <UserDefElement iecname="PUSHN" type="T_SFCStepType" byteoffset="1436" vartype="VAR" />
-      <UserDefElement iecname="PUSHP" type="T_SFCStepType" byteoffset="1452" vartype="VAR" />
-      <UserDefElement iecname="Branch0__EMPTY__to__RECEIVING" type="T_BOOL" byteoffset="1468" vartype="VAR" />
-      <UserDefElement iecname="RECEIVING__to__FULL" type="T_BOOL" byteoffset="1469" vartype="VAR" />
-      <UserDefElement iecname="Branch1__EMPTY__to__FULL" type="T_BOOL" byteoffset="1470" vartype="VAR" />
-      <UserDefElement iecname="Branch2__EMPTY__to__RECEIVINGR" type="T_BOOL" byteoffset="1471" vartype="VAR" />
-      <UserDefElement iecname="RECEIVINGR__to__FULL" type="T_BOOL" byteoffset="1472" vartype="VAR" />
-      <UserDefElement iecname="Branch0_0__FULL__to__EMPTY" type="T_BOOL" byteoffset="1473" vartype="VAR" />
-      <UserDefElement iecname="Branch0_1__FULL__to__wait_to_send_l" type="T_BOOL" byteoffset="1474" vartype="VAR" />
-      <UserDefElement iecname="wait_to_send_l__to__SEND_LEFT" type="T_BOOL" byteoffset="1475" vartype="VAR" />
-      <UserDefElement iecname="SEND_LEFT__to__EMPTY" type="T_BOOL" byteoffset="1476" vartype="VAR" />
-      <UserDefElement iecname="Branch1__FULL__to__wait_to_send_R" type="T_BOOL" byteoffset="1477" vartype="VAR" />
-      <UserDefElement iecname="wait_to_send_R__to__SENDING" type="T_BOOL" byteoffset="1478" vartype="VAR" />
-      <UserDefElement iecname="SENDING__to__EMPTY" type="T_BOOL" byteoffset="1479" vartype="VAR" />
-      <UserDefElement iecname="Branch2_0__FULL__to__PUSHN" type="T_BOOL" byteoffset="1480" vartype="VAR" />
-      <UserDefElement iecname="Branch2_1__FULL__to__STEP" type="T_BOOL" byteoffset="1481" vartype="VAR" />
-      <UserDefElement iecname="STEP__to__PUSHN" type="T_BOOL" byteoffset="1482" vartype="VAR" />
-      <UserDefElement iecname="PUSHN__to__PUSHP" type="T_BOOL" byteoffset="1483" vartype="VAR" />
-      <UserDefElement iecname="PUSHP__to__EMPTY" type="T_BOOL" byteoffset="1484" vartype="VAR" />
+      <UserDefElement iecname="UNIT_TYPE" type="T_UINT" byteoffset="266" vartype="VAR_OUTPUT" />
+      <UserDefElement iecname="ORDER_TYPE" type="T_STRING" byteoffset="268" vartype="VAR_OUTPUT" />
+      <UserDefElement iecname="P_Index" type="T_INT" byteoffset="350" vartype="VAR" />
+      <UserDefElement iecname="_MOTOR_R" type="T_SFCActionType" byteoffset="352" vartype="VAR" />
+      <UserDefElement iecname="_RECEIVE_L" type="T_SFCActionType" byteoffset="480" vartype="VAR" />
+      <UserDefElement iecname="_MOTOR_L" type="T_SFCActionType" byteoffset="608" vartype="VAR" />
+      <UserDefElement iecname="_RECEIVE_R" type="T_SFCActionType" byteoffset="736" vartype="VAR" />
+      <UserDefElement iecname="_SEND_L" type="T_SFCActionType" byteoffset="864" vartype="VAR" />
+      <UserDefElement iecname="_SEND_R" type="T_SFCActionType" byteoffset="992" vartype="VAR" />
+      <UserDefElement iecname="_PUSH_N" type="T_SFCActionType" byteoffset="1120" vartype="VAR" />
+      <UserDefElement iecname="_PUSH_P" type="T_SFCActionType" byteoffset="1248" vartype="VAR" />
+      <UserDefElement iecname="EMPTY" type="T_SFCStepType" byteoffset="1376" vartype="VAR" />
+      <UserDefElement iecname="RECEIVING" type="T_SFCStepType" byteoffset="1392" vartype="VAR" />
+      <UserDefElement iecname="RECEIVINGR" type="T_SFCStepType" byteoffset="1408" vartype="VAR" />
+      <UserDefElement iecname="FULL" type="T_SFCStepType" byteoffset="1424" vartype="VAR" />
+      <UserDefElement iecname="wait_to_send_l" type="T_SFCStepType" byteoffset="1440" vartype="VAR" />
+      <UserDefElement iecname="SEND_LEFT" type="T_SFCStepType" byteoffset="1456" vartype="VAR" />
+      <UserDefElement iecname="wait_to_send_R" type="T_SFCStepType" byteoffset="1472" vartype="VAR" />
+      <UserDefElement iecname="SENDING" type="T_SFCStepType" byteoffset="1488" vartype="VAR" />
+      <UserDefElement iecname="STEP" type="T_SFCStepType" byteoffset="1504" vartype="VAR" />
+      <UserDefElement iecname="PUSHN" type="T_SFCStepType" byteoffset="1520" vartype="VAR" />
+      <UserDefElement iecname="PUSHP" type="T_SFCStepType" byteoffset="1536" vartype="VAR" />
+      <UserDefElement iecname="Branch0__EMPTY__to__RECEIVING" type="T_BOOL" byteoffset="1552" vartype="VAR" />
+      <UserDefElement iecname="RECEIVING__to__FULL" type="T_BOOL" byteoffset="1553" vartype="VAR" />
+      <UserDefElement iecname="Branch1__EMPTY__to__FULL" type="T_BOOL" byteoffset="1554" vartype="VAR" />
+      <UserDefElement iecname="Branch2__EMPTY__to__RECEIVINGR" type="T_BOOL" byteoffset="1555" vartype="VAR" />
+      <UserDefElement iecname="RECEIVINGR__to__FULL" type="T_BOOL" byteoffset="1556" vartype="VAR" />
+      <UserDefElement iecname="Branch0_0__FULL__to__EMPTY" type="T_BOOL" byteoffset="1557" vartype="VAR" />
+      <UserDefElement iecname="Branch0_1__FULL__to__wait_to_send_l" type="T_BOOL" byteoffset="1558" vartype="VAR" />
+      <UserDefElement iecname="wait_to_send_l__to__SEND_LEFT" type="T_BOOL" byteoffset="1559" vartype="VAR" />
+      <UserDefElement iecname="SEND_LEFT__to__EMPTY" type="T_BOOL" byteoffset="1560" vartype="VAR" />
+      <UserDefElement iecname="Branch1__FULL__to__wait_to_send_R" type="T_BOOL" byteoffset="1561" vartype="VAR" />
+      <UserDefElement iecname="wait_to_send_R__to__SENDING" type="T_BOOL" byteoffset="1562" vartype="VAR" />
+      <UserDefElement iecname="SENDING__to__EMPTY" type="T_BOOL" byteoffset="1563" vartype="VAR" />
+      <UserDefElement iecname="Branch2_0__FULL__to__PUSHN" type="T_BOOL" byteoffset="1564" vartype="VAR" />
+      <UserDefElement iecname="Branch2_1__FULL__to__STEP" type="T_BOOL" byteoffset="1565" vartype="VAR" />
+      <UserDefElement iecname="STEP__to__PUSHN" type="T_BOOL" byteoffset="1566" vartype="VAR" />
+      <UserDefElement iecname="PUSHN__to__PUSHP" type="T_BOOL" byteoffset="1567" vartype="VAR" />
+      <UserDefElement iecname="PUSHP__to__EMPTY" type="T_BOOL" byteoffset="1568" vartype="VAR" />
     </TypeUserDef>
     <TypeUserDef name="T_WAREHOUSE_OUT" size="524" nativesize="1176" typeclass="Userdef" pouclass="FUNCTION_BLOCK" iecname="WAREHOUSE_OUT">
       <UserDefElement iecname="SENSOR" type="T_BOOL" byteoffset="0" vartype="VAR_INPUT" />
