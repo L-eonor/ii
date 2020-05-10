@@ -56,9 +56,28 @@ public class UnloadThread implements Runnable {
 
                     //Calculate path to Slider (every Unload order unit has the same path)
                     StringBuilder pathStringBuilder = new StringBuilder();
-                    System.out.println("Calculating path.......");
-                    Path_Logic path = new Path_Logic(warehouseOut, goal, "Unload", (orderUnitsTotal-orderUnitsDone));
-                    pathStringBuilder.append(path.getStringPath());
+
+                    if(order.getDy().equals("D2")) {
+                        System.out.println("Calculating path.......");
+                        Path_Logic path = new Path_Logic(warehouseOut, goal, "Unload", (orderUnitsTotal - orderUnitsDone));
+                        pathStringBuilder.append(path.getStringPath());
+                    }
+                    else if(order.getDy().equals("D1")){
+                        System.out.println("Calculating path.......");
+                        int[] a={7,1};
+                        Path_Logic path = new Path_Logic(warehouseOut, a, "Unload", (orderUnitsTotal - orderUnitsDone));
+                        pathStringBuilder.append(path.getStringPath());
+                        path = new Path_Logic(a, goal, "Unload", (orderUnitsTotal - orderUnitsDone));
+                        pathStringBuilder.append(path.getStringPath());
+                    }
+                    else if(order.getDy().equals("D3")){
+                        System.out.println("Calculating path.......");
+                        int[] a={6,6};
+                        Path_Logic path = new Path_Logic(warehouseOut, a, "Unload", (orderUnitsTotal - orderUnitsDone));
+                        pathStringBuilder.append(path.getStringPath());
+                        path = new Path_Logic(a, goal, "Unload", (orderUnitsTotal - orderUnitsDone));
+                        pathStringBuilder.append(path.getStringPath());
+                    }
 
                     //Adds "99" action to the pusher
                     String pathString = pathStringBuilder.toString().replaceFirst(".{2}$", actionPush);
@@ -223,6 +242,18 @@ public class UnloadThread implements Runnable {
         }
 
     }
+
+    /*private String stringToSlider(String dy) {
+        if(dy.equals("D1")){
+
+
+        }
+        else{
+
+        }
+    }
+
+     */
 
     public int unitTypeIdentifier(String Px) {
         switch (Px) {
