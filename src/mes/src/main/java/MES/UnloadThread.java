@@ -298,14 +298,14 @@ public class UnloadThread implements Runnable {
 
         int aux = 1;
         while (true){
-            if(aux == 1 && !SFS.getCell(1,0).unitPresence) {
+            if(aux == 1 && !SFS.getCell(1,0).getUnitPresence()) {
                 OPCUA_Connection.setValueInt("MAIN_TASK", "UNIT_COUNT_AT1", ++Main.unitCount);
                 aux++;
             }
             if(aux == 2 && OPCUA_Connection.getValueInt("MAIN_TASK", "UNIT_COUNT_AT1") == Main.unitCount){
                 aux++;
             }
-            if(aux == 3 && SFS.getCell(1,0).unitPresence) break;
+            if(aux == 3 && SFS.getCell(1,0).getUnitPresence()) break;
 
         }
 

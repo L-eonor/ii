@@ -11,7 +11,6 @@ import java.io.File;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import static MES.Main.stopWatch;
 import static MES.Main.orderListUnload;
 import static MES.createXML.*;
 import static MES.Main.ordersPriority;

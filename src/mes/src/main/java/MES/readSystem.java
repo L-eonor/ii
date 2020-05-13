@@ -2,6 +2,9 @@ package MES;
 
 public class readSystem implements Runnable {
 
+    private String orderStringID1 = "N00";
+    private int orderID1;
+
     public readSystem() {
     }
 
@@ -43,34 +46,29 @@ public class readSystem implements Runnable {
             //Rotator
             Rotator C2T1 = (Rotator) SFS.getCell(1, 2);
             C2T1.setUnitPresence(!OPCUA_Connection.getValueBoolean("MAIN_TASK", "C2T1.EMPTY.x"));
-            //C2T1.setDirectionHorizontal(); perguntar asara e leonor quais as variáveis a ler
-            //C2T1.setDirectionVertical();
+
             //Conveyor
             Cell C2T2 = SFS.getCell(2, 2);
             C2T2.setUnitPresence(!OPCUA_Connection.getValueBoolean("MAIN_TASK", "C2T2.FREE.x"));
             //Rotator
             Rotator C2T3 = (Rotator) SFS.getCell(3, 2);
             C2T3.setUnitPresence(!OPCUA_Connection.getValueBoolean("MAIN_TASK", "C2T3.EMPTY.x"));
-            //C2T1.setDirectionHorizontal(); perguntar asara e leonor quais as variáveis a ler
-            //C2T1.setDirectionVertical();
+
             //Rotator
             Rotator C2T4 = (Rotator) SFS.getCell(4, 2);
             C2T4.setUnitPresence(!OPCUA_Connection.getValueBoolean("MAIN_TASK", "C2T4.EMPTY.x"));
-            //C2T1.setDirectionHorizontal(); perguntar asara e leonor quais as variáveis a ler
-            //C2T1.setDirectionVertical();
+
             //Rotator
             Rotator C2T5 = (Rotator) SFS.getCell(5, 2);
             C2T5.setUnitPresence(!OPCUA_Connection.getValueBoolean("MAIN_TASK", "C2T5.EMPTY.x"));
-            //C2T1.setDirectionHorizontal(); perguntar asara e leonor quais as variáveis a ler
-            //C2T1.setDirectionVertical();
+
             //Conveyor
             Cell C2T6 = SFS.getCell(6, 2);
             C2T6.setUnitPresence(!OPCUA_Connection.getValueBoolean("MAIN_TASK", "C2T6.FREE.x"));
             //Rotator
             Rotator C2T7 = (Rotator) SFS.getCell(7, 2);
             C2T7.setUnitPresence(!OPCUA_Connection.getValueBoolean("MAIN_TASK", "C2T7.EMPTY.x"));
-            //C2T1.setDirectionHorizontal(); perguntar a Sara e Leonor quais as variáveis a ler
-            //C2T1.setDirectionVertical();
+
             /* --------------------------- COLLUMN 3 --------------------------------*/
             //Conveyor C3T1
             Cell C3T1 = SFS.getCell(1, 3);
@@ -97,34 +95,29 @@ public class readSystem implements Runnable {
             //Rotator
             Rotator C4T1 = (Rotator) SFS.getCell(1, 4);
             C4T1.setUnitPresence(!OPCUA_Connection.getValueBoolean("MAIN_TASK", "C4T1.EMPTY.x"));
-            //C2T1.setDirectionHorizontal(); perguntar asara e leonor quais as variáveis a ler
-            //C2T1.setDirectionVertical();
+
             //Conveyor
             Cell C4T2 = SFS.getCell(2, 4);
             C4T2.setUnitPresence(!OPCUA_Connection.getValueBoolean("MAIN_TASK", "C4T2.FREE.x"));
             //Rotator
             Rotator C4T3 = (Rotator) SFS.getCell(3, 4);
             C4T3.setUnitPresence(!OPCUA_Connection.getValueBoolean("MAIN_TASK", "C4T3.EMPTY.x"));
-            //C2T1.setDirectionHorizontal(); perguntar asara e leonor quais as variáveis a ler
-            //C2T1.setDirectionVertical();
+
             //Rotator
             Rotator C4T4 = (Rotator) SFS.getCell(4, 4);
             C4T4.setUnitPresence(!OPCUA_Connection.getValueBoolean("MAIN_TASK", "C4T4.EMPTY.x"));
-            //C2T1.setDirectionHorizontal(); perguntar asara e leonor quais as variáveis a ler
-            //C2T1.setDirectionVertical();
+
             //Rotator
             Rotator C4T5 = (Rotator) SFS.getCell(5, 4);
             C4T5.setUnitPresence(!OPCUA_Connection.getValueBoolean("MAIN_TASK", "C4T5.EMPTY.x"));
-            //C2T1.setDirectionHorizontal(); perguntar asara e leonor quais as variáveis a ler
-            //C2T1.setDirectionVertical();
+
             //Conveyor
             Cell C4T6 = SFS.getCell(6, 4);
             C4T6.setUnitPresence(!OPCUA_Connection.getValueBoolean("MAIN_TASK", "C4T6.FREE.x"));
             //Rotator
             Rotator C4T7 = (Rotator) SFS.getCell(7, 4);
             C4T7.setUnitPresence(!OPCUA_Connection.getValueBoolean("MAIN_TASK", "C4T7.EMPTY.x"));
-            //C2T1.setDirectionHorizontal(); perguntar a Sara e Leonor quais as variáveis a ler
-            //C2T1.setDirectionVertical();
+
             /* --------------------------- COLLUMN 5 --------------------------------*/
             //Conveyor C5T1
             Cell C5T1 = SFS.getCell(1, 5);
@@ -151,60 +144,68 @@ public class readSystem implements Runnable {
             //Rotator
             Rotator C6T1 = (Rotator) SFS.getCell(1, 6);
             C6T1.setUnitPresence(!OPCUA_Connection.getValueBoolean("MAIN_TASK", "C6T1.EMPTY.x"));
-            //C2T1.setDirectionHorizontal(); perguntar asara e leonor quais as variáveis a ler
-            //C2T1.setDirectionVertical();
+
             //Conveyor
             Cell C6T2 = SFS.getCell(2, 6);
             C6T2.setUnitPresence(!OPCUA_Connection.getValueBoolean("MAIN_TASK", "C6T2.FREE.x"));
             //Rotator
             Rotator C6T3 = (Rotator) SFS.getCell(3, 6);
             C6T3.setUnitPresence(!OPCUA_Connection.getValueBoolean("MAIN_TASK", "C6T3.EMPTY.x"));
-            //C2T1.setDirectionHorizontal(); perguntar asara e leonor quais as variáveis a ler
-            //C2T1.setDirectionVertical();
+
             //Rotator
             Rotator C6T4 = (Rotator) SFS.getCell(4, 6);
             C6T4.setUnitPresence(!OPCUA_Connection.getValueBoolean("MAIN_TASK", "C6T4.EMPTY.x"));
-            //C2T1.setDirectionHorizontal(); perguntar asara e leonor quais as variáveis a ler
-            //C2T1.setDirectionVertical();
+
             //Rotator
             Rotator C6T5 = (Rotator) SFS.getCell(5, 6);
             C6T5.setUnitPresence(!OPCUA_Connection.getValueBoolean("MAIN_TASK", "C6T5.EMPTY.x"));
-            //C2T1.setDirectionHorizontal(); perguntar asara e leonor quais as variáveis a ler
-            //C2T1.setDirectionVertical();
+
             //Conveyor
             Cell C6T6 = SFS.getCell(6, 6);
             C6T6.setUnitPresence(!OPCUA_Connection.getValueBoolean("MAIN_TASK", "C6T6.FREE.x"));
             //Rotator
             Rotator C6T7 = (Rotator) SFS.getCell(7, 6);
             C6T7.setUnitPresence(!OPCUA_Connection.getValueBoolean("MAIN_TASK", "C6T7.EMPTY.x"));
-            //C2T1.setDirectionHorizontal(); perguntar a Sara e Leonor quais as variáveis a ler
-            //C2T1.setDirectionVertical();
+
             /* --------------------------- COLLUMN 7 --------------------------------*/
             //Rotator C7T1a
             Rotator C7T1a = (Rotator) SFS.getCell(1, 7);
             C7T1a.setUnitPresence(!OPCUA_Connection.getValueBoolean("MAIN_TASK", "C7T1a.EMPTY.x"));
-            //C2T1.setDirectionHorizontal(); perguntar asara e leonor quais as variáveis a ler
-            //C2T1.setDirectionVertical();
+
             //Conveyor
             Cell C7T2 = SFS.getCell(2, 7);
             C7T2.setUnitPresence(!OPCUA_Connection.getValueBoolean("MAIN_TASK", "C7T2.FREE.x"));
             //Pusher
             Pusher C7T3 = (Pusher) SFS.getCell(3, 7);
             C7T3.setUnitPresence(!OPCUA_Connection.getValueBoolean("MAIN_TASK", "C7T3.EMPTY.x"));
+            C7T3.setUnitTypePushing(OPCUA_Connection.getValueInt("MAIN_TASK", "C7T3.UNIT_TYPE")); // set type pushing
+            C7T3.setOrderPushing(28);//String.valueOf(OPCUA_Connection.getValueInt("MAIN_TASK", "C7T3.ORDER_TYPE")); //set order type and id pushing
+            C7T3.setPushing(OPCUA_Connection.getValueBoolean("MAIN_TASK", "C7T3.PUSH_N"));
+            //System.out.println(C7T3.isPushing()+" "+C7T3.getOrderPushing()+" "+C7T3.getUnitTypePushing());
+
             //Pusher
             Pusher C7T4 = (Pusher) SFS.getCell(4, 7);
             C7T4.setUnitPresence(!OPCUA_Connection.getValueBoolean("MAIN_TASK", "C7T4.EMPTY.x"));
+            C7T4.setUnitTypePushing(OPCUA_Connection.getValueInt("MAIN_TASK", "C7T4.UNIT_TYPE")); // set type pushing
+            C7T4.setOrderPushing(29);//String.valueOf(OPCUA_Connection.getValueInt("MAIN_TASK", "C7T4.ORDER_TYPE")); //set order type and id pushing
+            C7T4.setPushing(OPCUA_Connection.getValueBoolean("MAIN_TASK", "C7T4.PUSH_N"));
+            //System.out.println(C7T4.isPushing()+" "+C7T4.getOrderPushing()+" "+C7T4.getUnitTypePushing());
+
             //Pusher
             Pusher C7T5 = (Pusher) SFS.getCell(5, 7);
             C7T5.setUnitPresence(!OPCUA_Connection.getValueBoolean("MAIN_TASK", "C7T5.EMPTY.x"));
+            C7T5.setUnitTypePushing(OPCUA_Connection.getValueInt("MAIN_TASK", "C7T5.UNIT_TYPE")); // set type pushing
+            C7T5.setOrderPushing(210);//String.valueOf(OPCUA_Connection.getValueInt("MAIN_TASK", "C7T5.ORDER_TYPE")); //set order type and id pushing
+            C7T5.setPushing(OPCUA_Connection.getValueBoolean("MAIN_TASK", "C7T5.PUSH_N"));
+            //System.out.println(C7T5.isPushing()+" "+C7T5.getOrderPushing()+" "+C7T5.getUnitTypePushing());
+
             //Conveyor
             Cell C7T6 = SFS.getCell(6, 7);
             C7T6.setUnitPresence(!OPCUA_Connection.getValueBoolean("MAIN_TASK", "C7T6.FREE.x"));
             //Rotator C7T7a
             Rotator C7T7a = (Rotator) SFS.getCell(7, 7);
             C7T7a.setUnitPresence(!OPCUA_Connection.getValueBoolean("MAIN_TASK", "C7T7a.EMPTY.x"));
-            //C2T1.setDirectionHorizontal(); perguntar a Sara e Leonor quais as variáveis a ler
-            //C2T1.setDirectionVertical();
+
             /* --------------------------- COLLUMN 8--------------------------------*/
             //LoadIn C7T1b
             Cell C7T1b = SFS.getCell(1, 8);
@@ -230,6 +231,21 @@ public class readSystem implements Runnable {
             PM3.setSensorLevel4(OPCUA_Connection.getValueBoolean("MAIN_TASK", "PM31"));
             PM3.setSensorLevel3(OPCUA_Connection.getValueBoolean("MAIN_TASK", "PM32"));
             PM3.setSensorLevel2(OPCUA_Connection.getValueBoolean("MAIN_TASK", "PM33"));
+
+            /* ---------------------------- UNITS Warehouse ---------------------------------*/
+
+            /*
+            OPCUA_Connection.getValueInt("MAIN_TASK", "ARMAZEM.P1");
+            OPCUA_Connection.getValueInt("MAIN_TASK", "ARMAZEM.P2");
+            OPCUA_Connection.getValueInt("MAIN_TASK", "ARMAZEM.P3");
+            OPCUA_Connection.getValueInt("MAIN_TASK", "ARMAZEM.P4");
+            OPCUA_Connection.getValueInt("MAIN_TASK", "ARMAZEM.P5");
+            OPCUA_Connection.getValueInt("MAIN_TASK", "ARMAZEM.P6");
+            OPCUA_Connection.getValueInt("MAIN_TASK", "ARMAZEM.P7");
+            OPCUA_Connection.getValueInt("MAIN_TASK", "ARMAZEM.P8");
+            OPCUA_Connection.getValueInt("MAIN_TASK", "ARMAZEM.P9");
+
+             */
 
         }
 

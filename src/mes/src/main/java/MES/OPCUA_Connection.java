@@ -7,6 +7,7 @@ import org.bouncycastle.asn1.eac.UnsignedInteger;
 import org.eclipse.milo.opcua.sdk.client.OpcUaClient;
 import org.eclipse.milo.opcua.sdk.client.api.config.OpcUaClientConfig;
 import org.eclipse.milo.opcua.stack.client.DiscoveryClient;
+import org.eclipse.milo.opcua.stack.core.types.builtin.ByteString;
 import org.eclipse.milo.opcua.stack.core.types.builtin.DataValue;
 import org.eclipse.milo.opcua.stack.core.types.builtin.NodeId;
 import org.eclipse.milo.opcua.stack.core.types.builtin.Variant;
@@ -137,11 +138,13 @@ public class OPCUA_Connection {
 
     }
 
+
     /*Função para inserir valores
      * String celulaName -> contém o nome do POU da célula
      * String VarName -> contém o nome da variavál que se pretende mudar o valor
      * boolean ValueSet -> contém o valor "true" ou "false" que se pretende atribuir à variável
      */
+
     static void setValueBoolean(String cellName, String VarName, boolean ValueSet) {
         String aux2;
         aux2 = aux + cellName + "." + VarName;

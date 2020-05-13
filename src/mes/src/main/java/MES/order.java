@@ -7,9 +7,10 @@ public class order {
     private final float submitTime; //System time a que a ordem chega
     private  float startTime; //Quando começa a ser processada
     private float endTime; //Quando finalizas a ordem
-    private final int type; //1-transform 2-Unload 3-Request 4-Load
+    private final int type; //1-transform 2-Unload 3-Load 4-Request
     private final int maxDelay;
-    private int status; //1-pendente 2-em processamento 3-concluida
+    private int status; //  1-Waiting to start | 2-Processing | 3- All pieces sent | 4- All pieces received
+    private int unitsReachedEnd;
 
     public order (int id, float submitTime, int type, int status, int maxDelay) {
         this.id = id;
@@ -17,6 +18,7 @@ public class order {
         this.type = type;
         this.status = status;
         this.maxDelay=maxDelay;
+        this.unitsReachedEnd=0;
     }
 
     @Override
@@ -74,6 +76,14 @@ public class order {
 
     public int getMaxDelay() {
         return maxDelay;
+    }
+
+    public int getUnitsReachedEnd(){
+        return this.unitsReachedEnd;
+    }
+
+    public synchronized void setUnitsReachedEnd(int u){
+        this.unitsReachedEnd = u;
     }
 
 

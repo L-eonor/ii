@@ -1,24 +1,22 @@
 package MES;
 
-import org.bouncycastle.asn1.eac.UnsignedInteger;
 import org.eclipse.milo.opcua.sdk.client.OpcUaClient;
-import org.eclipse.milo.opcua.sdk.client.api.UaClient;
-import org.eclipse.milo.opcua.stack.core.types.builtin.unsigned.UShort;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.Timer;
 
 
 public class Main {
 
-    public static List<orderTransform> orderListTransformationEnded = Collections.synchronizedList(new ArrayList<>());
-    public static List<orderUnload> orderListUnloadEnded = Collections.synchronizedList(new ArrayList<>());
-    public static List<orderUnload> orderListUnload = Collections.synchronizedList(new ArrayList<>());
-    public static PriorityQueue<orderTransform> ordersPriority = new PriorityQueue<>(new OrderComparator());
+    public static List<orderTransform> orderListTransformationEnded = Collections.synchronizedList(new ArrayList<>()); //to keep Transformation Orders after being sent
+    public static List<orderUnload> orderListUnloadEnded = Collections.synchronizedList(new ArrayList<>()); //to keep Unload orders after being sent
+    public static List<orderUnload> orderListUnload = Collections.synchronizedList(new ArrayList<>()); //to keep unload orders in waiting state
+    public static PriorityQueue<orderTransform> ordersPriority = new PriorityQueue<>(new OrderComparator()); //to keep Transformations orders organized by priority
+    public static ConcurrentHashMap<Integer, Integer> receivedOrderPieces = new ConcurrentHashMap<>(); //
+    public static List<orderLoad> orderListLoad = Collections.synchronizedList(new ArrayList<>());
 
-    public static StopWatch stopWatch = new StopWatch();
     public static int unitCount;
 
 
@@ -43,7 +41,7 @@ public class Main {
         udpServer server = new udpServer(port);
         //createXML client = new createXML("C:\\Users\\kicop\\Desktop\\requeststores.xml"); // linha de testes
 
-        ExecutorService executorService = Executors.newFixedThreadPool(6);
+        ExecutorService executorService = Executors.newFixedThreadPool(9);
 
         //Starts thread that reads XML files with orders from ERP
         executorService.submit(server);
@@ -60,6 +58,17 @@ public class Main {
         LoadThread loadHandler = new LoadThread();
         executorService.submit(loadHandler);
 
+        PusherThread1 pusherHandler1 = new PusherThread1();
+        executorService.submit(pusherHandler1);
+
+        PusherThread2 pusherHandler2 = new PusherThread2();
+        executorService.submit(pusherHandler2);
+
+        PusherThread3 pusherHandler3 = new PusherThread3();
+        executorService.submit(pusherHandler3);
+
+        WarehouseIn warehouseInHandler = new WarehouseIn();
+        executorService.submit(warehouseInHandler);
     }
 
 }
