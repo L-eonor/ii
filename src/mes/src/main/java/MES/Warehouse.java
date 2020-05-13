@@ -63,5 +63,30 @@ public class Warehouse {
         }
     }
 
+    public static void setPiece(int n,String type){
+        switch (type){
+            case "P1":
+                P1=n;
+            case "P2":
+                P2=n;
+            case "P3":
+                P3=n;
+            case "P4":
+                P4=n;
+            case "P5":
+                P5=n;
+            case "P6":
+                P6=n;
+            case "P7":
+                P7=n;
+            case "P8":
+                P8=n;
+            case "P9":
+                P9=n;
+            default: return;
+        }
+    }
+
+
 
 }

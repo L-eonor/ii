@@ -17,6 +17,7 @@ public class PusherThread1 implements Runnable {
             if(p1.isPushing() && full1==1){
                 //Get orderID receiving
                 orderKey = p1.getOrderPushing();
+                System.out.println(orderKey);
                 stringOrderKey = String.valueOf(orderKey);
 
                 updateOrder(orderKey);

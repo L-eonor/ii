@@ -17,7 +17,8 @@ public class WarehouseIn implements Runnable{
 
             if(AT2.getUnitPresence() && full==1){
                 //Get orderID receiving
-                orderKey =31; //OPCUA_Connection.getValueInt("MAIN_TASK", "AT2.ORDER_TYPE");
+                orderKey = OPCUA_Connection.getValueInt("MAIN_TASK", "AT2.ORDER_TYPE");
+                System.out.println(orderKey);
                 stringOrderKey = String.valueOf(orderKey);
 
                 updateOrder(orderKey);

@@ -179,7 +179,7 @@ public class readSystem implements Runnable {
             Pusher C7T3 = (Pusher) SFS.getCell(3, 7);
             C7T3.setUnitPresence(!OPCUA_Connection.getValueBoolean("MAIN_TASK", "C7T3.EMPTY.x"));
             C7T3.setUnitTypePushing(OPCUA_Connection.getValueInt("MAIN_TASK", "C7T3.UNIT_TYPE")); // set type pushing
-            C7T3.setOrderPushing(28);//String.valueOf(OPCUA_Connection.getValueInt("MAIN_TASK", "C7T3.ORDER_TYPE")); //set order type and id pushing
+            C7T3.setOrderPushing(OPCUA_Connection.getValueInt("MAIN_TASK", "C7T3.ORDER_TYPE")); //set order type and id pushing
             C7T3.setPushing(OPCUA_Connection.getValueBoolean("MAIN_TASK", "C7T3.PUSH_N"));
             //System.out.println(C7T3.isPushing()+" "+C7T3.getOrderPushing()+" "+C7T3.getUnitTypePushing());
 
@@ -187,7 +187,7 @@ public class readSystem implements Runnable {
             Pusher C7T4 = (Pusher) SFS.getCell(4, 7);
             C7T4.setUnitPresence(!OPCUA_Connection.getValueBoolean("MAIN_TASK", "C7T4.EMPTY.x"));
             C7T4.setUnitTypePushing(OPCUA_Connection.getValueInt("MAIN_TASK", "C7T4.UNIT_TYPE")); // set type pushing
-            C7T4.setOrderPushing(29);//String.valueOf(OPCUA_Connection.getValueInt("MAIN_TASK", "C7T4.ORDER_TYPE")); //set order type and id pushing
+            C7T4.setOrderPushing(OPCUA_Connection.getValueInt("MAIN_TASK", "C7T4.ORDER_TYPE")); //set order type and id pushing
             C7T4.setPushing(OPCUA_Connection.getValueBoolean("MAIN_TASK", "C7T4.PUSH_N"));
             //System.out.println(C7T4.isPushing()+" "+C7T4.getOrderPushing()+" "+C7T4.getUnitTypePushing());
 
@@ -195,7 +195,7 @@ public class readSystem implements Runnable {
             Pusher C7T5 = (Pusher) SFS.getCell(5, 7);
             C7T5.setUnitPresence(!OPCUA_Connection.getValueBoolean("MAIN_TASK", "C7T5.EMPTY.x"));
             C7T5.setUnitTypePushing(OPCUA_Connection.getValueInt("MAIN_TASK", "C7T5.UNIT_TYPE")); // set type pushing
-            C7T5.setOrderPushing(210);//String.valueOf(OPCUA_Connection.getValueInt("MAIN_TASK", "C7T5.ORDER_TYPE")); //set order type and id pushing
+            C7T5.setOrderPushing(OPCUA_Connection.getValueInt("MAIN_TASK", "C7T5.ORDER_TYPE")); //set order type and id pushing
             C7T5.setPushing(OPCUA_Connection.getValueBoolean("MAIN_TASK", "C7T5.PUSH_N"));
             //System.out.println(C7T5.isPushing()+" "+C7T5.getOrderPushing()+" "+C7T5.getUnitTypePushing());
 
@@ -234,18 +234,18 @@ public class readSystem implements Runnable {
 
             /* ---------------------------- UNITS Warehouse ---------------------------------*/
 
-            /*
-            OPCUA_Connection.getValueInt("MAIN_TASK", "ARMAZEM.P1");
-            OPCUA_Connection.getValueInt("MAIN_TASK", "ARMAZEM.P2");
-            OPCUA_Connection.getValueInt("MAIN_TASK", "ARMAZEM.P3");
-            OPCUA_Connection.getValueInt("MAIN_TASK", "ARMAZEM.P4");
-            OPCUA_Connection.getValueInt("MAIN_TASK", "ARMAZEM.P5");
-            OPCUA_Connection.getValueInt("MAIN_TASK", "ARMAZEM.P6");
-            OPCUA_Connection.getValueInt("MAIN_TASK", "ARMAZEM.P7");
-            OPCUA_Connection.getValueInt("MAIN_TASK", "ARMAZEM.P8");
-            OPCUA_Connection.getValueInt("MAIN_TASK", "ARMAZEM.P9");
 
-             */
+            Warehouse.setPiece(OPCUA_Connection.getValueInt("MAIN_TASK", "ARMAZEM.P1"),"P1");
+            Warehouse.setPiece(OPCUA_Connection.getValueInt("MAIN_TASK", "ARMAZEM.P2"),"P2");
+            Warehouse.setPiece(OPCUA_Connection.getValueInt("MAIN_TASK", "ARMAZEM.P3"),"P3");
+            Warehouse.setPiece(OPCUA_Connection.getValueInt("MAIN_TASK", "ARMAZEM.P4"),"P4");
+            Warehouse.setPiece(OPCUA_Connection.getValueInt("MAIN_TASK", "ARMAZEM.P5"),"P5");
+            Warehouse.setPiece(OPCUA_Connection.getValueInt("MAIN_TASK", "ARMAZEM.P6"),"P6");
+            Warehouse.setPiece(OPCUA_Connection.getValueInt("MAIN_TASK", "ARMAZEM.P7"),"P7");
+            Warehouse.setPiece(OPCUA_Connection.getValueInt("MAIN_TASK", "ARMAZEM.P8"),"P8");
+            Warehouse.setPiece(OPCUA_Connection.getValueInt("MAIN_TASK", "ARMAZEM.P9"),"P9");
+
+
 
         }
 
