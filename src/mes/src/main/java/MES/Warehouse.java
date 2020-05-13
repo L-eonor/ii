@@ -87,6 +87,29 @@ public class Warehouse {
         }
     }
 
+    public static int getPiece(String type){
+        switch (type){
+            case "P1":
+                return P1;
+            case "P2":
+                return P2;
+            case "P3":
+                return P3;
+            case "P4":
+                return P4;
+            case "P5":
+                return P5;
+            case "P6":
+                return P6;
+            case "P7":
+                return P7;
+            case "P8":
+                return P8;
+            case "P9":
+                return P9;
+            default: return -1;
+        }
+    }
 
 
 }

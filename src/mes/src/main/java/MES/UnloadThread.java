@@ -83,7 +83,7 @@ public class UnloadThread implements Runnable {
                     String pathString = pathStringBuilder.toString().replaceFirst(".{2}$", actionPush);
 
                     // Adds order info to the end
-                    pathString += order.getPx() + "U" + order.getId();
+                    pathString += order.getPx() + "2" + order.getId();
 
                     System.out.println("[Unload] Esta é a string: " + pathString);
 
@@ -219,7 +219,7 @@ public class UnloadThread implements Runnable {
                     Path_Logic pathEnd = new Path_Logic(startTransformation, warehouseIn,"Transformation");
                     pathString.append(pathEnd.getStringPath());
                     // Adds order info to the end
-                    String orderInfo = order.getPy() + "T" + order.getId();
+                    String orderInfo = order.getPy() + "1" + order.getId();
                     pathString.append(orderInfo);
 
                     System.out.println("[Transformation] Esta é a string: " + pathString);

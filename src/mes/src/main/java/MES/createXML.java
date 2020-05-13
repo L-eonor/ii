@@ -41,12 +41,12 @@ public class createXML {
             // Transform element
             Element workPiece = doc.createElement("WorkPiece");
 
-            Attr attrType1 = doc.createAttribute("type");
+            Attr attrType1 = doc.createAttribute("Type");
             attrType1.setValue("P"+i);
             workPiece.setAttributeNode(attrType1);
 
-            Attr attrType2 = doc.createAttribute("quantity");
-            attrType2.setValue(Integer.toString(i));
+            Attr attrType2 = doc.createAttribute("Quantity");
+            attrType2.setValue(Integer.toString(Warehouse.getPiece("P"+i)));
             workPiece.setAttributeNode(attrType2);
 
             rootElement.appendChild(workPiece);
