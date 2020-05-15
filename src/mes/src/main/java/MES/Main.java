@@ -1,5 +1,6 @@
 package MES;
 
+import io.netty.handler.codec.http.CombinedHttpHeaders;
 import org.eclipse.milo.opcua.sdk.client.OpcUaClient;
 
 import java.util.*;
@@ -10,6 +11,7 @@ import java.util.concurrent.Executors;
 
 public class Main {
 
+    public static List<orderTransform> orderListTransformationOutOfUnits = Collections.synchronizedList(new ArrayList<>());
     public static List<orderTransform> orderListTransformationEnded = Collections.synchronizedList(new ArrayList<>()); //to keep Transformation Orders after being sent
     public static List<orderUnload> orderListUnloadEnded = Collections.synchronizedList(new ArrayList<>()); //to keep Unload orders after being sent
     public static List<orderUnload> orderListUnload = Collections.synchronizedList(new ArrayList<>()); //to keep unload orders in waiting state
@@ -17,7 +19,7 @@ public class Main {
     public static ConcurrentHashMap<Integer, Integer> receivedOrderPieces = new ConcurrentHashMap<>(); //
     public static List<orderLoad> orderListLoad = Collections.synchronizedList(new ArrayList<>());
 
-    public static int unitCount;
+    public static int unitCount=0;
 
 
     //OPC-UA related
@@ -69,6 +71,8 @@ public class Main {
 
         WarehouseIn warehouseInHandler = new WarehouseIn();
         executorService.submit(warehouseInHandler);
+
+
     }
 
 }

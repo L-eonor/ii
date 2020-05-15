@@ -4,6 +4,7 @@ import java.util.*;
 
 public class Path_Logic {
 
+    boolean transformation=false;
     public int nodeIdentification = 0;
     public int nTimes;
     public int[] start;
@@ -36,6 +37,7 @@ public class Path_Logic {
             sfsCells=SFS.getSfsCellsLoad();
         }
         else if(plantType.equals("Transformation")){
+            this.transformation=true;
             sfsCells=SFS.getSfsCellsTransformation();
         }
         else if(plantType.equals("Unload")){
@@ -59,6 +61,7 @@ public class Path_Logic {
             sfsCells=SFS.getSfsCellsLoad();
         }
         else if(plantType.equals("Transformation")){
+            transformation=true;
             sfsCells=SFS.getSfsCellsTransformation();
         }
         else if(plantType.equals("Unload")){
@@ -81,9 +84,9 @@ public class Path_Logic {
             System.out.println("Invalid goal position.");
             return false;
         } else {
-            System.out.println("Start: " + this.start[1] + "," + this.start[0] + ";");
-            System.out.println("Goal: " + this.goal[1] + "," + this.goal[0] + ";");
-            System.out.println();
+            //System.out.println("Start: " + this.start[1] + "," + this.start[0] + ";");
+            //System.out.println("Goal: " + this.goal[1] + "," + this.goal[0] + ";");
+            //System.out.println();
         }
 
         Node parentNode = new Node(null, this.nodeIdentification, start, 0, manhattanDistance(start[0], start[1]), 0);
@@ -162,12 +165,13 @@ public class Path_Logic {
 
         for (int i = 0; i < 4; i++) {
             int[] childPosition = new int[2];
+            if(transformation && (i==1)) continue;
             switch (i) {
-                case 0: //cima
+                case 0: //baixo
                     childPosition[0] = positionY + 1;
                     childPosition[1] = positionX;
                     break;
-                case 1: //baixo
+                case 1: //cima
                     childPosition[0] = positionY - 1;
                     childPosition[1] = positionX;
                     break;
@@ -183,6 +187,7 @@ public class Path_Logic {
                 default:
                     throw new IllegalStateException("Unexpected value: " + i);
             }
+
 
             if (checkGeneralRules(parentNode, childPosition)) {
                 //Regras de movimento de tapete para tapete

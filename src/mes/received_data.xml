@@ -21,20 +21,8 @@
 >
 ]>
 <ORDERS>
-<Order Number="009">
-<Unload Type="P2" Destination="D2" Quantity="8"/>
-</Order>
-<Order Number="010">
-<Unload Type="P7" Destination="D3" Quantity="2"/>
-</Order>
-<Order Number="011">
-<Unload Type="P8" Destination="D3" Quantity="2"/>
-</Order>
-<Order Number="012">
-<Unload Type="P5" Destination="D1" Quantity="8"/>
-</Order>
-<Order Number="013">
-<Unload Type="P3" Destination="D3" Quantity="4"/>
-</Order>
+<Request_Stores/>
 </ORDERS>
+
+
 

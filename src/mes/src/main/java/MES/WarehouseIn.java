@@ -18,7 +18,6 @@ public class WarehouseIn implements Runnable{
             if(AT2.getUnitPresence() && full==1){
                 //Get orderID receiving
                 orderKey = OPCUA_Connection.getValueInt("MAIN_TASK", "AT2.ORDER_TYPE");
-                System.out.println(orderKey);
                 stringOrderKey = String.valueOf(orderKey);
 
                 updateOrder(orderKey);
@@ -33,8 +32,7 @@ public class WarehouseIn implements Runnable{
                             Main.orderListTransformationEnded.get(i).setUnitsReachedEnd(Main.receivedOrderPieces.get(orderKey));
                             Main.orderListTransformationEnded.get(i).setEndTime(StopWatch.getTimeElapsed());
                             Main.orderListTransformationEnded.get(i).setStatus(4);
-                            System.out.println("Order Transformation ended in AT2.");
-                            System.out.println(Main.orderListTransformationEnded.get(i));
+                            System.out.println("Order Transformation ended in AT2 -> "+ Main.orderListTransformationEnded.get(i));
                         } else if ((Main.orderListTransformationEnded.get(i).getId() == orderID) && (Main.receivedOrderPieces.get(orderKey) != Main.orderListTransformationEnded.get(i).getNTotal())) {
                             Main.orderListTransformationEnded.get(i).setUnitsReachedEnd(Main.receivedOrderPieces.get(orderKey));
                         }
@@ -46,8 +44,7 @@ public class WarehouseIn implements Runnable{
                             Main.orderListLoad.get(i).setUnitsReachedEnd(Main.receivedOrderPieces.get(orderKey));
                             Main.orderListLoad.get(i).setEndTime(StopWatch.getTimeElapsed());
                             Main.orderListLoad.get(i).setStatus(4);
-                            System.out.println("Order Load ended in AT2.");
-                            System.out.println(Main.orderListLoad.get(i));
+                            System.out.println("Order Load ended in AT2 -> " + Main.orderListLoad.get(i));
                         }
                     }
                 }

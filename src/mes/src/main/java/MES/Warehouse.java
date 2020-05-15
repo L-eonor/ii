@@ -3,15 +3,15 @@ package MES;
 public class Warehouse {
 
     //Attributes
-    private static int P1;
-    private static int P2;
-    private static int P3;
-    private static int P4;
-    private static int P5;
-    private static int P6;
-    private static int P7;
-    private static int P8;
-    private static int P9;
+    private static int P1=0;
+    private static int P2=0;
+    private static int P3=0;
+    private static int P4=0;
+    private static int P5=0;
+    private static int P6=0;
+    private static int P7=0;
+    private static int P8=0;
+    private static int P9=0;
 
     //Methods
 

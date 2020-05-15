@@ -78,11 +78,11 @@ public class Cell {
     //+Methods
 
     public synchronized void addWeight(int nTimes) {
-        this.weight= (float) ((this.weight + 0.5)*nTimes);
+        this.weight= (float) ((this.weight + 1)*nTimes);
     }
 
     public synchronized void removeWeight() {
-        this.weight= (float) (this.weight - 0.5);
+        this.weight= (float) (this.weight - 1);
         if(this.weight < 0) this.weight=0;
     }
 

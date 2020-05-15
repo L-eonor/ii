@@ -17,7 +17,6 @@ public class PusherThread1 implements Runnable {
             if(p1.isPushing() && full1==1){
                 //Get orderID receiving
                 orderKey = p1.getOrderPushing();
-                System.out.println(orderKey);
                 stringOrderKey = String.valueOf(orderKey);
 
                 updateOrder(orderKey);
@@ -30,8 +29,7 @@ public class PusherThread1 implements Runnable {
                         Main.orderListUnloadEnded.get(i).setUnitsReachedEnd(Main.receivedOrderPieces.get(orderKey));
                         Main.orderListUnloadEnded.get(i).setEndTime(StopWatch.getTimeElapsed());
                         Main.orderListUnloadEnded.get(i).setStatus(4);
-                        System.out.println("Order Unload fim no Pusher 1.");
-                        System.out.println(Main.orderListUnloadEnded.get(i));
+                        System.out.println("Order Unload fim no Pusher 1 -> " + Main.orderListUnloadEnded.get(i));
                     }
                     else if ((Main.orderListUnloadEnded.get(i).getId() == orderID) && (Main.receivedOrderPieces.get(orderKey) != Main.orderListUnloadEnded.get(i).getQuantity())) {
                         Main.orderListUnloadEnded.get(i).setUnitsReachedEnd(Main.receivedOrderPieces.get(orderKey));

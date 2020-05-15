@@ -30,8 +30,7 @@ public class PusherThread2 implements Runnable {
                         Main.orderListUnloadEnded.get(i).setUnitsReachedEnd(Main.receivedOrderPieces.get(orderKey));
                         Main.orderListUnloadEnded.get(i).setEndTime(StopWatch.getTimeElapsed());
                         Main.orderListUnloadEnded.get(i).setStatus(4);
-                        System.out.println("Order Unload fim no Pusher 2.");
-                        System.out.println(Main.orderListUnloadEnded.get(i));
+                        System.out.println("Order Unload fim no Pusher 2 -> " + Main.orderListUnloadEnded.get(i));
                     }
                     else if ((Main.orderListUnloadEnded.get(i).getId() == orderID) && (Main.receivedOrderPieces.get(orderKey) != Main.orderListUnloadEnded.get(i).getQuantity())) {
                         Main.orderListUnloadEnded.get(i).setUnitsReachedEnd(Main.receivedOrderPieces.get(orderKey));
