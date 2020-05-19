@@ -60,14 +60,14 @@ public class Main {
         LoadThread loadHandler = new LoadThread();
         executorService.submit(loadHandler);
 
-        PusherThread1 pusherHandler1 = new PusherThread1();
-        executorService.submit(pusherHandler1);
+        //PusherThread1 pusherHandler1 = new PusherThread1();
+        //executorService.submit(pusherHandler1);
 
-        PusherThread2 pusherHandler2 = new PusherThread2();
-        executorService.submit(pusherHandler2);
+        //PusherThread2 pusherHandler2 = new PusherThread2();
+        //executorService.submit(pusherHandler2);
 
-        PusherThread3 pusherHandler3 = new PusherThread3();
-        executorService.submit(pusherHandler3);
+        //PusherThread3 pusherHandler3 = new PusherThread3();
+        //executorService.submit(pusherHandler3);
 
         WarehouseIn warehouseInHandler = new WarehouseIn();
         executorService.submit(warehouseInHandler);

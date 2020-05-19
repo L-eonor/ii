@@ -10,6 +10,8 @@ import static java.lang.Thread.*;
 public class UnloadThread implements Runnable {
 
     //Attributes
+    static boolean bigFlagP1P9=false;
+    static int  countCollumns=1;
     static int[] warehouseOut = {1, 1};
     static int[] warehouseIn = {0, 7};
     String actionPush = "99";
@@ -196,7 +198,7 @@ public class UnloadThread implements Runnable {
                                 if (goalTransformation == null)
                                     System.out.println("Error: order machine input not valid. ");
                                 else {
-                                    machineToGo.addWeight(1);
+                                    machineToGo.addWeight();
                                 }
 
                                 //Calculate path to Machine
@@ -242,7 +244,6 @@ public class UnloadThread implements Runnable {
 
             }
             else if (!Main.ordersPriority.isEmpty()) {
-
                 orderTransform order = Main.ordersPriority.peek();
                 int count=1;
 
@@ -251,6 +252,8 @@ public class UnloadThread implements Runnable {
                 int orderUnitsTotal = order.getNTotal();
                 String orderPx = order.getPx();
                 String orderPy = order.getPy();
+                int orderUnitsToDo= orderUnitsTotal-orderUnitsDone;
+                int orderCountAux=1;
 
                 if(Warehouse.getPiece(orderPx) > 0) {
                     while (orderUnitsDone <= orderUnitsTotal) {
@@ -285,13 +288,17 @@ public class UnloadThread implements Runnable {
                         if (orderUnitsDone == 0) order.setStartTime(StopWatch.getTimeElapsed()); //Set order start Time
                         if (order.getStatus() != 2) order.setStatus(2); //Set order status to "in progress".
 
+                        String pathString;
+    /*
+
+
                         //Finds transformations to do
                         if (transformTable.searchTransformations(orderPx, orderPy)) {
                         /* prints all transformations
                         Iterator value = transformTable.solutions.iterator();
                         while(value.hasNext()) {
                             System.out.println(transformTable.solutions.poll());
-                        }*/
+                        }
                         } else System.out.println(" No need for transformations. ");
 
                         //String with the whole path of the Transformation order
@@ -492,7 +499,7 @@ public class UnloadThread implements Runnable {
                                 pathString.append(machinePositionString);
                             }
 
-                             */
+
 
 
                             //Add Tool and Time to string respectively
@@ -506,12 +513,27 @@ public class UnloadThread implements Runnable {
                         // Adds order info to the end
                         String orderInfo = order.getPy() + "1" + order.getId();
                         pathString.append(orderInfo);
+    */
+                        while(bigFlagP1P9){
+                            boolean mA=SFS.getCell(3,1).getUnitPresence();
+                            boolean mB=SFS.getCell(4,1).getUnitPresence();
+                            boolean mC=SFS.getCell(5,1).getUnitPresence();
+                            boolean rA=SFS.getCell(3,2).getUnitPresence();
+                            boolean rB=SFS.getCell(4,2).getUnitPresence();
+                            boolean rC=SFS.getCell(5,2).getUnitPresence();
+
+                            if(!mA && !rA && !mB && !rB && !mC && !rC){
+                                System.out.println("Não resttaaaaaaaa nadaaaa.");
+                                bigFlagP1P9=false;
+                            }
+                        }
+                        pathString=getPathByTransformation(orderPx,orderPy,orderUnitsToDo,orderCountAux);
+                        orderCountAux++;
 
                         System.out.println("[Transformation] Esta é a string: " + pathString);
 
-
                         //Sends information to OPC-UA
-                        sendPathToOPC(unitTypeIdentifier(orderPx), pathString.toString());
+                        sendPathToOPC(unitTypeIdentifier(orderPx), pathString);
 
                         //Updates order information
                         orderUnitsDone++;
@@ -635,5 +657,529 @@ public class UnloadThread implements Runnable {
             b[i] = a[i];
         }
         return b;
+    }
+
+    private String getPathByTransformation(String orderPx,String orderPy, int orderUnitsToDo,int orderCountAux) {
+        String path="";
+
+        if(orderPx.equals("P1")) {
+
+            switch (orderPy) {
+
+                case "P2":
+                    if (countCollumns==1){
+                        path = "21314151616263531156364656667574737271707P2"; //Ma3
+
+                        if(orderCountAux==orderUnitsToDo || orderCountAux%2== 0){
+                            countCollumns++;
+                        }
+                    }
+                    else if(countCollumns == 2){
+                        path = "213141424333115434445464737271707P2"; //Ma2
+
+                        if(orderCountAux==orderUnitsToDo || orderCountAux%2== 0){
+                            countCollumns++;
+                        }
+                    }
+                    else if(countCollumns == 3){
+                        path = "2122231311523242526271707P2"; //Ma1
+
+                        if(orderCountAux==orderUnitsToDo || orderCountAux%2== 0){
+                            countCollumns=1;
+                        }
+                    }
+                    break;
+
+                case "P3":
+                    if (countCollumns==1){
+                        if (orderCountAux%3 == 1) {
+                            path = "21314151616263645412064656667574737271707P3"; //Mb3
+                        }
+                        else if (orderCountAux%3 == 2) {
+                            path = "2131415161626353115531156364656667574737271707P3"; //Ma3
+                        }
+                        else if (orderCountAux%3 == 0) {
+                            path = "21314151616263645412064656667574737271707P3"; //Mb3
+                        }
+                        if(orderCountAux==orderUnitsToDo || orderCountAux%3== 0){
+                            countCollumns++;
+                        }
+                    }
+                    else if(countCollumns == 2){
+                        if (orderCountAux%3 == 1) {
+                            path="213141424344341204445464737271707P3";//Mb2
+                        }
+                        else if (orderCountAux%3 == 2) {
+                            path = "21314142433311533115434445464737271707P3";//Ma2
+                        }
+                        else if (orderCountAux%3 == 0) {
+                            path="213141424344341204445464737271707P3";//Mb2
+                        }
+                        if(orderCountAux==orderUnitsToDo || orderCountAux%3== 0){
+                            countCollumns++;
+                        }
+                    }
+                    else if(countCollumns == 3){
+                        if (orderCountAux%3 == 1) {
+                            path="2122232414120242526271707P3";
+                        }
+                        else if (orderCountAux%3 == 2) {
+                            path="212223131151311523242526271707P3";//Ma1
+                        }
+                        else if (orderCountAux%3 == 0) {
+                            path="2122232414120242526271707P3";
+                        }
+                        if(orderCountAux==orderUnitsToDo || orderCountAux%3== 0){
+                            countCollumns=1;
+                        }
+                    }
+                    break;
+
+                case "P4":
+                    if(orderUnitsToDo <= 3){
+                        if (countCollumns==1) {
+                            path = "21314151616263646555110656667574737271707P4"; //Mc3
+                            if(orderCountAux==orderUnitsToDo){
+                                countCollumns++;
+                            }
+                        }
+                        else if (countCollumns==2) {
+                            path = "213141424344453511045464737271707P4"; //Mc2
+                            if(orderCountAux==orderUnitsToDo){
+                                countCollumns++;
+                            }
+                        }
+                        else if (countCollumns==3) {
+                            path = "2122232425151102526271707P4"; //Mc1
+                            if(orderCountAux==orderUnitsToDo){
+                                countCollumns=1;
+                            }
+                        }
+
+                    }
+                    else {
+                        if (countCollumns==1){
+                            if (orderCountAux%5 == 1) {
+                                path = "21314151616263646555110656667574737271707P4"; //Mc3
+                            }
+                            else if (orderCountAux%5 == 2) {
+                                path = "2131415161626364541205411564656667574737271707P4"; //Mb3
+                            }
+                            else if (orderCountAux%5 == 3) {
+                                path = "21314151616263646555110656667574737271707P4"; //Mc3
+                            }
+                            else if (orderCountAux%5 == 4) {
+                                path = "21314151616263646555110656667574737271707P4"; //Mc3
+                            }
+                            else if (orderCountAux%5 == 0) {
+                                path = "21314151616263646555110656667574737271707P4"; //Mc3
+                            }
+                            if(orderCountAux==orderUnitsToDo || orderCountAux%5== 0){
+                                countCollumns++;
+                            }
+                        }
+                        else if(countCollumns == 2){
+                            if (orderCountAux%5 == 1) {
+                                path = "213141424344453511045464737271707P4"; //Mc2
+                            }
+                            else if (orderCountAux%5 == 2) {
+                                path = "21314142434434120341154445464737271707P4"; //Mb2
+                            }
+                            else if (orderCountAux%5 == 3) {
+                                path = "213141424344453511045464737271707P4"; //Mc2
+                            }
+                            else if (orderCountAux%5 == 4) {
+                                path = "213141424344453511045464737271707P4"; //Mc2
+                            }
+                            else if (orderCountAux%5 == 0) {
+                                path = "213141424344453511045464737271707P4"; //Mc2
+                            }
+                            if(orderCountAux==orderUnitsToDo || orderCountAux%5== 0){
+                                countCollumns++;
+                            }
+                        }
+                        else if(countCollumns == 3){
+                            if (orderCountAux%5 == 1) {
+                                path = "2122232425151102526271707P4"; //Mc1
+                            }
+                            else if (orderCountAux%5 == 2) {
+                                path = "212223241412014115242526271707P4"; //Mb1
+                            }
+                            else if (orderCountAux%5 == 3) {
+                                path = "2122232425151102526271707P4"; //Mc1
+                            }
+                            else if (orderCountAux%5 == 4) {
+                                path = "2122232425151102526271707P4"; //Mc1
+                            }
+                            else if (orderCountAux%5 == 0) {
+                                path = "2122232425151102526271707P4"; //Mc1
+                            }
+                            if(orderCountAux==orderUnitsToDo || orderCountAux%5== 0){
+                                countCollumns=1;
+                            }
+                        }
+                    }
+                    break;
+
+
+                case "P5":
+                    if(orderUnitsToDo <=3){
+                        if (countCollumns == 1) {
+                            path = "2131415161626364655511055130656667574737271707P5"; //Mc3
+
+                            if (orderCountAux == orderUnitsToDo) {
+                                countCollumns++;
+                            }
+                        } else if (countCollumns == 2) {
+                            path = "21314142434445351103513045464737271707P5"; //Mc2
+
+                            if (orderCountAux == orderUnitsToDo) {
+                                countCollumns++;
+                            }
+                        } else if (countCollumns == 3) {
+                            path = "212223242515110151302526271707P5"; //Mc1
+
+                            if (orderCountAux == orderUnitsToDo) {
+                                countCollumns = 1;
+                            }
+                        }
+
+                    }
+                    else {
+                        if (countCollumns == 1) {
+                            if(orderCountAux%4 == 1) {
+                                path = "2131415161626364655511055130656667574737271707P5"; //Mc3
+                            }
+                            else if(orderCountAux%4 == 2){
+                                path = "21314151616263645412054115646555130656667574737271707P5"; //Mb3+Mc3
+                            }
+                            else if(orderCountAux%4 == 3) {
+                                path = "2131415161626364655511055130656667574737271707P5"; //Mc3
+                            }
+                            else if(orderCountAux%4 == 0) {
+                                path = "2131415161626364655511055130656667574737271707P5"; //Mc3
+                            }
+
+                            if (orderCountAux == orderUnitsToDo || orderCountAux % 4 == 0) {
+                                countCollumns++;
+                            }
+                        }
+                        else if (countCollumns == 2) {
+
+                            if(orderCountAux%4 == 1) {
+                                path = "21314142434445351103513045464737271707P5"; //Mc2
+                            }
+                            else if(orderCountAux%4 == 2){
+                                path = "213141424344341203411544453513045464737271707P5"; //Mb2+Mc2
+                            }
+                            else if(orderCountAux%4 == 3) {
+                                path = "21314142434445351103513045464737271707P5"; //Mc2
+                            }
+                            else if(orderCountAux%4 == 0) {
+                                path = "21314142434445351103513045464737271707P5"; //Mc2
+                            }
+
+                            if (orderCountAux == orderUnitsToDo || orderCountAux % 4 == 0) {
+                                countCollumns++;
+                            }
+
+                        }
+                        else if (countCollumns == 3) {
+
+                            if(orderCountAux%4 == 1) {
+                                path = "212223242515110151302526271707P5"; //Mc1
+                            }
+                            else if(orderCountAux%4 == 2){
+                                path = "2122232414120141152425151302526271707P5"; //Mb1+Mc1
+                            }
+                            else if(orderCountAux%4 == 3) {
+                                path = "212223242515110151302526271707P5"; //Mc1
+                            }
+                            else if(orderCountAux%4 == 0) {
+                                path = "212223242515110151302526271707P5"; //Mc1
+                            }
+
+                            if (orderCountAux == orderUnitsToDo || orderCountAux % 4 == 0) {
+                                countCollumns=1;
+                            }
+                        }
+
+                    }
+                    break;
+
+/*
+                case "P6":
+                    "21314151616263531154333215434445464737271707P6"
+                    "21222313115233321523242526271707P6"
+                case "P7":
+                    "21314151616263645412044342204445464737271707P7"
+                    "21222324141202434220242526271707P7"
+
+                    "21314151616263531155311563645422064656667574737271707P7"
+                    "213141424333115331154344342204445464737271707P7"
+                    "2122231311513115232414220242526271707P7"
+
+                case "P8":
+                    "21314151616263645412054115646555210656667574737271707P8"
+                    "213141424344341203411544453521045464737271707P8"
+                    "2122232414120141152425152102526271707P8"
+
+                    "21314151616263646555110453521045464737271707P8"
+                    "21222324251511025352102526271707P8"
+*/
+                case "P9":
+
+                    if(orderUnitsToDo <= 4){
+                        path = "21222324251511025352104555310656667574737271707P9"; //Mc1+Mc2+Mc3
+
+                        if (orderCountAux == orderUnitsToDo) {
+                            countCollumns=3;
+                        }
+                    }
+                    else if (orderUnitsToDo <= 15) {
+                        if (orderCountAux % 3 == 1) {
+                            path = "21222324251511025352104555310656667574737271707P9"; //Mc1+Mc2+Mc3
+                        } else if (orderCountAux % 3 == 2) {
+                            path = "21222324251511025352104555310656667574737271707P9"; //Mc1+Mc2+Mc3
+                        } else if (orderCountAux % 3 == 0) {
+                            path = "21222313115233321543533156364656667574737271707P9"; //Ma1+Ma2+Ma3
+                        }
+
+                        if (orderCountAux == orderUnitsToDo) {
+                            bigFlagP1P9=true;
+                            countCollumns = 3;
+                        }
+                    }
+                    else{
+                        if (orderCountAux%6 == 1) {
+                            path = "21222324251511025352104555310656667574737271707P9"; //Mc1+Mc2+Mc3
+                        }
+                        else if (orderCountAux%6 == 2) {
+                            path = "21222324141202434220445432064656667574737271707P9"; //Mb1+Mb2+Mb3
+                        }
+                        else if (orderCountAux%6 == 3) {
+                            path = "21222313115233321543533156364656667574737271707P9"; //Ma1+Ma2+Ma3
+                        }
+                        else if (orderCountAux%6 == 4) {
+                            path = path = "21222324251511025352104555310656667574737271707P9"; //Mc1+Mc2+Mc3
+                        }
+                        else if (orderCountAux%6 == 5) {
+                            path = "21222324251511025352104555310656667574737271707P9"; //Mc1+Mc2+Mc3
+                        }
+                        else if (orderCountAux%6 == 0) {
+                            path = "21222313115233321543533156364656667574737271707P9"; //Ma1+Ma2+Ma3
+                        }
+
+                        if(orderCountAux==orderUnitsToDo){
+                            bigFlagP1P9=true;
+                            countCollumns=3;
+                        }
+
+                    }
+                    break;
+
+            }
+        }
+        else if (orderPx.equals("P2")) {
+            switch (orderPy) {
+                case "P3":
+                    break;
+                case "P4":
+                    break;
+                case "P5":
+                    break;
+                case "P6":
+                    if (countCollumns==1){
+                        path = "21314151616263532156364656667574737271707P6"; //Ma3
+                        if(orderCountAux==orderUnitsToDo || orderCountAux%2== 0){
+                            countCollumns++;
+                        }
+                    }
+                    else if(countCollumns == 2){
+                        path = "213141424333215434445464737271707P6"; //Ma2
+                        if(orderCountAux==orderUnitsToDo || orderCountAux%2== 0){
+                            countCollumns++;
+                        }
+                    }
+                    else if(countCollumns == 3){
+                        path = "2122231321523242526271707P6"; //Ma1
+
+                        if(orderCountAux==orderUnitsToDo || orderCountAux%2== 0){
+                            countCollumns=1;
+                        }
+                    }
+                    break;
+                case "P7":
+                    break;
+                case "P8":
+                    break;
+                case "P9":
+                    break;
+            }
+        }
+        else if (orderPx.equals("P3")) {
+            switch (orderPy) {
+                case "P4":
+                case "P5":
+
+                    if (countCollumns == 1) {
+                        path="213141516162636454115646555130656667574737271707P5"; //Mb3+Mc3
+
+                        if (orderCountAux == orderUnitsToDo || orderCountAux % 3 == 0) {
+                            countCollumns++;
+                        }
+                    }
+                    else if (countCollumns == 2) {
+
+                        path="2131414243443411544453513045464737271707P5"; //Mb2+Mc2
+
+                        if (orderCountAux == orderUnitsToDo || orderCountAux % 3 == 0) {
+                            countCollumns++;
+                        }
+
+                    }
+                    else if (countCollumns == 3) {
+                        path="21222324141152425151302526271707P5"; //Mb1+Mc1
+
+                        if (orderCountAux == orderUnitsToDo || orderCountAux % 3 == 0) {
+                            countCollumns=1;
+                        }
+                    }
+
+                    break;
+
+                case "P7":
+                    break;
+                case "P8":
+                    break;
+                case "P9":
+                    break;
+            }
+        }
+        else if (orderPx.equals("P4")) {
+            switch (orderPy) {
+                case "P5":
+                    if (countCollumns == 1) {
+                        path = "21314151616263646555130656667574737271707P5"; //Mc3
+
+                        if (orderCountAux == orderUnitsToDo || orderCountAux % 3 == 0) {
+                            countCollumns++;
+                        }
+                    }
+                    else if (countCollumns == 2) {
+
+                        path = "213141424344453513045464737271707P5"; //Mc2
+
+                        if (orderCountAux == orderUnitsToDo || orderCountAux % 3 == 0) {
+                            countCollumns++;
+                        }
+
+                    }
+                    else if (countCollumns == 3) {
+
+                        path = "2122232425151302526271707P5"; //Mc1
+
+                        if (orderCountAux == orderUnitsToDo || orderCountAux % 3 == 0) {
+                            countCollumns=1;
+                        }
+                    }
+
+                    break;
+
+                case "P8":
+                    if (orderUnitsToDo <= 4) {
+                        if (countCollumns == 1) {
+                            path = "21314151616263646555210656667574737271707P8"; //Mc3
+
+                            if (orderCountAux == orderUnitsToDo) {
+                                countCollumns++;
+                            }
+                        }
+                        else if (countCollumns == 2) {
+                            path = "213141424344453521045464737271707P8"; //Mc2
+
+                            if (orderCountAux == orderUnitsToDo) {
+                                countCollumns++;
+                            }
+                        } else if (countCollumns == 3) {
+                            path = "2122232425152102526271707p8"; //Mc1
+                            if (orderCountAux == orderUnitsToDo) {
+                                countCollumns=1;
+                            }
+                        }
+                    }
+                    else {
+                        if (countCollumns == 1) {
+                            path = "21314151616263646555210656667574737271707P8"; //Mc3
+                            if (orderCountAux == orderUnitsToDo || orderCountAux % 3 == 0) {
+                                countCollumns++;
+                            }
+                        } else if (countCollumns == 2) {
+                            path = "213141424344453521045464737271707P8"; //Mc2
+                            if (orderCountAux % 4 == 0) countCollumns = 1;
+                            if (orderCountAux == orderUnitsToDo || orderCountAux % 3 == 0) {
+                                countCollumns++;
+                            }
+                        } else if (countCollumns == 3) {
+                            path = "2122232425152102526271707p8"; //Mc1
+                            if (orderCountAux == orderUnitsToDo || orderCountAux % 3 == 0) {
+                                countCollumns=1;
+                            }
+                        }
+
+                    }
+                    break;
+                case "P9":
+                    break;
+            }
+        }
+        else if (orderPx.equals("P6") && orderPy.equals("P9")) {
+        }
+        else if (orderPx.equals("P7") && orderPy.equals("P9")) {
+            if (orderUnitsToDo <= 4) {
+                if (countCollumns == 1) {
+                    path = "21314151616263645432064656667574737271707P9"; //Mb3
+
+                    if (orderCountAux == orderUnitsToDo) {
+                        countCollumns++;
+                    }
+                }
+                else if (countCollumns == 2) {
+                    path = "213141424344343204445464737271707P9"; //Mb2
+
+                    if (orderCountAux == orderUnitsToDo) {
+                        countCollumns++;
+                    }
+                } else if (countCollumns == 3) {
+                    path = "2122232414320242526271707P9"; //Mb1
+                    if (orderCountAux == orderUnitsToDo) {
+                        countCollumns=1;
+                    }
+                }
+            }
+            else {
+                if (countCollumns == 1) {
+                    path = "21314151616263645432064656667574737271707P9"; //Mb3
+                    if (orderCountAux == orderUnitsToDo || orderCountAux % 3 == 0) {
+                        countCollumns++;
+                    }
+                } else if (countCollumns == 2) {
+                    path = "213141424344343204445464737271707P9"; //Mb2
+                    if (orderCountAux == orderUnitsToDo || orderCountAux % 3 == 0) {
+                        countCollumns++;
+                    }
+                } else if (countCollumns == 3) {
+                    path = "2122232414320242526271707P9"; //Mb1
+                    if (orderCountAux == orderUnitsToDo || orderCountAux % 3 == 0) {
+                        countCollumns=1;
+                    }
+                }
+
+            }
+        }
+        else if (orderPx.equals("P8") && orderPy.equals("P9")) {
+        }
+
+        return path;
     }
 }

@@ -315,7 +315,7 @@ public class Path_Logic {
     private void addPathToStack() {
         Node node = solutionFound;
         while (node != null) {
-            SFS.getCell(node.getPosition()[0], node.getPosition()[1]).addWeight(nTimes);
+            SFS.getCell(node.getPosition()[0], node.getPosition()[1]).addWeight();
             path.push(node);
             node = node.getParentNode();
         }
@@ -406,6 +406,12 @@ public class Path_Logic {
             return pathString;
         }
         else return "-1";
+
+
+
     }
+
+
+
 
 }
