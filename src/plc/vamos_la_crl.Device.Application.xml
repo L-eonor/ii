@@ -1,0 +1,381 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Symbolconfiguration xmlns="http://www.3s-software.com/schemas/Symbolconfiguration.xsd">
+  <Header>
+    <Version>3.5.14.0</Version>
+    <SymbolConfigObject version="3.5.15.30" runtimeid="3.5.15.30" libversion="3.5.15.20" compiler="3.5.15.30" lmm="3.5.15.0" profile="CODESYS V3.5 SP15 Patch 3+" settings="SupportOPCUA, LayoutCalculator=OptimizedClientSideLayoutCalculator" />
+    <ProjectInfo name="vamos_la_crl" devicename="Device" appname="Application" />
+  </Header>
+  <TypeList>
+    <TypeSimple name="T_BOOL" size="1" swapsize="0" typeclass="Bool" iecname="BOOL" />
+    <TypeSimple name="T_INT" size="2" swapsize="2" typeclass="Int" iecname="INT" />
+    <TypeSimple name="T_STRING" size="81" swapsize="0" typeclass="String" iecname="STRING" />
+    <TypeSimple name="T_TIME" size="4" swapsize="4" typeclass="Time" iecname="TIME" />
+    <TypeSimple name="T_UINT" size="2" swapsize="2" typeclass="UInt" iecname="UINT" />
+    <TypeUserDef name="T_RS" size="3" nativesize="16" typeclass="Userdef" pouclass="FUNCTION_BLOCK" iecname="RS">
+      <UserDefElement iecname="SET" type="T_BOOL" byteoffset="0" vartype="VAR_INPUT" />
+      <UserDefElement iecname="RESET1" type="T_BOOL" byteoffset="1" vartype="VAR_INPUT" />
+      <UserDefElement iecname="Q1" type="T_BOOL" byteoffset="2" vartype="VAR_OUTPUT" />
+    </TypeUserDef>
+    <TypeUserDef name="T_R_TRIG" size="2" nativesize="16" typeclass="Userdef" pouclass="FUNCTION_BLOCK" iecname="R_TRIG">
+      <UserDefElement iecname="CLK" type="T_BOOL" byteoffset="0" vartype="VAR_INPUT" />
+      <UserDefElement iecname="Q" type="T_BOOL" byteoffset="1" vartype="VAR_OUTPUT" />
+    </TypeUserDef>
+    <TypeUserDef name="T_SFCStepType" size="16" nativesize="16" typeclass="Userdef" pouclass="STRUCTURE" iecname="SFCStepType">
+      <UserDefElement iecname="x" type="T_BOOL" byteoffset="0" vartype="VAR" />
+      <UserDefElement iecname="t" type="T_TIME" byteoffset="4" vartype="VAR" />
+      <UserDefElement iecname="_x" type="T_BOOL" byteoffset="8" vartype="VAR" />
+      <UserDefElement iecname="_t" type="T_TIME" byteoffset="12" vartype="VAR" />
+    </TypeUserDef>
+    <TypeUserDef name="T_TON" size="16" nativesize="32" typeclass="Userdef" pouclass="FUNCTION_BLOCK" iecname="TON">
+      <UserDefElement iecname="IN" type="T_BOOL" byteoffset="0" vartype="VAR_INPUT" />
+      <UserDefElement iecname="PT" type="T_TIME" byteoffset="4" vartype="VAR_INPUT" />
+      <UserDefElement iecname="Q" type="T_BOOL" byteoffset="8" vartype="VAR_OUTPUT" />
+      <UserDefElement iecname="ET" type="T_TIME" byteoffset="12" vartype="VAR_OUTPUT" />
+    </TypeUserDef>
+    <TypeUserDef name="T_WHOUSE" size="30" nativesize="264" typeclass="Userdef" pouclass="FUNCTION_BLOCK" iecname="WHOUSE">
+      <UserDefElement iecname="P1" type="T_UINT" byteoffset="0" vartype="VAR_OUTPUT" />
+      <UserDefElement iecname="P2" type="T_UINT" byteoffset="2" vartype="VAR_OUTPUT" />
+      <UserDefElement iecname="P3" type="T_UINT" byteoffset="4" vartype="VAR_OUTPUT" />
+      <UserDefElement iecname="P4" type="T_UINT" byteoffset="6" vartype="VAR_OUTPUT" />
+      <UserDefElement iecname="P5" type="T_UINT" byteoffset="8" vartype="VAR_OUTPUT" />
+      <UserDefElement iecname="P6" type="T_UINT" byteoffset="10" vartype="VAR_OUTPUT" />
+      <UserDefElement iecname="P7" type="T_UINT" byteoffset="12" vartype="VAR_OUTPUT" />
+      <UserDefElement iecname="P8" type="T_UINT" byteoffset="14" vartype="VAR_OUTPUT" />
+      <UserDefElement iecname="P9" type="T_UINT" byteoffset="16" vartype="VAR_OUTPUT" />
+      <UserDefElement iecname="WO_Unit" type="T_UINT" byteoffset="18" vartype="VAR_OUTPUT" />
+      <UserDefElement iecname="WI_Unit" type="T_UINT" byteoffset="20" vartype="VAR_OUTPUT" />
+      <UserDefElement iecname="WO_Order" type="T_UINT" byteoffset="22" vartype="VAR_OUTPUT" />
+      <UserDefElement iecname="WI_Order" type="T_UINT" byteoffset="24" vartype="VAR_OUTPUT" />
+      <UserDefElement iecname="P_WO_Index" type="T_INT" byteoffset="26" vartype="VAR" />
+      <UserDefElement iecname="P_WI_Index" type="T_INT" byteoffset="28" vartype="VAR" />
+    </TypeUserDef>
+    <TypeUserDef name="T_MACHINE" size="404" nativesize="4088" typeclass="Userdef" pouclass="FUNCTION_BLOCK" iecname="MACHINE">
+      <UserDefElement iecname="ID" type="T_UINT" byteoffset="0" vartype="VAR_INPUT" />
+      <UserDefElement iecname="SENSOR" type="T_BOOL" byteoffset="2" vartype="VAR_INPUT" />
+      <UserDefElement iecname="SENSOR_T" type="T_BOOL" byteoffset="3" vartype="VAR_INPUT" />
+      <UserDefElement iecname="SENSOR_XP" type="T_BOOL" byteoffset="4" vartype="VAR_INPUT" />
+      <UserDefElement iecname="SENSOR_XN" type="T_BOOL" byteoffset="5" vartype="VAR_INPUT" />
+      <UserDefElement iecname="SENSOR_ZP" type="T_BOOL" byteoffset="6" vartype="VAR_INPUT" />
+      <UserDefElement iecname="SENSOR_ZN" type="T_BOOL" byteoffset="7" vartype="VAR_INPUT" />
+      <UserDefElement iecname="INCOMING_R" type="T_BOOL" byteoffset="8" vartype="VAR_INPUT" />
+      <UserDefElement iecname="INCOMING_L" type="T_BOOL" byteoffset="9" vartype="VAR_INPUT" />
+      <UserDefElement iecname="RIGHTFREE" type="T_BOOL" byteoffset="10" vartype="VAR_INPUT" />
+      <UserDefElement iecname="LEFTFREE" type="T_BOOL" byteoffset="11" vartype="VAR_INPUT" />
+      <UserDefElement iecname="SEND_R" type="T_BOOL" byteoffset="12" vartype="VAR_OUTPUT" />
+      <UserDefElement iecname="SEND_L" type="T_BOOL" byteoffset="13" vartype="VAR_OUTPUT" />
+      <UserDefElement iecname="MOTOR_R" type="T_BOOL" byteoffset="14" vartype="VAR_OUTPUT" />
+      <UserDefElement iecname="MOTOR_L" type="T_BOOL" byteoffset="15" vartype="VAR_OUTPUT" />
+      <UserDefElement iecname="ROTATE_P" type="T_BOOL" byteoffset="16" vartype="VAR_OUTPUT" />
+      <UserDefElement iecname="ROTATE_N" type="T_BOOL" byteoffset="17" vartype="VAR_OUTPUT" />
+      <UserDefElement iecname="XP" type="T_BOOL" byteoffset="18" vartype="VAR_OUTPUT" />
+      <UserDefElement iecname="XN" type="T_BOOL" byteoffset="19" vartype="VAR_OUTPUT" />
+      <UserDefElement iecname="ZP" type="T_BOOL" byteoffset="20" vartype="VAR_OUTPUT" />
+      <UserDefElement iecname="ZN" type="T_BOOL" byteoffset="21" vartype="VAR_OUTPUT" />
+      <UserDefElement iecname="TOOL" type="T_BOOL" byteoffset="22" vartype="VAR_OUTPUT" />
+      <UserDefElement iecname="PATH" type="T_STRING" byteoffset="23" vartype="VAR_OUTPUT" />
+      <UserDefElement iecname="TOOL_ID" type="T_UINT" byteoffset="104" vartype="VAR" />
+      <UserDefElement iecname="F" type="T_UINT" byteoffset="106" vartype="VAR" />
+      <UserDefElement iecname="PROCESSING_TIME" type="T_TIME" byteoffset="108" vartype="VAR" />
+      <UserDefElement iecname="CURRENT_TOOL" type="T_UINT" byteoffset="112" vartype="VAR" />
+      <UserDefElement iecname="FREE" type="T_SFCStepType" byteoffset="116" vartype="VAR" />
+      <UserDefElement iecname="RECEIVING_L" type="T_SFCStepType" byteoffset="132" vartype="VAR" />
+      <UserDefElement iecname="RECEIVING_R" type="T_SFCStepType" byteoffset="148" vartype="VAR" />
+      <UserDefElement iecname="CHOOSE_TOOL" type="T_SFCStepType" byteoffset="164" vartype="VAR" />
+      <UserDefElement iecname="TOOL_1_TO_2" type="T_SFCStepType" byteoffset="180" vartype="VAR" />
+      <UserDefElement iecname="TOOL_1_TO_2_b" type="T_SFCStepType" byteoffset="196" vartype="VAR" />
+      <UserDefElement iecname="TOOL_1_TO_3" type="T_SFCStepType" byteoffset="212" vartype="VAR" />
+      <UserDefElement iecname="TOOL_1_TO_3_b" type="T_SFCStepType" byteoffset="228" vartype="VAR" />
+      <UserDefElement iecname="EXTEND_TOOL" type="T_SFCStepType" byteoffset="244" vartype="VAR" />
+      <UserDefElement iecname="TOOL_DOWN" type="T_SFCStepType" byteoffset="260" vartype="VAR" />
+      <UserDefElement iecname="TRANSFORM" type="T_SFCStepType" byteoffset="276" vartype="VAR" />
+      <UserDefElement iecname="TOOL_UP" type="T_SFCStepType" byteoffset="292" vartype="VAR" />
+      <UserDefElement iecname="REROUTE" type="T_SFCStepType" byteoffset="308" vartype="VAR" />
+      <UserDefElement iecname="Step0" type="T_SFCStepType" byteoffset="324" vartype="VAR" />
+      <UserDefElement iecname="SEND_RIGHT" type="T_SFCStepType" byteoffset="340" vartype="VAR" />
+      <UserDefElement iecname="Step1" type="T_SFCStepType" byteoffset="356" vartype="VAR" />
+      <UserDefElement iecname="SEND_LEFT" type="T_SFCStepType" byteoffset="372" vartype="VAR" />
+      <UserDefElement iecname="WEIRD" type="T_SFCStepType" byteoffset="388" vartype="VAR" />
+    </TypeUserDef>
+    <TypeUserDef name="T_ROTATOR" size="368" nativesize="5296" typeclass="Userdef" pouclass="FUNCTION_BLOCK" iecname="ROTATOR">
+      <UserDefElement iecname="SENSOR" type="T_BOOL" byteoffset="0" vartype="VAR_INPUT" />
+      <UserDefElement iecname="SENS_ROT_P" type="T_BOOL" byteoffset="1" vartype="VAR_INPUT" />
+      <UserDefElement iecname="SENS_ROT_N" type="T_BOOL" byteoffset="2" vartype="VAR_INPUT" />
+      <UserDefElement iecname="INCOMING_R" type="T_BOOL" byteoffset="3" vartype="VAR_INPUT" />
+      <UserDefElement iecname="INCOMING_L" type="T_BOOL" byteoffset="4" vartype="VAR_INPUT" />
+      <UserDefElement iecname="INCOMING_B" type="T_BOOL" byteoffset="5" vartype="VAR_INPUT" />
+      <UserDefElement iecname="INCOMING_T" type="T_BOOL" byteoffset="6" vartype="VAR_INPUT" />
+      <UserDefElement iecname="ID" type="T_UINT" byteoffset="8" vartype="VAR_INPUT" />
+      <UserDefElement iecname="RIGHTFREE" type="T_BOOL" byteoffset="10" vartype="VAR_INPUT" />
+      <UserDefElement iecname="LEFTFREE" type="T_BOOL" byteoffset="11" vartype="VAR_INPUT" />
+      <UserDefElement iecname="BOTFREE" type="T_BOOL" byteoffset="12" vartype="VAR_INPUT" />
+      <UserDefElement iecname="TOPFREE" type="T_BOOL" byteoffset="13" vartype="VAR_INPUT" />
+      <UserDefElement iecname="FLIPPED" type="T_BOOL" byteoffset="14" vartype="VAR_INPUT" />
+      <UserDefElement iecname="RECEIVE_T" type="T_BOOL" byteoffset="15" vartype="VAR_OUTPUT" />
+      <UserDefElement iecname="RECEIVE_B" type="T_BOOL" byteoffset="16" vartype="VAR_OUTPUT" />
+      <UserDefElement iecname="MOTOR_R" type="T_BOOL" byteoffset="17" vartype="VAR_OUTPUT" />
+      <UserDefElement iecname="MOTOR_L" type="T_BOOL" byteoffset="18" vartype="VAR_OUTPUT" />
+      <UserDefElement iecname="ROTATE_P" type="T_BOOL" byteoffset="19" vartype="VAR_OUTPUT" />
+      <UserDefElement iecname="ROTATE_N" type="T_BOOL" byteoffset="20" vartype="VAR_OUTPUT" />
+      <UserDefElement iecname="SEND_DOWN" type="T_BOOL" byteoffset="21" vartype="VAR_OUTPUT" />
+      <UserDefElement iecname="SEND_R" type="T_BOOL" byteoffset="22" vartype="VAR_OUTPUT" />
+      <UserDefElement iecname="SEND_L" type="T_BOOL" byteoffset="23" vartype="VAR_OUTPUT" />
+      <UserDefElement iecname="SEND_UP" type="T_BOOL" byteoffset="24" vartype="VAR_OUTPUT" />
+      <UserDefElement iecname="PATH" type="T_STRING" byteoffset="25" vartype="VAR_OUTPUT" />
+      <UserDefElement iecname="F" type="T_UINT" byteoffset="106" vartype="VAR" />
+      <UserDefElement iecname="F_2" type="T_UINT" byteoffset="108" vartype="VAR" />
+      <UserDefElement iecname="EMPTY" type="T_SFCStepType" byteoffset="112" vartype="VAR" />
+      <UserDefElement iecname="FULL_0" type="T_SFCStepType" byteoffset="128" vartype="VAR" />
+      <UserDefElement iecname="RECEIVING_L" type="T_SFCStepType" byteoffset="144" vartype="VAR" />
+      <UserDefElement iecname="FULL" type="T_SFCStepType" byteoffset="160" vartype="VAR" />
+      <UserDefElement iecname="NECESSARIO_RN" type="T_SFCStepType" byteoffset="176" vartype="VAR" />
+      <UserDefElement iecname="ROTATING_N" type="T_SFCStepType" byteoffset="192" vartype="VAR" />
+      <UserDefElement iecname="HORIZONTAL_SENDING" type="T_SFCStepType" byteoffset="208" vartype="VAR" />
+      <UserDefElement iecname="FORWARD_R" type="T_SFCStepType" byteoffset="224" vartype="VAR" />
+      <UserDefElement iecname="FORWARD_L" type="T_SFCStepType" byteoffset="240" vartype="VAR" />
+      <UserDefElement iecname="NECESSARIO_RP" type="T_SFCStepType" byteoffset="256" vartype="VAR" />
+      <UserDefElement iecname="ROTATING_P" type="T_SFCStepType" byteoffset="272" vartype="VAR" />
+      <UserDefElement iecname="VERTICAL_SENDING" type="T_SFCStepType" byteoffset="288" vartype="VAR" />
+      <UserDefElement iecname="SENDING_M_U" type="T_SFCStepType" byteoffset="304" vartype="VAR" />
+      <UserDefElement iecname="SENDING_M_D" type="T_SFCStepType" byteoffset="320" vartype="VAR" />
+      <UserDefElement iecname="RECEIVING_R" type="T_SFCStepType" byteoffset="336" vartype="VAR" />
+      <UserDefElement iecname="GOING_VERTICAL" type="T_SFCStepType" byteoffset="352" vartype="VAR" />
+    </TypeUserDef>
+    <TypeUserDef name="T_SFCActionControl" size="116" nativesize="272" typeclass="Userdef" pouclass="FUNCTION_BLOCK" iecname="SFCActionControl">
+      <UserDefElement iecname="N" type="T_BOOL" byteoffset="0" vartype="VAR_INPUT" />
+      <UserDefElement iecname="R0" type="T_BOOL" byteoffset="1" vartype="VAR_INPUT" />
+      <UserDefElement iecname="S0" type="T_BOOL" byteoffset="2" vartype="VAR_INPUT" />
+      <UserDefElement iecname="L" type="T_BOOL" byteoffset="3" vartype="VAR_INPUT" />
+      <UserDefElement iecname="D" type="T_BOOL" byteoffset="4" vartype="VAR_INPUT" />
+      <UserDefElement iecname="P" type="T_BOOL" byteoffset="5" vartype="VAR_INPUT" />
+      <UserDefElement iecname="SD" type="T_BOOL" byteoffset="6" vartype="VAR_INPUT" />
+      <UserDefElement iecname="DS" type="T_BOOL" byteoffset="7" vartype="VAR_INPUT" />
+      <UserDefElement iecname="SL" type="T_BOOL" byteoffset="8" vartype="VAR_INPUT" />
+      <UserDefElement iecname="T" type="T_TIME" byteoffset="12" vartype="VAR_INPUT" />
+      <UserDefElement iecname="Q" type="T_BOOL" byteoffset="16" vartype="VAR_OUTPUT" />
+      <UserDefElement iecname="S_FF" type="T_RS" byteoffset="17" vartype="VAR" />
+      <UserDefElement iecname="L_TMR" type="T_TON" byteoffset="20" vartype="VAR" />
+      <UserDefElement iecname="D_TMR" type="T_TON" byteoffset="36" vartype="VAR" />
+      <UserDefElement iecname="P_TRIG" type="T_R_TRIG" byteoffset="52" vartype="VAR" />
+      <UserDefElement iecname="SD_TMR" type="T_TON" byteoffset="56" vartype="VAR" />
+      <UserDefElement iecname="SD_FF" type="T_RS" byteoffset="72" vartype="VAR" />
+      <UserDefElement iecname="DS_FF" type="T_RS" byteoffset="75" vartype="VAR" />
+      <UserDefElement iecname="DS_TMR" type="T_TON" byteoffset="80" vartype="VAR" />
+      <UserDefElement iecname="SL_FF" type="T_RS" byteoffset="96" vartype="VAR" />
+      <UserDefElement iecname="SL_TMR" type="T_TON" byteoffset="100" vartype="VAR" />
+    </TypeUserDef>
+    <TypeUserDef name="T_TAPETE_LINEAR_MEIO" size="220" nativesize="2184" typeclass="Userdef" pouclass="FUNCTION_BLOCK" iecname="TAPETE_LINEAR_MEIO">
+      <UserDefElement iecname="SENSOR" type="T_BOOL" byteoffset="0" vartype="VAR_INPUT" />
+      <UserDefElement iecname="INCOMING_R" type="T_BOOL" byteoffset="1" vartype="VAR_INPUT" />
+      <UserDefElement iecname="INCOMING_L" type="T_BOOL" byteoffset="2" vartype="VAR_INPUT" />
+      <UserDefElement iecname="RIGHTFREE" type="T_BOOL" byteoffset="3" vartype="VAR_INPUT" />
+      <UserDefElement iecname="LEFTFREE" type="T_BOOL" byteoffset="4" vartype="VAR_INPUT" />
+      <UserDefElement iecname="SEND_R" type="T_BOOL" byteoffset="5" vartype="VAR_OUTPUT" />
+      <UserDefElement iecname="SEND_L" type="T_BOOL" byteoffset="6" vartype="VAR_OUTPUT" />
+      <UserDefElement iecname="MOTOR_R" type="T_BOOL" byteoffset="7" vartype="VAR_OUTPUT" />
+      <UserDefElement iecname="MOTOR_L" type="T_BOOL" byteoffset="8" vartype="VAR_OUTPUT" />
+      <UserDefElement iecname="PATH" type="T_STRING" byteoffset="9" vartype="VAR_OUTPUT" />
+      <UserDefElement iecname="FREE" type="T_SFCStepType" byteoffset="92" vartype="VAR" />
+      <UserDefElement iecname="RECEIVING_L" type="T_SFCStepType" byteoffset="108" vartype="VAR" />
+      <UserDefElement iecname="FULL_1" type="T_SFCStepType" byteoffset="124" vartype="VAR" />
+      <UserDefElement iecname="SENDRIGHT" type="T_SFCStepType" byteoffset="140" vartype="VAR" />
+      <UserDefElement iecname="RECEIVING_R" type="T_SFCStepType" byteoffset="156" vartype="VAR" />
+      <UserDefElement iecname="FULL" type="T_SFCStepType" byteoffset="172" vartype="VAR" />
+      <UserDefElement iecname="SEND_LEFT" type="T_SFCStepType" byteoffset="188" vartype="VAR" />
+      <UserDefElement iecname="ERRO" type="T_SFCStepType" byteoffset="204" vartype="VAR" />
+    </TypeUserDef>
+    <TypeUserDef name="T_WAREHOUSE_IN" size="60" nativesize="752" typeclass="Userdef" pouclass="FUNCTION_BLOCK" iecname="WAREHOUSE_IN">
+      <UserDefElement iecname="INCOMING" type="T_BOOL" byteoffset="0" vartype="VAR_INPUT" />
+      <UserDefElement iecname="SENSOR" type="T_BOOL" byteoffset="1" vartype="VAR_INPUT" />
+      <UserDefElement iecname="FREE" type="T_BOOL" byteoffset="2" vartype="VAR_OUTPUT" />
+      <UserDefElement iecname="MOTOR_L" type="T_BOOL" byteoffset="3" vartype="VAR_OUTPUT" />
+      <UserDefElement iecname="WAREHOUSE_IN" type="T_BOOL" byteoffset="4" vartype="VAR_OUTPUT" />
+      <UserDefElement iecname="UNIT_TYPE" type="T_UINT" byteoffset="6" vartype="VAR_OUTPUT" />
+      <UserDefElement iecname="ORDER_TYPE" type="T_UINT" byteoffset="8" vartype="VAR_OUTPUT" />
+      <UserDefElement iecname="EMPTY" type="T_SFCStepType" byteoffset="12" vartype="VAR" />
+      <UserDefElement iecname="RECEIVING" type="T_SFCStepType" byteoffset="28" vartype="VAR" />
+      <UserDefElement iecname="FULL" type="T_SFCStepType" byteoffset="44" vartype="VAR" />
+    </TypeUserDef>
+    <TypeUserDef name="T_SFCActionType" size="128" nativesize="288" typeclass="Userdef" pouclass="STRUCTURE" iecname="SFCActionType">
+      <UserDefElement iecname="x" type="T_BOOL" byteoffset="0" vartype="VAR" />
+      <UserDefElement iecname="_x" type="T_BOOL" byteoffset="1" vartype="VAR" />
+      <UserDefElement iecname="t" type="T_TIME" byteoffset="4" vartype="VAR" />
+      <UserDefElement iecname="_t" type="T_TIME" byteoffset="8" vartype="VAR" />
+      <UserDefElement iecname="AC" type="T_SFCActionControl" byteoffset="12" vartype="VAR" />
+    </TypeUserDef>
+    <TypeUserDef name="T_LOADING" size="518" nativesize="848" typeclass="Userdef" pouclass="FUNCTION_BLOCK" iecname="LOADING">
+      <UserDefElement iecname="SENSOR" type="T_BOOL" byteoffset="0" vartype="VAR_INPUT" />
+      <UserDefElement iecname="NEXT_FREE" type="T_BOOL" byteoffset="1" vartype="VAR_INPUT" />
+      <UserDefElement iecname="RESOLVE_PUSH" type="T_BOOL" byteoffset="2" vartype="VAR_INPUT" />
+      <UserDefElement iecname="ORDER_PATH" type="T_STRING" byteoffset="3" vartype="VAR_INPUT" />
+      <UserDefElement iecname="UNIT_COUNT" type="T_UINT" byteoffset="84" vartype="VAR_INPUT" />
+      <UserDefElement iecname="ID" type="T_UINT" byteoffset="86" vartype="VAR_INPUT" />
+      <UserDefElement iecname="MOTOR_L" type="T_BOOL" byteoffset="88" vartype="VAR_OUTPUT" />
+      <UserDefElement iecname="SEND_L" type="T_BOOL" byteoffset="89" vartype="VAR_OUTPUT" />
+      <UserDefElement iecname="FREE" type="T_BOOL" byteoffset="90" vartype="VAR_OUTPUT" />
+      <UserDefElement iecname="PATH" type="T_STRING" byteoffset="91" vartype="VAR_OUTPUT" />
+      <UserDefElement iecname="PREVIOUS_COUNT" type="T_UINT" byteoffset="172" vartype="VAR" />
+      <UserDefElement iecname="ID_PATH" type="T_UINT" byteoffset="174" vartype="VAR" />
+      <UserDefElement iecname="_SEND_L" type="T_SFCActionType" byteoffset="176" vartype="VAR" />
+      <UserDefElement iecname="_MOTOR_L" type="T_SFCActionType" byteoffset="304" vartype="VAR" />
+      <UserDefElement iecname="Init" type="T_SFCStepType" byteoffset="432" vartype="VAR" />
+      <UserDefElement iecname="VERIFY_UNIT_COUNT" type="T_SFCStepType" byteoffset="448" vartype="VAR" />
+      <UserDefElement iecname="VERIFY_UNIT_PATH" type="T_SFCStepType" byteoffset="464" vartype="VAR" />
+      <UserDefElement iecname="LOADING" type="T_SFCStepType" byteoffset="480" vartype="VAR" />
+      <UserDefElement iecname="SEND" type="T_SFCStepType" byteoffset="496" vartype="VAR" />
+      <UserDefElement iecname="Init__to__VERIFY_UNIT_COUNT" type="T_BOOL" byteoffset="512" vartype="VAR" />
+      <UserDefElement iecname="VERIFY_UNIT_COUNT__to__VERIFY_UNIT_PATH" type="T_BOOL" byteoffset="513" vartype="VAR" />
+      <UserDefElement iecname="VERIFY_UNIT_PATH__to__LOADING" type="T_BOOL" byteoffset="514" vartype="VAR" />
+      <UserDefElement iecname="Branch0__LOADING__to__SEND" type="T_BOOL" byteoffset="515" vartype="VAR" />
+      <UserDefElement iecname="SEND__to__Init" type="T_BOOL" byteoffset="516" vartype="VAR" />
+      <UserDefElement iecname="Branch1__LOADING__to__Init" type="T_BOOL" byteoffset="517" vartype="VAR" />
+    </TypeUserDef>
+    <TypeUserDef name="T_PUSHER" size="1489" nativesize="2784" typeclass="Userdef" pouclass="FUNCTION_BLOCK" iecname="PUSHER">
+      <UserDefElement iecname="ORDER_PATH_L" type="T_STRING" byteoffset="0" vartype="VAR_INPUT" />
+      <UserDefElement iecname="ORDER_PATH_R" type="T_STRING" byteoffset="81" vartype="VAR_INPUT" />
+      <UserDefElement iecname="SENSOR" type="T_BOOL" byteoffset="162" vartype="VAR_INPUT" />
+      <UserDefElement iecname="INCOMING_L" type="T_BOOL" byteoffset="163" vartype="VAR_INPUT" />
+      <UserDefElement iecname="INCOMING_R" type="T_BOOL" byteoffset="164" vartype="VAR_INPUT" />
+      <UserDefElement iecname="RIGHTFREE" type="T_BOOL" byteoffset="165" vartype="VAR_INPUT" />
+      <UserDefElement iecname="LEFTFREE" type="T_BOOL" byteoffset="166" vartype="VAR_INPUT" />
+      <UserDefElement iecname="SENSOR_PUSH_P" type="T_BOOL" byteoffset="167" vartype="VAR_INPUT" />
+      <UserDefElement iecname="SENSOR_PUSH_N" type="T_BOOL" byteoffset="168" vartype="VAR_INPUT" />
+      <UserDefElement iecname="SLIDERFREE" type="T_BOOL" byteoffset="169" vartype="VAR_INPUT" />
+      <UserDefElement iecname="PMX2" type="T_BOOL" byteoffset="170" vartype="VAR_INPUT" />
+      <UserDefElement iecname="PMX3" type="T_BOOL" byteoffset="171" vartype="VAR_INPUT" />
+      <UserDefElement iecname="ID" type="T_INT" byteoffset="172" vartype="VAR_INPUT" />
+      <UserDefElement iecname="P" type="T_INT" byteoffset="174" vartype="VAR_INPUT" />
+      <UserDefElement iecname="RECEIVE_L" type="T_BOOL" byteoffset="176" vartype="VAR_OUTPUT" />
+      <UserDefElement iecname="RECEIVE_R" type="T_BOOL" byteoffset="177" vartype="VAR_OUTPUT" />
+      <UserDefElement iecname="MOTOR_R" type="T_BOOL" byteoffset="178" vartype="VAR_OUTPUT" />
+      <UserDefElement iecname="MOTOR_L" type="T_BOOL" byteoffset="179" vartype="VAR_OUTPUT" />
+      <UserDefElement iecname="SEND_R" type="T_BOOL" byteoffset="180" vartype="VAR_OUTPUT" />
+      <UserDefElement iecname="SEND_L" type="T_BOOL" byteoffset="181" vartype="VAR_OUTPUT" />
+      <UserDefElement iecname="PUSH_N" type="T_BOOL" byteoffset="182" vartype="VAR_OUTPUT" />
+      <UserDefElement iecname="PUSH_P" type="T_BOOL" byteoffset="183" vartype="VAR_OUTPUT" />
+      <UserDefElement iecname="PATH" type="T_STRING" byteoffset="184" vartype="VAR_OUTPUT" />
+      <UserDefElement iecname="UNIT_TYPE" type="T_UINT" byteoffset="266" vartype="VAR_OUTPUT" />
+      <UserDefElement iecname="ORDER_TYPE" type="T_UINT" byteoffset="268" vartype="VAR_OUTPUT" />
+      <UserDefElement iecname="P_Index" type="T_INT" byteoffset="270" vartype="VAR" />
+      <UserDefElement iecname="_MOTOR_R" type="T_SFCActionType" byteoffset="272" vartype="VAR" />
+      <UserDefElement iecname="_RECEIVE_L" type="T_SFCActionType" byteoffset="400" vartype="VAR" />
+      <UserDefElement iecname="_MOTOR_L" type="T_SFCActionType" byteoffset="528" vartype="VAR" />
+      <UserDefElement iecname="_RECEIVE_R" type="T_SFCActionType" byteoffset="656" vartype="VAR" />
+      <UserDefElement iecname="_SEND_L" type="T_SFCActionType" byteoffset="784" vartype="VAR" />
+      <UserDefElement iecname="_SEND_R" type="T_SFCActionType" byteoffset="912" vartype="VAR" />
+      <UserDefElement iecname="_PUSH_N" type="T_SFCActionType" byteoffset="1040" vartype="VAR" />
+      <UserDefElement iecname="_PUSH_P" type="T_SFCActionType" byteoffset="1168" vartype="VAR" />
+      <UserDefElement iecname="EMPTY" type="T_SFCStepType" byteoffset="1296" vartype="VAR" />
+      <UserDefElement iecname="RECEIVING" type="T_SFCStepType" byteoffset="1312" vartype="VAR" />
+      <UserDefElement iecname="RECEIVINGR" type="T_SFCStepType" byteoffset="1328" vartype="VAR" />
+      <UserDefElement iecname="FULL" type="T_SFCStepType" byteoffset="1344" vartype="VAR" />
+      <UserDefElement iecname="wait_to_send_l" type="T_SFCStepType" byteoffset="1360" vartype="VAR" />
+      <UserDefElement iecname="SEND_LEFT" type="T_SFCStepType" byteoffset="1376" vartype="VAR" />
+      <UserDefElement iecname="wait_to_send_R" type="T_SFCStepType" byteoffset="1392" vartype="VAR" />
+      <UserDefElement iecname="SENDING" type="T_SFCStepType" byteoffset="1408" vartype="VAR" />
+      <UserDefElement iecname="STEP" type="T_SFCStepType" byteoffset="1424" vartype="VAR" />
+      <UserDefElement iecname="PUSHN" type="T_SFCStepType" byteoffset="1440" vartype="VAR" />
+      <UserDefElement iecname="PUSHP" type="T_SFCStepType" byteoffset="1456" vartype="VAR" />
+      <UserDefElement iecname="Branch0__EMPTY__to__RECEIVING" type="T_BOOL" byteoffset="1472" vartype="VAR" />
+      <UserDefElement iecname="RECEIVING__to__FULL" type="T_BOOL" byteoffset="1473" vartype="VAR" />
+      <UserDefElement iecname="Branch1__EMPTY__to__FULL" type="T_BOOL" byteoffset="1474" vartype="VAR" />
+      <UserDefElement iecname="Branch2__EMPTY__to__RECEIVINGR" type="T_BOOL" byteoffset="1475" vartype="VAR" />
+      <UserDefElement iecname="RECEIVINGR__to__FULL" type="T_BOOL" byteoffset="1476" vartype="VAR" />
+      <UserDefElement iecname="Branch0_0__FULL__to__EMPTY" type="T_BOOL" byteoffset="1477" vartype="VAR" />
+      <UserDefElement iecname="Branch0_1__FULL__to__wait_to_send_l" type="T_BOOL" byteoffset="1478" vartype="VAR" />
+      <UserDefElement iecname="wait_to_send_l__to__SEND_LEFT" type="T_BOOL" byteoffset="1479" vartype="VAR" />
+      <UserDefElement iecname="SEND_LEFT__to__EMPTY" type="T_BOOL" byteoffset="1480" vartype="VAR" />
+      <UserDefElement iecname="Branch1__FULL__to__wait_to_send_R" type="T_BOOL" byteoffset="1481" vartype="VAR" />
+      <UserDefElement iecname="wait_to_send_R__to__SENDING" type="T_BOOL" byteoffset="1482" vartype="VAR" />
+      <UserDefElement iecname="SENDING__to__EMPTY" type="T_BOOL" byteoffset="1483" vartype="VAR" />
+      <UserDefElement iecname="Branch2_0__FULL__to__PUSHN" type="T_BOOL" byteoffset="1484" vartype="VAR" />
+      <UserDefElement iecname="Branch2_1__FULL__to__STEP" type="T_BOOL" byteoffset="1485" vartype="VAR" />
+      <UserDefElement iecname="STEP__to__PUSHN" type="T_BOOL" byteoffset="1486" vartype="VAR" />
+      <UserDefElement iecname="PUSHN__to__PUSHP" type="T_BOOL" byteoffset="1487" vartype="VAR" />
+      <UserDefElement iecname="PUSHP__to__EMPTY" type="T_BOOL" byteoffset="1488" vartype="VAR" />
+    </TypeUserDef>
+    <TypeUserDef name="T_WAREHOUSE_OUT" size="524" nativesize="1176" typeclass="Userdef" pouclass="FUNCTION_BLOCK" iecname="WAREHOUSE_OUT">
+      <UserDefElement iecname="SENSOR" type="T_BOOL" byteoffset="0" vartype="VAR_INPUT" />
+      <UserDefElement iecname="UNITTYPE" type="T_UINT" byteoffset="2" vartype="VAR_INPUT" />
+      <UserDefElement iecname="MOTOR" type="T_BOOL" byteoffset="4" vartype="VAR_OUTPUT" />
+      <UserDefElement iecname="FREE" type="T_BOOL" byteoffset="5" vartype="VAR_OUTPUT" />
+      <UserDefElement iecname="PATH" type="T_STRING" byteoffset="6" vartype="VAR_OUTPUT" />
+      <UserDefElement iecname="W_OUT" type="T_UINT" byteoffset="88" vartype="VAR_OUTPUT" />
+      <UserDefElement iecname="_FREE" type="T_SFCActionType" byteoffset="92" vartype="VAR" />
+      <UserDefElement iecname="_SEND_R" type="T_SFCActionType" byteoffset="220" vartype="VAR" />
+      <UserDefElement iecname="_MOTOR" type="T_SFCActionType" byteoffset="348" vartype="VAR" />
+      <UserDefElement iecname="INIT" type="T_SFCStepType" byteoffset="476" vartype="VAR" />
+      <UserDefElement iecname="REMOVING" type="T_SFCStepType" byteoffset="492" vartype="VAR" />
+      <UserDefElement iecname="SENDING" type="T_SFCStepType" byteoffset="508" vartype="VAR" />
+    </TypeUserDef>
+  </TypeList>
+  <NodeList>
+    <Node name="Application">
+      <Node name="MAIN_TASK">
+        <Node name="ARMAZEM" type="T_WHOUSE" access="ReadWrite" />
+        <Node name="AT1" type="T_WAREHOUSE_OUT" access="Read" />
+        <Node name="AT1_order_path_mes" type="T_STRING" access="ReadWrite" />
+        <Node name="AT2" type="T_WAREHOUSE_IN" access="Read" />
+        <Node name="C1T1" type="T_TAPETE_LINEAR_MEIO" access="Read" />
+        <Node name="C1T3" type="T_MACHINE" access="Read" />
+        <Node name="C1T4" type="T_MACHINE" access="Read" />
+        <Node name="C1T5" type="T_MACHINE" access="Read" />
+        <Node name="C1T7" type="T_TAPETE_LINEAR_MEIO" access="Read" />
+        <Node name="C2T1" type="T_ROTATOR" access="Read" />
+        <Node name="C2T2" type="T_TAPETE_LINEAR_MEIO" access="Read" />
+        <Node name="C2T3" type="T_ROTATOR" access="Read" />
+        <Node name="C2T4" type="T_ROTATOR" access="Read" />
+        <Node name="C2T5" type="T_ROTATOR" access="Read" />
+        <Node name="C2T6" type="T_TAPETE_LINEAR_MEIO" access="Read" />
+        <Node name="C2T7" type="T_ROTATOR" access="Read" />
+        <Node name="C3T1" type="T_TAPETE_LINEAR_MEIO" access="Read" />
+        <Node name="C3T3" type="T_MACHINE" access="Read" />
+        <Node name="C3T4" type="T_MACHINE" access="Read" />
+        <Node name="C3T5" type="T_MACHINE" access="Read" />
+        <Node name="C3T7" type="T_TAPETE_LINEAR_MEIO" access="Read" />
+        <Node name="C4T1" type="T_ROTATOR" access="Read" />
+        <Node name="C4T2" type="T_TAPETE_LINEAR_MEIO" access="Read" />
+        <Node name="C4T3" type="T_ROTATOR" access="Read" />
+        <Node name="C4T4" type="T_ROTATOR" access="Read" />
+        <Node name="C4T5" type="T_ROTATOR" access="Read" />
+        <Node name="C4T6" type="T_TAPETE_LINEAR_MEIO" access="Read" />
+        <Node name="C4T7" type="T_ROTATOR" access="Read" />
+        <Node name="C5T1" type="T_TAPETE_LINEAR_MEIO" access="Read" />
+        <Node name="C5T3" type="T_MACHINE" access="Read" />
+        <Node name="C5T4" type="T_MACHINE" access="Read" />
+        <Node name="C5T5" type="T_MACHINE" access="Read" />
+        <Node name="C5T7" type="T_TAPETE_LINEAR_MEIO" access="Read" />
+        <Node name="C6T1" type="T_ROTATOR" access="Read" />
+        <Node name="C6T2" type="T_TAPETE_LINEAR_MEIO" access="Read" />
+        <Node name="C6T3" type="T_ROTATOR" access="Read" />
+        <Node name="C6T4" type="T_ROTATOR" access="Read" />
+        <Node name="C6T5" type="T_ROTATOR" access="Read" />
+        <Node name="C6T6" type="T_TAPETE_LINEAR_MEIO" access="Read" />
+        <Node name="C6T7" type="T_ROTATOR" access="Read" />
+        <Node name="C7T1a" type="T_ROTATOR" access="Read" />
+        <Node name="C7T1b" type="T_LOADING" access="Read" />
+        <Node name="C7T1b_order_path_mes" type="T_STRING" access="ReadWrite" />
+        <Node name="C7T2" type="T_TAPETE_LINEAR_MEIO" access="Read" />
+        <Node name="C7T3" type="T_PUSHER" access="Read" />
+        <Node name="C7T4" type="T_PUSHER" access="Read" />
+        <Node name="C7T5" type="T_PUSHER" access="Read" />
+        <Node name="C7T6" type="T_TAPETE_LINEAR_MEIO" access="Read" />
+        <Node name="C7T7a" type="T_ROTATOR" access="Read" />
+        <Node name="C7T7b" type="T_LOADING" access="Read" />
+        <Node name="C7T7b_order_path_mes" type="T_STRING" access="ReadWrite" />
+        <Node name="PM11" type="T_BOOL" access="ReadWrite" />
+        <Node name="PM12" type="T_BOOL" access="ReadWrite" />
+        <Node name="PM13" type="T_BOOL" access="ReadWrite" />
+        <Node name="PM21" type="T_BOOL" access="ReadWrite" />
+        <Node name="PM22" type="T_BOOL" access="ReadWrite" />
+        <Node name="PM23" type="T_BOOL" access="ReadWrite" />
+        <Node name="PM31" type="T_BOOL" access="ReadWrite" />
+        <Node name="PM32" type="T_BOOL" access="ReadWrite" />
+        <Node name="PM33" type="T_BOOL" access="ReadWrite" />
+        <Node name="UNIT_COUNT_AT1" type="T_UINT" access="ReadWrite" />
+        <Node name="UNIT_COUNT_C7T1B" type="T_UINT" access="ReadWrite" />
+        <Node name="UNIT_COUNT_C7T7b" type="T_UINT" access="ReadWrite" />
+        <Node name="unit_type" type="T_UINT" access="ReadWrite" />
+      </Node>
+    </Node>
+  </NodeList>
+</Symbolconfiguration>
