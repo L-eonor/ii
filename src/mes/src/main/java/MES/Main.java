@@ -43,7 +43,7 @@ public class Main {
         udpServer server = new udpServer(port);
         //createXML client = new createXML("C:\\Users\\kicop\\Desktop\\requeststores.xml"); // linha de testes
 
-        ExecutorService executorService = Executors.newFixedThreadPool(9);
+        ExecutorService executorService = Executors.newFixedThreadPool(6);
 
         //Starts thread that reads XML files with orders from ERP
         executorService.submit(server);

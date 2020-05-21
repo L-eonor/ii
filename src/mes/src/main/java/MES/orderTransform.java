@@ -16,7 +16,20 @@ public class orderTransform extends order {
         this.nDone = nDone;
     }
 
-
+    @Override
+    public String toString() {
+        return "order{" +
+                "id=" + this.getId() +
+                ", submitTime=" + this.getSubmitTime() +
+                ", startTime=" + this.getStartTime() +
+                ", endTime=" + this.getEndTime() +
+                ", type=" + this.getType() +
+                ", status=" + this.getStatus() +
+                ", maxDelay=" + this.getMaxDelay() +
+                ", unitsDone=" + this.getNDone() +
+                ", unitsTotal=" + this.getNTotal() +
+                '}';
+    }
 
     public String getPx() {
         return Px;

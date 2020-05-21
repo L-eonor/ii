@@ -1,16 +1,21 @@
 package MES;
 
+import javax.sound.midi.Soundbank;
+import java.sql.SQLOutput;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 import static MES.Main.orderListTransformationOutOfUnits;
+import static MES.Main.ordersPriority;
 import static java.lang.Thread.*;
 
 public class UnloadThread implements Runnable {
 
     //Attributes
-    static boolean bigFlagP1P9=false;
+    static boolean bigFlagP1P9Init=true;
+    static boolean bigFlagP1P9End=false;
     static int  countCollumns=1;
     static int[] warehouseOut = {1, 1};
     static int[] warehouseIn = {0, 7};
@@ -245,7 +250,6 @@ public class UnloadThread implements Runnable {
             }
             else if (!Main.ordersPriority.isEmpty()) {
                 orderTransform order = Main.ordersPriority.peek();
-                int count=1;
 
                 //Order attributes
                 int orderUnitsDone = order.getNDone();
@@ -514,7 +518,7 @@ public class UnloadThread implements Runnable {
                         String orderInfo = order.getPy() + "1" + order.getId();
                         pathString.append(orderInfo);
     */
-                        while(bigFlagP1P9){
+                        while(bigFlagP1P9End){
                             boolean mA=SFS.getCell(3,1).getUnitPresence();
                             boolean mB=SFS.getCell(4,1).getUnitPresence();
                             boolean mC=SFS.getCell(5,1).getUnitPresence();
@@ -524,23 +528,70 @@ public class UnloadThread implements Runnable {
 
                             if(!mA && !rA && !mB && !rB && !mC && !rC){
                                 System.out.println("Não resttaaaaaaaa nadaaaa.");
-                                bigFlagP1P9=false;
+                                bigFlagP1P9End=false;
                             }
                         }
-                        pathString=getPathByTransformation(orderPx,orderPy,orderUnitsToDo,orderCountAux);
-                        orderCountAux++;
 
-                        System.out.println("[Transformation] Esta é a string: " + pathString);
 
+                        pathString=getPathByTransformation(orderPx,orderPy,orderUnitsToDo,orderCountAux,false);
                         //Sends information to OPC-UA
                         sendPathToOPC(unitTypeIdentifier(orderPx), pathString);
-
+                        orderCountAux++;
                         //Updates order information
                         orderUnitsDone++;
                         order.setNDone(orderUnitsDone);
+                        System.out.println(order);
 
-                        count++;
-                        if(count == 4) count = 1;
+
+                        //Iterate to check if the transformations can be done at the same time
+                        Iterator valueQueue = ordersPriority.iterator();
+
+                        // Displaying the values after iterating through the queue
+                        //System.out.println("The iterator values are: ");
+                        int i=1;
+                        boolean flagA=false, flagB=false,flagC=false;
+                        while(valueQueue.hasNext()) {
+                            if(i==1){
+                                valueQueue.next();
+                                i++;
+                                continue;
+                            }
+
+                            orderTransform orderComp;
+                            orderComp = (orderTransform) valueQueue.next();
+                            // If it's been done, keep looking
+                            if(orderComp.getNDone()==orderComp.getNTotal()) continue;
+
+                            String transf = isCompatible(orderPx,orderPy,orderComp.getPx(),orderComp.getPy());
+                            if(transf.equals("12") && !flagB){
+                                flagB = true;
+                                System.out.println("Px: " + orderComp.getPx() + " Py: " + orderComp.getPy());
+                                pathString = getPathByTransformation(orderComp.getPx(), orderComp.getPy(), 1, 1, true);
+                                //Sends information to OPC-UA
+                                sendPathToOPC(unitTypeIdentifier(orderComp.getPx()), pathString);
+                                System.out.println("[Transformation Máq B] Esta é a string: " + pathString);
+                                //Updates order information
+                                orderComp.setNDone(orderComp.getNDone() + 1);
+                                System.out.println(orderComp);
+                            }
+                            if(transf.equals("13") && !flagC){
+                                flagC = true;
+                                System.out.println("Px: " + orderComp.getPx() + " Py: " + orderComp.getPy());
+                                pathString = getPathByTransformation(orderComp.getPx(), orderComp.getPy(), 1, 1, true);
+                                //Sends information to OPC-UA
+                                sendPathToOPC(unitTypeIdentifier(orderComp.getPx()), pathString);
+                                //Updates order information
+                                orderComp.setNDone(orderComp.getNDone() + 1);
+                                System.out.println(orderComp);
+                            }
+
+                            //Checks if order is done
+                            if(orderComp.getNTotal()==orderComp.getNDone()){
+                                orderComp.setStatus(3);
+                                Main.orderListTransformationEnded.add(orderComp);
+                            }
+
+                        }
 
                     }
                 }
@@ -549,7 +600,6 @@ public class UnloadThread implements Runnable {
                     orderListTransformationOutOfUnits.add(Main.ordersPriority.poll());
                 }
             }
-
         }
 
     }
@@ -595,19 +645,18 @@ public class UnloadThread implements Runnable {
         //Sends information to OPC-UA
         OPCUA_Connection.setValueInt("MAIN_TASK", "unit_type", unitType);
         OPCUA_Connection.setValueString("MAIN_TASK", "AT1_order_path_mes", path);
-
+        //System.out.println(path);
         int aux = 1;
         while (true){
-
             if(aux == 1 && !SFS.getCell(1,0).getUnitPresence()) {
-                OPCUA_Connection.setValueInt("MAIN_TASK", "UNIT_COUNT_AT1", ++Main.unitCount);
+                Main.unitCount++;
+                OPCUA_Connection.setValueInt("MAIN_TASK", "UNIT_COUNT_AT1", Main.unitCount);
                 aux++;
             }
             if(aux == 2 && OPCUA_Connection.getValueInt("MAIN_TASK", "UNIT_COUNT_AT1") == Main.unitCount){
                 aux++;
             }
             if(aux == 3 && SFS.getCell(1,0).getUnitPresence()) break;
-
         }
 
     }
@@ -659,8 +708,9 @@ public class UnloadThread implements Runnable {
         return b;
     }
 
-    private String getPathByTransformation(String orderPx,String orderPy, int orderUnitsToDo,int orderCountAux) {
+    private String getPathByTransformation(String orderPx,String orderPy, int orderUnitsToDo,int orderCountAux, boolean parallel) {
         String path="";
+        int countCollumnsInitial=countCollumns;
 
         if(orderPx.equals("P1")) {
 
@@ -670,7 +720,7 @@ public class UnloadThread implements Runnable {
                     if (countCollumns==1){
                         path = "21314151616263531156364656667574737271707P2"; //Ma3
 
-                        if(orderCountAux==orderUnitsToDo || orderCountAux%2== 0){
+                        if(orderCountAux==orderUnitsToDo || orderCountAux%2 == 0){
                             countCollumns++;
                         }
                     }
@@ -937,6 +987,22 @@ public class UnloadThread implements Runnable {
                         }
                     }
                     else if (orderUnitsToDo <= 15) {
+                        while(bigFlagP1P9Init){
+                            boolean mA2=SFS.getCell(3,3).getUnitPresence();
+                            boolean mB2=SFS.getCell(4,3).getUnitPresence();
+                            boolean mC2=SFS.getCell(5,3).getUnitPresence();
+                            boolean rA2=SFS.getCell(3,4).getUnitPresence();
+                            boolean rB2=SFS.getCell(4,4).getUnitPresence();
+                            boolean rC2=SFS.getCell(5,4).getUnitPresence();
+
+
+                            if(!mA2 && !rA2 && !mB2 && !rB2 && !mC2 && !rC2 ){
+                                System.out.println("Posso Mandar");
+                                bigFlagP1P9Init=false;
+                            }
+
+                        }
+
                         if (orderCountAux % 3 == 1) {
                             path = "21222324251511025352104555310656667574737271707P9"; //Mc1+Mc2+Mc3
                         } else if (orderCountAux % 3 == 2) {
@@ -946,11 +1012,27 @@ public class UnloadThread implements Runnable {
                         }
 
                         if (orderCountAux == orderUnitsToDo) {
-                            bigFlagP1P9=true;
+                            bigFlagP1P9End=true;
+                            bigFlagP1P9Init=true;
                             countCollumns = 3;
                         }
                     }
                     else{
+                        while(bigFlagP1P9Init){
+                            boolean mA2=SFS.getCell(3,3).getUnitPresence();
+                            boolean mB2=SFS.getCell(4,3).getUnitPresence();
+                            boolean mC2=SFS.getCell(5,3).getUnitPresence();
+                            boolean rA2=SFS.getCell(3,4).getUnitPresence();
+                            boolean rB2=SFS.getCell(4,4).getUnitPresence();
+                            boolean rC2=SFS.getCell(5,4).getUnitPresence();
+
+
+                            if(!mA2 && !rA2 && !mB2 && !rB2 && !mC2 && !rC2 ){
+                                System.out.println("Posso Mandar");
+                                bigFlagP1P9Init=false;
+                            }
+                        }
+
                         if (orderCountAux%6 == 1) {
                             path = "21222324251511025352104555310656667574737271707P9"; //Mc1+Mc2+Mc3
                         }
@@ -971,7 +1053,8 @@ public class UnloadThread implements Runnable {
                         }
 
                         if(orderCountAux==orderUnitsToDo){
-                            bigFlagP1P9=true;
+                            bigFlagP1P9End=true;
+                            bigFlagP1P9Init=true;
                             countCollumns=3;
                         }
 
@@ -991,22 +1074,15 @@ public class UnloadThread implements Runnable {
                 case "P6":
                     if (countCollumns==1){
                         path = "21314151616263532156364656667574737271707P6"; //Ma3
-                        if(orderCountAux==orderUnitsToDo || orderCountAux%2== 0){
-                            countCollumns++;
-                        }
+                        countCollumns++;
                     }
                     else if(countCollumns == 2){
                         path = "213141424333215434445464737271707P6"; //Ma2
-                        if(orderCountAux==orderUnitsToDo || orderCountAux%2== 0){
-                            countCollumns++;
-                        }
+                        countCollumns++;
                     }
                     else if(countCollumns == 3){
                         path = "2122231321523242526271707P6"; //Ma1
-
-                        if(orderCountAux==orderUnitsToDo || orderCountAux%2== 0){
-                            countCollumns=1;
-                        }
+                        countCollumns=1;
                     }
                     break;
                 case "P7":
@@ -1059,27 +1135,47 @@ public class UnloadThread implements Runnable {
         else if (orderPx.equals("P4")) {
             switch (orderPy) {
                 case "P5":
-                    if (countCollumns == 1) {
-                        path = "21314151616263646555130656667574737271707P5"; //Mc3
+                    if(orderUnitsToDo <=3){
+                        if (countCollumns == 1) {
+                            path = "21314151616263646555130656667574737271707P5"; //Mc3
 
-                        if (orderCountAux == orderUnitsToDo || orderCountAux % 3 == 0) {
-                            countCollumns++;
+                            if (orderCountAux == orderUnitsToDo) {
+                                countCollumns++;
+                            }
+                        }
+                        else if (countCollumns == 2) {
+
+                            path = "213141424344453513045464737271707P5"; //Mc2
+
+                            if (orderCountAux == orderUnitsToDo) {
+                                countCollumns++;
+                            }
+
+                        }
+                        else if (countCollumns == 3) {
+
+                            path = "2122232425151302526271707P5"; //Mc1
+
+                            if (orderCountAux == orderUnitsToDo) {
+                                countCollumns = 1;
+                            }
                         }
                     }
-                    else if (countCollumns == 2) {
+                    else {
+                        if (countCollumns == 1) {
+                            path = "21314151616263646555130656667574737271707P5"; //Mc3
 
-                        path = "213141424344453513045464737271707P5"; //Mc2
-
-                        if (orderCountAux == orderUnitsToDo || orderCountAux % 3 == 0) {
                             countCollumns++;
-                        }
+                        } else if (countCollumns == 2) {
 
-                    }
-                    else if (countCollumns == 3) {
+                            path = "213141424344453513045464737271707P5"; //Mc2
 
-                        path = "2122232425151302526271707P5"; //Mc1
+                            countCollumns++;
 
-                        if (orderCountAux == orderUnitsToDo || orderCountAux % 3 == 0) {
+                        } else if (countCollumns == 3) {
+
+                            path = "2122232425151302526271707P5"; //Mc1
+
                             countCollumns=1;
                         }
                     }
@@ -1102,7 +1198,7 @@ public class UnloadThread implements Runnable {
                                 countCollumns++;
                             }
                         } else if (countCollumns == 3) {
-                            path = "2122232425152102526271707p8"; //Mc1
+                            path = "2122232425152102526271707P8"; //Mc1
                             if (orderCountAux == orderUnitsToDo) {
                                 countCollumns=1;
                             }
@@ -1111,20 +1207,13 @@ public class UnloadThread implements Runnable {
                     else {
                         if (countCollumns == 1) {
                             path = "21314151616263646555210656667574737271707P8"; //Mc3
-                            if (orderCountAux == orderUnitsToDo || orderCountAux % 3 == 0) {
-                                countCollumns++;
-                            }
+                            countCollumns++;
                         } else if (countCollumns == 2) {
                             path = "213141424344453521045464737271707P8"; //Mc2
-                            if (orderCountAux % 4 == 0) countCollumns = 1;
-                            if (orderCountAux == orderUnitsToDo || orderCountAux % 3 == 0) {
-                                countCollumns++;
-                            }
+                            countCollumns++;
                         } else if (countCollumns == 3) {
-                            path = "2122232425152102526271707p8"; //Mc1
-                            if (orderCountAux == orderUnitsToDo || orderCountAux % 3 == 0) {
-                                countCollumns=1;
-                            }
+                            path = "2122232425152102526271707P8"; //Mc1
+                            countCollumns=1;
                         }
 
                     }
@@ -1136,7 +1225,7 @@ public class UnloadThread implements Runnable {
         else if (orderPx.equals("P6") && orderPy.equals("P9")) {
         }
         else if (orderPx.equals("P7") && orderPy.equals("P9")) {
-            if (orderUnitsToDo <= 4) {
+            if (orderUnitsToDo <= 3) {
                 if (countCollumns == 1) {
                     path = "21314151616263645432064656667574737271707P9"; //Mb3
 
@@ -1160,19 +1249,16 @@ public class UnloadThread implements Runnable {
             else {
                 if (countCollumns == 1) {
                     path = "21314151616263645432064656667574737271707P9"; //Mb3
-                    if (orderCountAux == orderUnitsToDo || orderCountAux % 3 == 0) {
-                        countCollumns++;
-                    }
+                    countCollumns++;
+
                 } else if (countCollumns == 2) {
                     path = "213141424344343204445464737271707P9"; //Mb2
-                    if (orderCountAux == orderUnitsToDo || orderCountAux % 3 == 0) {
-                        countCollumns++;
-                    }
+                    countCollumns++;
+
                 } else if (countCollumns == 3) {
                     path = "2122232414320242526271707P9"; //Mb1
-                    if (orderCountAux == orderUnitsToDo || orderCountAux % 3 == 0) {
-                        countCollumns=1;
-                    }
+                    countCollumns=1;
+
                 }
 
             }
@@ -1180,6 +1266,41 @@ public class UnloadThread implements Runnable {
         else if (orderPx.equals("P8") && orderPy.equals("P9")) {
         }
 
+
+        if(parallel) countCollumns=countCollumnsInitial;
         return path;
     }
+
+
+    private String isCompatible(String orderPxNow,String orderPyNow,String orderPxCompatible,String orderPyCompatible){
+        String compatible="";
+        boolean maNow = false;
+        boolean mbNow = false;
+        boolean mcNow=false;
+        boolean maCompatible =false, mbCompatible=false, mcCompatible = false;
+
+        if((orderPxNow.equals("P1") && orderPyNow.equals("P2")) || (orderPxNow.equals("P2") && orderPyNow.equals("P6")) || (orderPxNow.equals("P6") && orderPyNow.equals("P9")) || (orderPxNow.equals("P2") && orderPyNow.equals("P3"))){
+            compatible=compatible + "1";
+        }
+        else if ((orderPxNow.equals("P1") && orderPyNow.equals("P3")) || (orderPxNow.equals("P3") && orderPyNow.equals("P7")) || (orderPxNow.equals("P7") && orderPyNow.equals("P9")) || (orderPxNow.equals("P3") && orderPyNow.equals("P4"))){
+            compatible=compatible + "2";
+        }
+        else if((orderPxNow.equals("P1") && orderPyNow.equals("P4")) || (orderPxNow.equals("P4") && orderPyNow.equals("P5")) || (orderPxNow.equals("P4") && orderPyNow.equals("P8")) || (orderPxNow.equals("P8") && orderPyNow.equals("P9"))){
+            compatible=compatible + "3";
+        }
+
+        if((orderPxCompatible.equals("P1") && orderPyCompatible.equals("P2")) || (orderPxCompatible.equals("P2") && orderPyCompatible.equals("P6")) || (orderPxCompatible.equals("P6") && orderPyCompatible.equals("P9")) || (orderPxCompatible.equals("P2") && orderPyCompatible.equals("P3"))){
+            compatible=compatible + "1";
+        }
+        else if ((orderPxCompatible.equals("P1") && orderPyCompatible.equals("P3")) || (orderPxCompatible.equals("P3") && orderPyCompatible.equals("P7")) || (orderPxCompatible.equals("P7") && orderPyCompatible.equals("P9")) || (orderPxCompatible.equals("P3") && orderPyCompatible.equals("P4"))){
+            compatible=compatible + "2";
+        }
+
+        else if((orderPxCompatible.equals("P1") && orderPyCompatible.equals("P4")) || (orderPxCompatible.equals("P4") && orderPyCompatible.equals("P5")) || (orderPxCompatible.equals("P4") && orderPyCompatible.equals("P8")) || (orderPxCompatible.equals("P8") && orderPyCompatible.equals("P9"))){
+            compatible=compatible + "3";
+        }
+
+        return compatible;
+    }
+
 }

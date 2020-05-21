@@ -27,18 +27,18 @@ public class readSystem implements Runnable {
             //Machine C1T3
             Machine C1T3 = (Machine) SFS.getCell(3, 1);
             C1T3.setUnitPresence(!OPCUA_Connection.getValueBoolean("MAIN_TASK", "C1T3.FREE.x"));
-            C1T3.setTool(OPCUA_Connection.getValueInt("MAIN_TASK", "C1T3.CURRENT_TOOL"));
-            C1T3.setProcessTime(OPCUA_Connection.getValueInt("MAIN_TASK", "C1T3.PROCESSING_TIME"));
+            //C1T3.setTool(OPCUA_Connection.getValueInt("MAIN_TASK", "C1T3.CURRENT_TOOL"));
+            //C1T3.setProcessTime(OPCUA_Connection.getValueInt("MAIN_TASK", "C1T3.PROCESSING_TIME"));
             //Machine C1T4
             Machine C1T4 = (Machine) SFS.getCell(4, 1);
             C1T4.setUnitPresence(!OPCUA_Connection.getValueBoolean("MAIN_TASK", "C1T4.FREE.x"));
-            C1T4.setTool(OPCUA_Connection.getValueInt("MAIN_TASK", "C1T4.CURRENT_TOOL"));
-            C1T4.setProcessTime(OPCUA_Connection.getValueInt("MAIN_TASK", "C1T4.PROCESSING_TIME"));
+            //C1T4.setTool(OPCUA_Connection.getValueInt("MAIN_TASK", "C1T4.CURRENT_TOOL"));
+            //C1T4.setProcessTime(OPCUA_Connection.getValueInt("MAIN_TASK", "C1T4.PROCESSING_TIME"));
             //Machine C1T5
             Machine C1T5 = (Machine) SFS.getCell(5, 1);
             C1T5.setUnitPresence(!OPCUA_Connection.getValueBoolean("MAIN_TASK", "C1T5.FREE.x"));
-            C1T5.setTool(OPCUA_Connection.getValueInt("MAIN_TASK", "C1T5.CURRENT_TOOL"));
-            C1T5.setProcessTime(OPCUA_Connection.getValueInt("MAIN_TASK", "C1T5.PROCESSING_TIME"));
+            //C1T5.setTool(OPCUA_Connection.getValueInt("MAIN_TASK", "C1T5.CURRENT_TOOL"));
+            //C1T5.setProcessTime(OPCUA_Connection.getValueInt("MAIN_TASK", "C1T5.PROCESSING_TIME"));
             ////Conveyor C1T7
             Cell C1T7 = SFS.getCell(7, 1);
             C1T7.setUnitPresence(!OPCUA_Connection.getValueBoolean("MAIN_TASK", "C1T7.FREE.x"));
@@ -76,18 +76,18 @@ public class readSystem implements Runnable {
             //Machine C3T3
             Machine C3T3 = (Machine) SFS.getCell(3, 3);
             C3T3.setUnitPresence(!OPCUA_Connection.getValueBoolean("MAIN_TASK", "C3T3.FREE.x"));
-            C3T3.setTool(OPCUA_Connection.getValueInt("MAIN_TASK", "C3T3.CURRENT_TOOL"));
-            C3T3.setProcessTime(OPCUA_Connection.getValueInt("MAIN_TASK", "C3T3.PROCESSING_TIME"));
+            //C3T3.setTool(OPCUA_Connection.getValueInt("MAIN_TASK", "C3T3.CURRENT_TOOL"));
+            //C3T3.setProcessTime(OPCUA_Connection.getValueInt("MAIN_TASK", "C3T3.PROCESSING_TIME"));
             //Machine C3T4
             Machine C3T4 = (Machine) SFS.getCell(4, 3);
             C3T4.setUnitPresence(!OPCUA_Connection.getValueBoolean("MAIN_TASK", "C3T4.FREE.x"));
-            C3T4.setTool(OPCUA_Connection.getValueInt("MAIN_TASK", "C3T4.CURRENT_TOOL"));
-            C3T4.setProcessTime(OPCUA_Connection.getValueInt("MAIN_TASK", "C3T4.PROCESSING_TIME"));
+            //C3T4.setTool(OPCUA_Connection.getValueInt("MAIN_TASK", "C3T4.CURRENT_TOOL"));
+            //C3T4.setProcessTime(OPCUA_Connection.getValueInt("MAIN_TASK", "C3T4.PROCESSING_TIME"));
             //Machine C3T5
             Machine C3T5 = (Machine) SFS.getCell(5, 3);
             C3T5.setUnitPresence(!OPCUA_Connection.getValueBoolean("MAIN_TASK", "C3T5.FREE.x"));
-            C3T5.setTool(OPCUA_Connection.getValueInt("MAIN_TASK", "C3T5.CURRENT_TOOL"));
-            C3T5.setProcessTime(OPCUA_Connection.getValueInt("MAIN_TASK", "C3T5.PROCESSING_TIME"));
+            //C3T5.setTool(OPCUA_Connection.getValueInt("MAIN_TASK", "C3T5.CURRENT_TOOL"));
+            //C3T5.setProcessTime(OPCUA_Connection.getValueInt("MAIN_TASK", "C3T5.PROCESSING_TIME"));
             ////Conveyor C1T7
             Cell C3T7 = SFS.getCell(7, 3);
             C3T7.setUnitPresence(!OPCUA_Connection.getValueBoolean("MAIN_TASK", "C3T7.FREE.x"));
@@ -125,18 +125,18 @@ public class readSystem implements Runnable {
             //Machine C5T3
             Machine C5T3 = (Machine) SFS.getCell(3, 5);
             C5T3.setUnitPresence(!OPCUA_Connection.getValueBoolean("MAIN_TASK", "C5T3.FREE.x"));
-            C5T3.setTool(OPCUA_Connection.getValueInt("MAIN_TASK", "C5T3.CURRENT_TOOL"));
-            C5T3.setProcessTime(OPCUA_Connection.getValueInt("MAIN_TASK", "C5T3.PROCESSING_TIME"));
+            //C5T3.setTool(OPCUA_Connection.getValueInt("MAIN_TASK", "C5T3.CURRENT_TOOL"));
+            //C5T3.setProcessTime(OPCUA_Connection.getValueInt("MAIN_TASK", "C5T3.PROCESSING_TIME"));
             //Machine C5T4
             Machine C5T4 = (Machine) SFS.getCell(4, 5);
             C5T4.setUnitPresence(!OPCUA_Connection.getValueBoolean("MAIN_TASK", "C5T4.FREE.x"));
-            C5T4.setTool(OPCUA_Connection.getValueInt("MAIN_TASK", "C5T4.CURRENT_TOOL"));
-            C5T4.setProcessTime(OPCUA_Connection.getValueInt("MAIN_TASK", "C5T4.PROCESSING_TIME"));
+            //C5T4.setTool(OPCUA_Connection.getValueInt("MAIN_TASK", "C5T4.CURRENT_TOOL"));
+            //C5T4.setProcessTime(OPCUA_Connection.getValueInt("MAIN_TASK", "C5T4.PROCESSING_TIME"));
             //Machine C3T5
             Machine C5T5 = (Machine) SFS.getCell(5, 5);
             C5T5.setUnitPresence(!OPCUA_Connection.getValueBoolean("MAIN_TASK", "C5T5.FREE.x"));
-            C5T5.setTool(OPCUA_Connection.getValueInt("MAIN_TASK", "C5T5.CURRENT_TOOL"));
-            C5T5.setProcessTime(OPCUA_Connection.getValueInt("MAIN_TASK", "C5T5.PROCESSING_TIME"));
+            //C5T5.setTool(OPCUA_Connection.getValueInt("MAIN_TASK", "C5T5.CURRENT_TOOL"));
+            //C5T5.setProcessTime(OPCUA_Connection.getValueInt("MAIN_TASK", "C5T5.PROCESSING_TIME"));
             ////Conveyor C5T7
             Cell C5T7 = SFS.getCell(7, 5);
             C5T7.setUnitPresence(!OPCUA_Connection.getValueBoolean("MAIN_TASK", "C5T7.FREE.x"));
