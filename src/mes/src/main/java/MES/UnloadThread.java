@@ -549,7 +549,9 @@ public class UnloadThread implements Runnable {
                         // Displaying the values after iterating through the queue
                         //System.out.println("The iterator values are: ");
                         int i=1;
-                        boolean flagA=false, flagB=false,flagC=false;
+                        boolean flagA=false, flagB=false,flagC=false, flagBC=false;
+                        String pathDoubleTransf="";
+                        orderTransform orderDoubleComp=null;
                         while(valueQueue.hasNext()) {
                             if(i==1){
                                 valueQueue.next();
@@ -585,6 +587,15 @@ public class UnloadThread implements Runnable {
                                 System.out.println(orderComp);
                             }
 
+                            //Caso encontre um transformação dupla possível
+                            if(transf.equals("123") && !flagBC){
+                                orderDoubleComp=orderComp;
+                                flagBC = true;
+                                System.out.println("Px: " + orderComp.getPx() + " Py: " + orderComp.getPy());
+                                pathDoubleTransf = getPathByTransformation(orderComp.getPx(), orderComp.getPy(), 1, 1, true);
+                            }
+
+
                             //Checks if order is done
                             if(orderComp.getNTotal()==orderComp.getNDone()){
                                 orderComp.setStatus(3);
@@ -592,6 +603,14 @@ public class UnloadThread implements Runnable {
                             }
 
                         }
+                        if(!flagA && !flagB && !flagC && flagBC){
+                            //Sends information to OPC-UA
+                            sendPathToOPC(unitTypeIdentifier(orderDoubleComp.getPx()), pathDoubleTransf);
+                            //Updates order information
+                            orderDoubleComp.setNDone(orderDoubleComp.getNDone() + 1);
+                            System.out.println(orderDoubleComp);
+                        }
+
 
                     }
                 }
@@ -988,15 +1007,15 @@ public class UnloadThread implements Runnable {
                     }
                     else if (orderUnitsToDo <= 15) {
                         while(bigFlagP1P9Init){
-                            boolean mA2=SFS.getCell(3,3).getUnitPresence();
-                            boolean mB2=SFS.getCell(4,3).getUnitPresence();
-                            boolean mC2=SFS.getCell(5,3).getUnitPresence();
-                            boolean rA2=SFS.getCell(3,4).getUnitPresence();
-                            boolean rB2=SFS.getCell(4,4).getUnitPresence();
-                            boolean rC2=SFS.getCell(5,4).getUnitPresence();
+                            boolean p41=SFS.getCell(1,4).getUnitPresence();
+                            boolean p42=SFS.getCell(2,4).getUnitPresence();
+                            boolean p43=SFS.getCell(3,4).getUnitPresence();
+                            boolean p61=SFS.getCell(1,6).getUnitPresence();
+                            boolean p62=SFS.getCell(2,6).getUnitPresence();
+                            boolean p63=SFS.getCell(3,6).getUnitPresence();
 
 
-                            if(!mA2 && !rA2 && !mB2 && !rB2 && !mC2 && !rC2 ){
+                            if(!p41 && !p42 && !p43 && !p61 && !p62 && !p63){
                                 System.out.println("Posso Mandar");
                                 bigFlagP1P9Init=false;
                             }
@@ -1019,36 +1038,34 @@ public class UnloadThread implements Runnable {
                     }
                     else{
                         while(bigFlagP1P9Init){
-                            boolean mA2=SFS.getCell(3,3).getUnitPresence();
-                            boolean mB2=SFS.getCell(4,3).getUnitPresence();
-                            boolean mC2=SFS.getCell(5,3).getUnitPresence();
-                            boolean rA2=SFS.getCell(3,4).getUnitPresence();
-                            boolean rB2=SFS.getCell(4,4).getUnitPresence();
-                            boolean rC2=SFS.getCell(5,4).getUnitPresence();
+                            boolean p41=SFS.getCell(1,4).getUnitPresence();
+                            boolean p42=SFS.getCell(2,4).getUnitPresence();
+                            boolean p43=SFS.getCell(3,4).getUnitPresence();
+                            boolean p61=SFS.getCell(1,6).getUnitPresence();
+                            boolean p62=SFS.getCell(2,6).getUnitPresence();
+                            boolean p63=SFS.getCell(3,6).getUnitPresence();
 
 
-                            if(!mA2 && !rA2 && !mB2 && !rB2 && !mC2 && !rC2 ){
+                            if(!p41 && !p42 && !p43 && !p61 && !p62 && !p63){
                                 System.out.println("Posso Mandar");
                                 bigFlagP1P9Init=false;
                             }
+
                         }
 
-                        if (orderCountAux%6 == 1) {
+                        if (orderCountAux%5 == 1) {
                             path = "21222324251511025352104555310656667574737271707P9"; //Mc1+Mc2+Mc3
                         }
-                        else if (orderCountAux%6 == 2) {
+                        else if (orderCountAux%5 == 2) {
                             path = "21222324141202434220445432064656667574737271707P9"; //Mb1+Mb2+Mb3
                         }
-                        else if (orderCountAux%6 == 3) {
+                        else if (orderCountAux%5 == 3) {
                             path = "21222313115233321543533156364656667574737271707P9"; //Ma1+Ma2+Ma3
                         }
-                        else if (orderCountAux%6 == 4) {
+                        else if (orderCountAux%5 == 4) {
                             path = path = "21222324251511025352104555310656667574737271707P9"; //Mc1+Mc2+Mc3
                         }
-                        else if (orderCountAux%6 == 5) {
-                            path = "21222324251511025352104555310656667574737271707P9"; //Mc1+Mc2+Mc3
-                        }
-                        else if (orderCountAux%6 == 0) {
+                        else if (orderCountAux%5 == 0) {
                             path = "21222313115233321543533156364656667574737271707P9"; //Ma1+Ma2+Ma3
                         }
 
@@ -1298,6 +1315,9 @@ public class UnloadThread implements Runnable {
 
         else if((orderPxCompatible.equals("P1") && orderPyCompatible.equals("P4")) || (orderPxCompatible.equals("P4") && orderPyCompatible.equals("P5")) || (orderPxCompatible.equals("P4") && orderPyCompatible.equals("P8")) || (orderPxCompatible.equals("P8") && orderPyCompatible.equals("P9"))){
             compatible=compatible + "3";
+        }
+        else if((orderPxCompatible.equals("P3") && orderPyCompatible.equals("P8")) || (orderPxCompatible.equals("P3") && orderPyCompatible.equals("P5"))){
+            compatible=compatible + "23";
         }
 
         return compatible;
