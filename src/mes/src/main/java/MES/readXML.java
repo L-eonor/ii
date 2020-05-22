@@ -11,9 +11,8 @@ import java.io.File;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import static MES.Main.orderListUnload;
+import static MES.Main.*;
 import static MES.createXML.*;
-import static MES.Main.ordersPriority;
 
 // This piece of code reads the XML and adds the orders to the respective list
 // The parameters are just mockups
@@ -86,8 +85,10 @@ public class readXML {
                             Integer.parseInt(element1.getAttribute("Quantity")),
                             0,
                             Integer.parseInt(element1.getAttribute("MaxDelay")));
-
+                    priorityFlagServer=true;
+                    while(priorityFlagUnload);
                     ordersPriority.add((orderTransform) order);
+                    priorityFlagServer=false;
                 }
 
             }

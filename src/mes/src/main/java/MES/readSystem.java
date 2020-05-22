@@ -16,7 +16,7 @@ public class readSystem implements Runnable {
             /* --------------------------- COLLUMN 0 --------------------------------*/
             //WarehouseOut AT1
             Cell AT1 = SFS.getCell(1, 0);
-            AT1.setUnitPresence(!OPCUA_Connection.getValueBoolean("MAIN_TASK", "AT1._FREE.x"));
+            AT1.setUnitPresence(!OPCUA_Connection.getValueBoolean("MAIN_TASK", "AT1.INIT.x"));
             //WarehouseIn AT2
             Cell AT2 = SFS.getCell(7, 0);
             AT2.setUnitPresence(!OPCUA_Connection.getValueBoolean("MAIN_TASK", "AT2.EMPTY.x"));

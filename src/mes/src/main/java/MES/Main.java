@@ -7,6 +7,7 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.PriorityBlockingQueue;
 
 
 public class Main {
@@ -19,6 +20,8 @@ public class Main {
     public static ConcurrentHashMap<Integer, Integer> receivedOrderPieces = new ConcurrentHashMap<>(); //
     public static List<orderLoad> orderListLoad = Collections.synchronizedList(new ArrayList<>());
 
+    public static boolean priorityFlagServer=false;
+    public static boolean priorityFlagUnload=false;
     public static int unitCount=0;
 
 
@@ -43,22 +46,26 @@ public class Main {
         udpServer server = new udpServer(port);
         //createXML client = new createXML("C:\\Users\\kicop\\Desktop\\requeststores.xml"); // linha de testes
 
-        ExecutorService executorService = Executors.newFixedThreadPool(6);
+        //ExecutorService executorService = Executors.newFixedThreadPool(10);
 
         //Starts thread that reads XML files with orders from ERP
-        executorService.submit(server);
+        //executorService.submit(server);
+        new Thread(server).start();
 
         //Start thread that updates Floor
-        readSystem floorUpdate = new readSystem();
-        executorService.submit(floorUpdate);
+        //readSystem floorUpdate = new readSystem();
+        //executorService.submit(floorUpdate);
+        new Thread(new readSystem()).start();
 
         //Start thread that handles Unload Orders
-        UnloadThread unloadHandler = new UnloadThread();
-        executorService.submit(unloadHandler);
+        //UnloadThread unloadHandler = new UnloadThread();
+        //executorService.submit(unloadHandler);
+        new Thread(new UnloadThread()).start();
 
         //Start thread that handles Load Orders
-        LoadThread loadHandler = new LoadThread();
-        executorService.submit(loadHandler);
+        //LoadThread loadHandler = new LoadThread();
+        //executorService.submit(loadHandler);
+        new Thread(new LoadThread()).start();
 
         //PusherThread1 pusherHandler1 = new PusherThread1();
         //executorService.submit(pusherHandler1);
@@ -69,8 +76,9 @@ public class Main {
         //PusherThread3 pusherHandler3 = new PusherThread3();
         //executorService.submit(pusherHandler3);
 
-        WarehouseIn warehouseInHandler = new WarehouseIn();
-        executorService.submit(warehouseInHandler);
+        //WarehouseIn warehouseInHandler = new WarehouseIn();
+        //executorService.submit(warehouseInHandler);
+        new Thread(new WarehouseIn()).start();
 
 
     }
