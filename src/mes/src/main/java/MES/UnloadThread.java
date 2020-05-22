@@ -250,7 +250,8 @@ public class UnloadThread implements Runnable {
 
             }*/
             else if (!Main.ordersPriority.isEmpty()) {
-                orderTransform order = Main.ordersPriority.peek();
+                int index = getMaxPriority();
+                orderTransform order= ordersPriority.get(index);
 
                 //Order attributes
                 int orderUnitsDone = order.getNDone();
@@ -267,14 +268,14 @@ public class UnloadThread implements Runnable {
                         if (order.getNDone() == order.getNTotal()) {
                             order.setStatus(3); //Set order status to "All pieces sent".
                             //System.out.println(order);
-                            Main.orderListTransformationEnded.add(Main.ordersPriority.poll());
+                            Main.orderListTransformationEnded.add(Main.ordersPriority.remove(index));
                             break;
                         }
 
                         //Verifies if it's out of units
                         if(Warehouse.getPiece(orderPx) <= 0){
                             order.setStatus(3); //Set order status to "All pieces sent".
-                            orderListTransformationOutOfUnits.add(Main.ordersPriority.poll());
+                            orderListTransformationOutOfUnits.add(Main.ordersPriority.remove(index));
                             break;
                         }
 
@@ -285,7 +286,8 @@ public class UnloadThread implements Runnable {
                         }
 
                         //Verifies if a Transform Order order with higher priority came in
-                        if (Main.ordersPriority.peek() != order) {
+                        int indexAux = getMaxPriority();
+                        if (indexAux != index) {
                             order.setStatus(2); //Set order status to "in pause".
                             break;
                         }
@@ -547,8 +549,6 @@ public class UnloadThread implements Runnable {
                         System.out.println(order);
 
 
-                        //Iterate to check if the transformations can be done at the same time
-                        Iterator valueQueue = ordersPriority.iterator();
 
                         // Displaying the values after iterating through the queue
                         //System.out.println("The iterator values are: ");
@@ -556,20 +556,15 @@ public class UnloadThread implements Runnable {
                         boolean flagA=false, flagB=false,flagC=false, flagDouble=false;
                         String pathDoubleTransf="";
                         orderTransform orderDoubleComp=null;
-                        int pqSize=ordersPriority.size();
-                        while (priorityFlagServer);
-                        while(valueQueue.hasNext()) {
-                            priorityFlagUnload=true;
-                            System.out.println("Priority Queue Size: "+ ordersPriority.size());
-                            if(pqSize != ordersPriority.size())
-                            if(i==1){
-                                valueQueue.next();
-                                i++;
+
+                        for(int a=0; a < Main.ordersPriority.size(); a++){
+                            if(a==index){
+                                a++;
                                 continue;
                             }
 
-                            orderTransform orderComp;
-                            orderComp = (orderTransform) valueQueue.next();
+                            orderTransform orderComp = Main.ordersPriority.get(a);
+
                             // If it's been done, keep looking
                             if(orderComp.getNDone()==orderComp.getNTotal()) continue;
 
@@ -626,7 +621,7 @@ public class UnloadThread implements Runnable {
                             //Checks if order is done
                             if(orderComp.getNTotal()==orderComp.getNDone()){
                                 orderComp.setStatus(3);
-                                Main.orderListTransformationEnded.add(orderComp);
+                                Main.orderListTransformationEnded.add(ordersPriority.remove(a));
                             }
 
                         }
@@ -643,7 +638,7 @@ public class UnloadThread implements Runnable {
                 }
                 else {
                     order.setStatus(3); //Set order status to "All pieces sent".
-                    orderListTransformationOutOfUnits.add(Main.ordersPriority.poll());
+                    orderListTransformationOutOfUnits.add(Main.ordersPriority.remove(index));
                 }
 
             }
@@ -1496,4 +1491,22 @@ public class UnloadThread implements Runnable {
         return compatible;
     }
 
+
+    private int getMaxPriority(){
+        orderTransform maxPriority = ordersPriority.get(0);
+        orderTransform maxPriorityNew;
+        int maxPriorityIndex=0;
+
+        for(int i=1; i < ordersPriority.size(); i++){
+            maxPriorityNew=ordersPriority.get(i);
+
+            if(maxPriorityNew.getIdealEndTime() < maxPriority.getIdealEndTime()){
+              maxPriority=maxPriorityNew;
+              maxPriorityIndex=i;
+            }
+
+        }
+
+        return maxPriorityIndex;
+    }
 }

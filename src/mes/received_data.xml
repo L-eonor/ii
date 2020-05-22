@@ -21,14 +21,8 @@
 >
 ]>
 <ORDERS>
-<Order Number="004">
-<Transform From="P4" To="P8" Quantity="7" MaxDelay="300"/>
-</Order>
-<Order Number="005">
-<Unload Type="P9" Destination="D2" Quantity="8"/>
-</Order>
-<Order Number="006">
-<Unload Type="P6" Destination="D3" Quantity="6"/>
-</Order>
+<Request_Stores/>
 </ORDERS>
+
+
 

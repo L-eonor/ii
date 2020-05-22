@@ -85,10 +85,9 @@ public class readXML {
                             Integer.parseInt(element1.getAttribute("Quantity")),
                             0,
                             Integer.parseInt(element1.getAttribute("MaxDelay")));
-                    priorityFlagServer=true;
-                    while(priorityFlagUnload);
+
                     ordersPriority.add((orderTransform) order);
-                    priorityFlagServer=false;
+
                 }
 
             }

@@ -91,7 +91,7 @@ public class OPCUA_Connection {
 
     }
 
-    public static int getValueInt(String cellName, String VarName) {
+    public synchronized static int getValueInt(String cellName, String VarName) {
         String aux1;
         aux1 = aux + cellName + "." + VarName;
         NodeId nodeidstring = new NodeId(id_node, aux1);
@@ -116,7 +116,7 @@ public class OPCUA_Connection {
     }
 
 
-    public static boolean getValueBoolean(String cellName, String VarName) {
+    public synchronized static boolean getValueBoolean(String cellName, String VarName) {
         String aux1;
         aux1 = aux + cellName + "." + VarName;
         NodeId nodeidstring = new NodeId(id_node, aux1);
@@ -145,7 +145,7 @@ public class OPCUA_Connection {
      * boolean ValueSet -> contém o valor "true" ou "false" que se pretende atribuir à variável
      */
 
-    static void setValueBoolean(String cellName, String VarName, boolean ValueSet) {
+    static synchronized void setValueBoolean(String cellName, String VarName, boolean ValueSet) {
         String aux2;
         aux2 = aux + cellName + "." + VarName;
         NodeId nodeidstring = new NodeId(id_node, aux2);
@@ -166,7 +166,7 @@ public class OPCUA_Connection {
         }
     }
 
-    public static void setValueInt(String cellName, String VarName, int ValueSet) {
+    public synchronized static void setValueInt(String cellName, String VarName, int ValueSet) {
         String aux2;
         aux2 = aux + cellName + "." + VarName;
         NodeId nodeidstring = new NodeId(id_node,aux2);
@@ -186,7 +186,7 @@ public class OPCUA_Connection {
         }
     }
 
-    public static void setValueString(String cellName, String VarName, String ValueSet) {
+    public synchronized static void setValueString(String cellName, String VarName, String ValueSet) {
         String aux2;
         aux2 = aux + cellName + "." + VarName;
         NodeId nodeidstring = new NodeId(id_node, aux2);
