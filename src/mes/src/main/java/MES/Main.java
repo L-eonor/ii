@@ -11,17 +11,14 @@ import java.util.concurrent.PriorityBlockingQueue;
 
 
 public class Main {
-    public static List<orderTransform> ordersPriority = Collections.synchronizedList(new ArrayList<>());
+    public static List<orderTransform> ordersPriority = Collections.synchronizedList(new ArrayList<>());// to keep Incoming Transformation Orders
     public static List<orderTransform> orderListTransformationOutOfUnits = Collections.synchronizedList(new ArrayList<>());
     public static List<orderTransform> orderListTransformationEnded = Collections.synchronizedList(new ArrayList<>()); //to keep Transformation Orders after being sent
     public static List<orderUnload> orderListUnloadEnded = Collections.synchronizedList(new ArrayList<>()); //to keep Unload orders after being sent
     public static List<orderUnload> orderListUnload = Collections.synchronizedList(new ArrayList<>()); //to keep unload orders in waiting state
-    //public static PriorityQueue<orderTransform> ordersPriority = new PriorityQueue<>(new OrderComparator()); //to keep Transformations orders organized by priority
     public static ConcurrentHashMap<Integer, Integer> receivedOrderPieces = new ConcurrentHashMap<>(); //
     public static List<orderLoad> orderListLoad = Collections.synchronizedList(new ArrayList<>());
 
-    public static boolean priorityFlagServer=false;
-    public static boolean priorityFlagUnload=false;
     public static int unitCount=0;
 
 

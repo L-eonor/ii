@@ -559,7 +559,6 @@ public class UnloadThread implements Runnable {
 
                         for(int a=0; a < Main.ordersPriority.size(); a++){
                             if(a==index){
-                                a++;
                                 continue;
                             }
 
@@ -575,6 +574,10 @@ public class UnloadThread implements Runnable {
                                 pathString = getPathByTransformation(orderComp.getPx(), orderComp.getPy(), 1, 1, true);
                                 orderInfo ="1" + orderComp.getId();
                                 pathString=pathString+orderInfo;
+
+                                if (orderComp.getNDone() == 0) orderComp.setStartTime(StopWatch.getTimeElapsed()); //Set order start Time
+                                if (orderComp.getStatus() != 2) orderComp.setStatus(2); //Set order status to "in progress".
+
                                 //Sends information to OPC-UA
                                 sendPathToOPC(unitTypeIdentifier(orderComp.getPx()), pathString);
                                 //Updates order information
@@ -587,6 +590,10 @@ public class UnloadThread implements Runnable {
                                 pathString = getPathByTransformation(orderComp.getPx(), orderComp.getPy(), 1, 1, true);
                                 orderInfo ="1" + orderComp.getId();
                                 pathString=pathString+orderInfo;
+
+                                if (orderComp.getNDone() == 0) orderComp.setStartTime(StopWatch.getTimeElapsed()); //Set order start Time
+                                if (orderComp.getStatus() != 2) orderComp.setStatus(2); //Set order status to "in progress".
+
                                 //Sends information to OPC-UA
                                 sendPathToOPC(unitTypeIdentifier(orderComp.getPx()), pathString);
                                 //Updates order information
@@ -599,18 +606,24 @@ public class UnloadThread implements Runnable {
                                 pathString = getPathByTransformation(orderComp.getPx(), orderComp.getPy(), 1, 1, true);
                                 orderInfo ="1" + orderComp.getId();
                                 pathString=pathString+orderInfo;
+
+                                if (orderComp.getNDone() == 0) orderComp.setStartTime(StopWatch.getTimeElapsed()); //Set order start Time
+                                if (orderComp.getStatus() != 2) orderComp.setStatus(2); //Set order status to "in progress".
+
                                 //Sends information to OPC-UA
                                 sendPathToOPC(unitTypeIdentifier(orderComp.getPx()), pathString);
                                 //Updates order information
                                 orderComp.setNDone(orderComp.getNDone() + 1);
                                 //System.out.println(orderComp);
                             }
-                            priorityFlagUnload=false;
 
                             //Caso encontre um transformação dupla possível
                             if((transf.equals("123") || transf.equals("312"))  && !flagDouble){
-                                orderDoubleComp=orderComp;
+                                orderDoubleComp=ordersPriority.get(a);
                                 flagDouble = true;
+
+                                if (orderDoubleComp.getNDone() == 0) orderDoubleComp.setStartTime(StopWatch.getTimeElapsed()); //Set order start Time
+                                if (orderDoubleComp.getStatus() != 2) orderDoubleComp.setStatus(2); //Set order status to "in progress".
 
                                 pathDoubleTransf = getPathByTransformation(orderComp.getPx(), orderComp.getPy(), 1, 1, true);
                                 orderInfo ="1" + orderComp.getId();
@@ -625,6 +638,7 @@ public class UnloadThread implements Runnable {
                             }
 
                         }
+
                         if(!flagA && !flagB && !flagC && flagDouble){
                             //Sends information to OPC-UA
                             sendPathToOPC(unitTypeIdentifier(orderDoubleComp.getPx()), pathDoubleTransf);
