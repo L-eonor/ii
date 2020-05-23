@@ -29,8 +29,10 @@ public class readXML {
 
         // Envia info sobre as peças em armazém quando pedido
         if (document.getElementsByTagName("Request_Stores").getLength() != 0) {
-            createXML xml = new createXML("C:\\Users\\kicop\\Desktop\\requeststores.xml");
-            udpClient client = new udpClient(54321, "C:\\XML\\requeststores.xml");
+            //createXML xml = new createXML("C:\\Users\\kicop\\Desktop\\requeststores.xml");
+            //udpClient client = new udpClient(54321, "C:\\XML\\requeststores.xml");
+            //createXML xml = new createXML("C:\\Users\\cjoao\\Desktop\\ii-Teste\\src\\mes\\requeststores.xml");
+            //udpClient client = new udpClient(54321, "C:\\Users\\cjoao\\Desktop\\ii-Teste\\src\\mes\\requeststores.xml");
         }
 
         // Lê as ordens restantes do XML e cria um novo elemento do tipo ordem
@@ -65,6 +67,10 @@ public class readXML {
 
 
                     orderListUnload.add((orderUnload) order);
+
+                    //add on Database
+                    orderUnload order_aux = (orderUnload) order;
+                    dbConnection.insertNew_OrderUnloadDB(order_aux.getId(), order_aux.getPx(), order_aux.getDy(), order_aux.getQuantity());
                 }
 
                 if (((Element) node).getElementsByTagName("Transform").getLength() != 0) {

@@ -108,11 +108,16 @@ public class UnloadThread implements Runnable {
                         }
 
                         //Sends information to OPC-UA
+
                         sendPathToOPC(unitTypeIdentifier(orderPx), pathString);
+
 
                         //Updates Unload order information
                         orderUnitsDone++;
                         order.setNDone(orderUnitsDone);
+
+                        //Update Unload Order on DataBase
+                        dbConnection.updateNDone_OrderUnloadDB(order.getId(), orderUnitsDone);
 
                         //System.out.println(" # # # # # # # # # # # # ");
 
@@ -541,7 +546,9 @@ public class UnloadThread implements Runnable {
                         String orderInfo ="1" + order.getId();
                         pathString=pathString+orderInfo;
                         //Sends information to OPC-UA
+
                         sendPathToOPC(unitTypeIdentifier(orderPx), pathString);
+
                         orderCountAux++;
                         //Updates order information
                         orderUnitsDone++;
@@ -580,6 +587,7 @@ public class UnloadThread implements Runnable {
 
                                 //Sends information to OPC-UA
                                 sendPathToOPC(unitTypeIdentifier(orderComp.getPx()), pathString);
+
                                 //Updates order information
                                 orderComp.setNDone(orderComp.getNDone() + 1);
                                 //System.out.println(orderComp);
@@ -596,6 +604,7 @@ public class UnloadThread implements Runnable {
 
                                 //Sends information to OPC-UA
                                 sendPathToOPC(unitTypeIdentifier(orderComp.getPx()), pathString);
+
                                 //Updates order information
                                 orderComp.setNDone(orderComp.getNDone() + 1);
                                 //System.out.println(orderComp);

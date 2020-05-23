@@ -22,9 +22,12 @@ public class OPCUA_Connection {
 
     private static OpcUaClient client;
     private static Object ValueL;
+    private static String getValueIntString;
     private String Client_Name;
     private static int id_node = 4;
     private static String aux = "|var|CODESYS Control Win V3 x64.Application.";
+
+    /** getValueInt **/
 
     public OPCUA_Connection(String client_Name) {
         super();
@@ -91,7 +94,7 @@ public class OPCUA_Connection {
 
     }
 
-    public synchronized static int getValueInt(String cellName, String VarName) {
+    public static int getValueInt(String cellName, String VarName) {
         String aux1;
         aux1 = aux + cellName + "." + VarName;
         NodeId nodeidstring = new NodeId(id_node, aux1);
@@ -100,8 +103,8 @@ public class OPCUA_Connection {
             value = client.readValue(0, TimestampsToReturn.Both, nodeidstring).get();
             setValueL(value);
             ValueL = ((DataValue)getValueL()).getValue().getValue();
+            //getValueIntString = String.valueOf(ValueL);
             //System.out.println("O valor da variável é: " + ValueL);
-
         } catch (InterruptedException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -110,13 +113,15 @@ public class OPCUA_Connection {
             e.printStackTrace();
         }
 
-        String vString = String.valueOf(ValueL); //Passar do tipo UShort para String
-        int vInt =  Integer.parseInt(vString); //Passar de String para int (não encontrámos forma direta)
+        //if (ValueL == null) return 0;
+        String vString = String.valueOf(ValueL);
+        int vInt = Integer.parseInt(vString); //Passar de String para int (não encontrámos forma direta)
         return vInt;
+
     }
 
 
-    public synchronized static boolean getValueBoolean(String cellName, String VarName) {
+    public static boolean getValueBoolean(String cellName, String VarName) {
         String aux1;
         aux1 = aux + cellName + "." + VarName;
         NodeId nodeidstring = new NodeId(id_node, aux1);
@@ -145,7 +150,7 @@ public class OPCUA_Connection {
      * boolean ValueSet -> contém o valor "true" ou "false" que se pretende atribuir à variável
      */
 
-    static synchronized void setValueBoolean(String cellName, String VarName, boolean ValueSet) {
+    static void setValueBoolean(String cellName, String VarName, boolean ValueSet) {
         String aux2;
         aux2 = aux + cellName + "." + VarName;
         NodeId nodeidstring = new NodeId(id_node, aux2);
@@ -166,7 +171,7 @@ public class OPCUA_Connection {
         }
     }
 
-    public synchronized static void setValueInt(String cellName, String VarName, int ValueSet) {
+    public static void setValueInt(String cellName, String VarName, int ValueSet) {
         String aux2;
         aux2 = aux + cellName + "." + VarName;
         NodeId nodeidstring = new NodeId(id_node,aux2);
@@ -186,7 +191,7 @@ public class OPCUA_Connection {
         }
     }
 
-    public synchronized static void setValueString(String cellName, String VarName, String ValueSet) {
+    public static void setValueString(String cellName, String VarName, String ValueSet) {
         String aux2;
         aux2 = aux + cellName + "." + VarName;
         NodeId nodeidstring = new NodeId(id_node, aux2);

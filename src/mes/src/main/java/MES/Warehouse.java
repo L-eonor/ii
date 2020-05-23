@@ -13,6 +13,9 @@ public class Warehouse {
     private static int P8=0;
     private static int P9=0;
 
+    public Warehouse() {
+    }
+
     //Methods
 
     public static void removePiece(String type){
