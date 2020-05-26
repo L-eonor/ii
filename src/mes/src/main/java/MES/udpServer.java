@@ -29,8 +29,8 @@ public class udpServer implements Runnable{
                 serverSocket.receive(datagramPacket);
 
                 if(datagramPacket.getData()!=null) {
-                    //FileWriter file = new FileWriter("C:\\Users\\kicop\\Git_Repo\\InformaticaIndustrial\\ii\\src\\mes\\received_data.xml");
-                    FileWriter file = new FileWriter("C:\\Users\\cjoao\\Desktop\\ii-Teste\\src\\mes\\received_data.xml");
+                    FileWriter file = new FileWriter("C:\\Users\\kicop\\Git_Repo\\InformaticaIndustrial\\ii\\src\\mes\\received_data.xml");
+                    //FileWriter file = new FileWriter("C:\\Users\\cjoao\\Desktop\\ii-Teste\\src\\mes\\received_data.xml");
 
                     PrintWriter out = new PrintWriter(file,false);
                     byte[] data = new byte[datagramPacket.getLength()];
@@ -38,8 +38,8 @@ public class udpServer implements Runnable{
                     String line = new String(data);
                     out.println(line);
                     out.flush();
-                    //ReadXML("C:\\Users\\kicop\\Git_Repo\\InformaticaIndustrial\\ii\\src\\mes\\received_data.xml");
-                    ReadXML("C:\\Users\\cjoao\\Desktop\\ii-Teste\\src\\mes\\received_data.xml");
+                    ReadXML("C:\\Users\\kicop\\Git_Repo\\InformaticaIndustrial\\ii\\src\\mes\\received_data.xml");
+                    //ReadXML("C:\\Users\\cjoao\\Desktop\\ii-Teste\\src\\mes\\received_data.xml");
                     out.close();
                     file.close();
                 }

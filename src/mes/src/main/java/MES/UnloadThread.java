@@ -553,7 +553,7 @@ public class UnloadThread implements Runnable {
                         //Updates order information
                         orderUnitsDone++;
                         order.setNDone(orderUnitsDone);
-                        System.out.println(order);
+                        //System.out.println(order);
 
 
 
@@ -655,6 +655,7 @@ public class UnloadThread implements Runnable {
                             orderDoubleComp.setNDone(orderDoubleComp.getNDone() + 1);
                             //System.out.println(orderDoubleComp);
                         }
+
 
 
                     }

@@ -69,5 +69,7 @@ public class WarehouseIn implements Runnable{
         else {
             Main.receivedOrderPieces.put(orderKey,1);
         }
+
+        System.out.println(Main.receivedOrderPieces.get(orderKey));
     }
 }

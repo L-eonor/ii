@@ -29,8 +29,8 @@ public class Main {
 
     //OPC-UA related
     //public static String aux = "DESKTOP-LPATDUL";
-    //public static String Client = "opc.tcp://DESKTOP-RNTM3PU:4840";
-    public static String Client = "opc.tcp://LAPTOP-UGJ82VH1:4840";
+    public static String Client = "opc.tcp://DESKTOP-RNTM3PU:4840";
+    //public static String Client = "opc.tcp://LAPTOP-UGJ82VH1:4840";
     public static OPCUA_Connection MyConnection = new OPCUA_Connection(Client);
 
 
@@ -54,7 +54,7 @@ public class Main {
         //Starts thread that reads XML files with orders from ERP
         //executorService.submit(server);
 
-        initRoutine();
+        //initRoutine();
         new Thread(server).start();
 
         //Start thread that updates Floor
@@ -74,6 +74,7 @@ public class Main {
 
         //PusherThread1 pusherHandler1 = new PusherThread1();
         //executorService.submit(pusherHandler1);
+        new Thread(new PusherThread1()).start();
 
         //PusherThread2 pusherHandler2 = new PusherThread2();
         //executorService.submit(pusherHandler2);
