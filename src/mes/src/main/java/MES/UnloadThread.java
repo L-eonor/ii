@@ -15,6 +15,12 @@ public class UnloadThread implements Runnable {
     //Attributes
     static boolean bigFlagP1P9Init=true;
     static boolean bigFlagP1P9End=false;
+    static boolean bigFlagDoubleInitA=true;
+    static boolean bigFlagDoubleEndA=false;
+    static boolean bigFlagDoubleInitB=true;
+    static boolean bigFlagDoubleEndB=false;
+    static boolean bigFlagDoubleInitC=true;
+    static boolean bigFlagDoubleEndC=false;
     static int  countCollumns=1;
     static int[] warehouseOut = {1, 1};
     static int[] warehouseIn = {0, 7};
@@ -36,11 +42,7 @@ public class UnloadThread implements Runnable {
 
         while (true) {
 
-            //System.out.println(" - 1 : "+ !Main.orderListUnload.isEmpty() +" "+!checkIfWaiting()+" "+ piecesAvailableForOneUnload());
-            //System.out.println(" - 2 : "+!Main.ordersPriority.isEmpty()+ " "+ !piecesAvailableForOutofUnits());
-            //System.out.println(" - 3 : "+ !orderListTransformationOutOfUnits.isEmpty() +""+ piecesAvailableForOutofUnits());
-
-            if(!Main.orderListUnload.isEmpty() && !checkIfWaiting()) {
+            if(!Main.orderListUnload.isEmpty() && checkIfAtLeastOneCanHappen()) {
 
                 orderUnload order = Main.orderListUnload.remove(0);
 
@@ -62,6 +64,10 @@ public class UnloadThread implements Runnable {
 
                     //Update order status to "in progress".
                     if(order.getStatus() != 2) order.setStatus(2);
+
+                    //Update order in db
+                    dbConnection.updateStatus_OrderUnloadDB(order.getId(), order.getStatus());
+
 
                     //Calculate path to Slider (every Unload order unit has the same path)
                     StringBuilder pathStringBuilder = new StringBuilder();
@@ -93,12 +99,11 @@ public class UnloadThread implements Runnable {
                     String pathString = pathStringBuilder.toString().replaceFirst(".{2}$", actionPush);
 
                     // Adds order info to the end
-                    pathString += order.getPx() + "2" + order.getId();
+                    pathString += order.getPx() +"T"+ "2" + order.getId();
 
-                    System.out.println("[Unload] Esta é a string: " + pathString);
+                    //System.out.println("[Unload] Esta é a string: " + pathString);
 
                     for (int a = orderUnitsDone; a < orderUnitsTotal; a++) {
-                        //System.out.println(" # # # # # # # # # # # # ");
 
                         //Condition to verify when Slider is full or no more units are available to send
                         if (slider.isFull() || (Warehouse.getPiece(order.getPx()) <= 0)) {
@@ -119,8 +124,6 @@ public class UnloadThread implements Runnable {
                         //Update Unload Order on DataBase
                         dbConnection.updateNDone_OrderUnloadDB(order.getId(), orderUnitsDone);
 
-                        //System.out.println(" # # # # # # # # # # # # ");
-
                     }
 
                 }
@@ -132,130 +135,15 @@ public class UnloadThread implements Runnable {
                 if(order.getQuantity() == order.getNDone()) {
                     order.setStatus(3); //Set order status to "All pieces sent".
                     Main.orderListUnloadEnded.add(order);
+
+                    //Update order in db
+                    dbConnection.updateStatus_OrderUnloadDB(order.getId(), order.getStatus());
+
                 }
 
             }
-            /*else if (!orderListTransformationOutOfUnits.isEmpty() && piecesAvailableForOutofUnits()) {
-
-                orderTransform order = orderListTransformationOutOfUnits.remove(0);
-
-                //Order attributes
-                int orderUnitsDone = order.getNDone();
-                int orderUnitsTotal = order.getNTotal();
-                String orderPx = order.getPx();
-                String orderPy = order.getPy();
-
-                if(Warehouse.getPiece(orderPx) > 0) {
-                    System.out.println("WareHouse Pieces > 0");
-                    while (orderUnitsDone <= orderUnitsTotal) {
-                        System.out.println("A fazer a ordem.");
-
-                        //Verifies if orderUnitsDone = orderUnitsTotal and if yes, polls and updates Order
-                        if (order.getNDone() == order.getNTotal()) {
-                            order.setStatus(3); //Set order status to "All pieces sent".
-                            //System.out.println(order);
-                            Main.orderListTransformationEnded.add(order);
-                            break;
-                        }
-
-                        //Verifies if it's out of units
-                        if(Warehouse.getPiece(orderPx) <= 0){
-                            order.setStatus(2); //Set order status to "All pieces sent".
-                            orderListTransformationOutOfUnits.add(order);
-                            break;
-                        }
-
-                        //Verifies if an Unload Order came in
-                        if (!Main.orderListUnload.isEmpty() && !checkIfWaiting() && piecesAvailableForOneUnload()) {
-                            order.setStatus(2); //Set order status to "in pause".
-                            orderListTransformationOutOfUnits.add(order);
-                            break;
-                        }
-
-                        //System.out.println(" # # # # # # # # # # # # ");
-
-                        if (orderUnitsDone == 0) order.setStartTime(StopWatch.getTimeElapsed()); //Set order start Time
-                        if (order.getStatus() != 2) order.setStatus(2); //Set order status to "in progress".
-
-                        //Finds transformations to do
-                        if (transformTable.searchTransformations(orderPx, orderPy)) {
-                            //System.out.println("Searched transformations. Found " + transformTable.solutions.size() + " solutions.");
-                        } else System.out.println(" No need for transformations. ");
-
-                        //String with the whole path of the Transformation order
-                        StringBuilder pathString = new StringBuilder();
-
-                        //Retrieves transformations with lowest time cost
-                        GraphSolution transformationResult = transformTable.solutions.poll();
-                        if (transformationResult == null)
-                            throw new AssertionError("Error: transformationResult null pointer.");
-
-
-                        //Starts finding path according to transformations
-                        Machine machineToGo;
-                        int[] startTransformation = warehouseOut;
-                        int[] goalTransformation = {0, 0};
-                        String previousMachine = "";
-
-                        for (int j = 0; j < transformationResult.transformations.size(); j++) {
-
-                            //Identify machine
-                            String machineNow = transformationResult.machines.get(j);
-
-                            //Relate machine type with respective position
-                            if (!previousMachine.equals(machineNow)) {
-                                machineToGo = SFS.getMachineToSendPiece(machineNow);
-                                goalTransformation = reverseArray(machineToGo.getPosition());
-                                if (goalTransformation == null)
-                                    System.out.println("Error: order machine input not valid. ");
-                                else {
-                                    machineToGo.addWeight();
-                                }
-
-                                //Calculate path to Machine
-                                Path_Logic path = new Path_Logic(startTransformation, goalTransformation, "Transformation");
-                                pathString.append(path.getStringPath());
-                                previousMachine = machineNow;
-                            } else {
-                                String machinePositionString = String.valueOf(goalTransformation[0]) + String.valueOf(goalTransformation[1]);
-                                pathString.append(machinePositionString);
-                            }
-
-                            //Add Tool and Time to string respectively
-                            pathString.append(transformationResult.tool.get(j)).append(transformationResult.timeCost.get(j));
-                            startTransformation = goalTransformation;
-                        }
-
-                        //Path to Warehouse In cell
-                        Path_Logic pathEnd = new Path_Logic(startTransformation, warehouseIn, "Transformation");
-                        pathString.append(pathEnd.getStringPath());
-                        // Adds order info to the end
-                        String orderInfo = order.getPy() + "1" + order.getId();
-                        pathString.append(orderInfo);
-
-                        System.out.println("[Transformation] Esta é a string: " + pathString);
-
-
-                        //Sends information to OPC-UA
-                        sendPathToOPC(unitTypeIdentifier(orderPx), pathString.toString());
-
-                        //Updates order information
-                        orderUnitsDone++;
-                        order.setNDone(orderUnitsDone);
-
-                        //System.out.println(" # # # # # # # # # # # # ");
-                        //System.out.println();
-
-                    }
-                }
-                else {
-                    order.setStatus(3); //Set order status to "All pieces sent".
-                    orderListTransformationOutOfUnits.add(order);
-                }
-
-            }*/
             else if (!Main.ordersPriority.isEmpty()) {
-                int index = getMaxPriority();
+                int index = getMaxPriority(); //retorna a mais "urgente" desde que existam peças
                 orderTransform order= ordersPriority.get(index);
 
                 //Order attributes
@@ -268,24 +156,28 @@ public class UnloadThread implements Runnable {
 
                 if(Warehouse.getPiece(orderPx) > 0) {
                     while (orderUnitsDone <= orderUnitsTotal) {
+                        //Verifies if it's out of units
+                        if(Warehouse.getPiece(orderPx) <= 0){
+                            order.setStatus(2); //Set order status to "All pieces sent".
+                            order.setOutOfUnits(true);
+                            break;
+                        }
 
                         //Verifies if orderUnitsDone = orderUnitsTotal and if yes, polls and updates Order
                         if (order.getNDone() == order.getNTotal()) {
                             order.setStatus(3); //Set order status to "All pieces sent".
                             //System.out.println(order);
                             Main.orderListTransformationEnded.add(Main.ordersPriority.remove(index));
+
+                            //Update order in db
+                            dbConnection.updateStatus_OrderUnloadDB(order.getId(), order.getStatus());
+
                             break;
                         }
 
-                        //Verifies if it's out of units
-                        if(Warehouse.getPiece(orderPx) <= 0){
-                            order.setStatus(3); //Set order status to "All pieces sent".
-                            orderListTransformationOutOfUnits.add(Main.ordersPriority.remove(index));
-                            break;
-                        }
 
                         //Verifies if an Unload Order came in
-                        if (!Main.orderListUnload.isEmpty() && !checkIfWaiting()) {
+                        if (!Main.orderListUnload.isEmpty() && checkIfAtLeastOneCanHappen()) {
                             order.setStatus(2); //Set order status to "in pause".
                             break;
                         }
@@ -302,231 +194,6 @@ public class UnloadThread implements Runnable {
 
                         String pathString;
 
-    /*
-
-
-                        //Finds transformations to do
-                        if (transformTable.searchTransformations(orderPx, orderPy)) {
-                        /* prints all transformations
-                        Iterator value = transformTable.solutions.iterator();
-                        while(value.hasNext()) {
-                            System.out.println(transformTable.solutions.poll());
-                        }
-                        } else System.out.println(" No need for transformations. ");
-
-                        //String with the whole path of the Transformation order
-                        StringBuilder pathString = new StringBuilder();
-
-                        //Retrieves transformations with lowest time cost
-                        GraphSolution transformationResult = transformTable.solutions.poll();
-                        if (transformationResult == null)
-                            throw new AssertionError("Error: transformationResult null pointer.");
-
-
-                        //Starts finding path according to transformations
-                        Machine machineToGo;
-                        int[] startTransformation = warehouseOut;
-                        int[] goalTransformation = {0, 0};
-                        String previousMachine = "";
-
-                        String aux="";
-                        int sameMachine=1;
-                        int lastSameMachine=0;
-
-                        for(int a=0; a < transformationResult.transformations.size(); a++) {
-
-                            String machineNow = transformationResult.machines.get(a);
-                            if (aux.equals(machineNow)) {
-                                sameMachine++;
-                                lastSameMachine=a;
-                            }
-                            aux=machineNow;
-                        }
-
-                        for (int j = 0; j < transformationResult.transformations.size(); j++) {
-
-                            if(sameMachine == 1) {
-                                if(count==1){
-                                    if(transformationResult.machines.get(j).equals("Ma")) {
-                                        int[] p={1,3};
-                                        Path_Logic count1 = new Path_Logic(startTransformation, p, "Transformation");
-                                        pathString.append(count1.getStringPath());
-                                        goalTransformation=cloneArray(p);
-                                    }
-                                    else if(transformationResult.machines.get(j).equals("Mb")){
-                                        int[] p={1,4};
-                                        Path_Logic count2 = new Path_Logic(startTransformation, p, "Transformation");
-                                        pathString.append(count2.getStringPath());
-                                        goalTransformation=cloneArray(p);
-                                    }
-                                    else if(transformationResult.machines.get(j).equals("Mc")){
-                                        int[] p={1,5};
-                                        Path_Logic count3 = new Path_Logic(startTransformation, p, "Transformation");
-                                        pathString.append(count3.getStringPath());
-                                        goalTransformation=cloneArray(p);
-                                    }
-                                }
-                                else if(count == 2){
-                                    if(transformationResult.machines.get(j).equals("Ma")) {
-                                        int[] p={3,3};
-                                        Path_Logic count1 = new Path_Logic(startTransformation, p, "Transformation");
-                                        pathString.append(count1.getStringPath());
-                                        goalTransformation=cloneArray(p);
-                                    }
-                                    else if(transformationResult.machines.get(j).equals("Mb")){
-                                        int[] p={3,4};
-                                        Path_Logic count2 = new Path_Logic(startTransformation, p, "Transformation");
-                                        pathString.append(count2.getStringPath());
-                                        goalTransformation=cloneArray(p);
-
-                                    }
-                                    else if(transformationResult.machines.get(j).equals("Mc")){
-                                        int[] p={3,5};
-                                        Path_Logic count3 = new Path_Logic(startTransformation, p, "Transformation");
-                                        pathString.append(count3.getStringPath());
-                                        goalTransformation=cloneArray(p);
-                                    }
-                                }
-                                else if (count == 3) {
-                                    if(transformationResult.machines.get(j).equals("Ma")) {
-                                        int[] p={5,3};
-                                        Path_Logic count1 = new Path_Logic(startTransformation, p, "Transformation");
-                                        pathString.append(count1.getStringPath());
-                                        goalTransformation=cloneArray(p);
-                                    }
-                                    else if(transformationResult.machines.get(j).equals("Mb")){
-                                        int[] p={5,4};
-                                        Path_Logic count2 = new Path_Logic(startTransformation, p, "Transformation");
-                                        pathString.append(count2.getStringPath());
-                                        goalTransformation=cloneArray(p);
-
-                                    }
-                                    else if(transformationResult.machines.get(j).equals("Mc")){
-                                        int[] p={5,5};
-                                        Path_Logic count3 = new Path_Logic(startTransformation, p, "Transformation");
-                                        pathString.append(count3.getStringPath());
-                                        goalTransformation=cloneArray(p);
-                                    }
-
-                                }
-
-                            }
-                            else if(sameMachine == 2){
-                                if(count==1 || count == 3){
-                                    if(transformationResult.machines.get(j).equals("Ma")) {
-                                        int[] p={1,3};
-                                        if(lastSameMachine == j) {p[0]=3;}
-                                        Path_Logic count1 = new Path_Logic(startTransformation, p, "Transformation");
-                                        pathString.append(count1.getStringPath());
-                                        goalTransformation=cloneArray(p);
-                                    }
-                                    else if(transformationResult.machines.get(j).equals("Mb")){
-                                        int[] p={1,4};
-                                        if(lastSameMachine == j) {p[0]=3;}
-                                        Path_Logic count2 = new Path_Logic(startTransformation, p, "Transformation");
-                                        pathString.append(count2.getStringPath());
-                                        goalTransformation=cloneArray(p);
-                                    }
-                                    else if(transformationResult.machines.get(j).equals("Mc")){
-                                        int[] p={1,5};
-                                        if(lastSameMachine == j) {p[0]=3;}
-                                        Path_Logic count3 = new Path_Logic(startTransformation, p, "Transformation");
-                                        pathString.append(count3.getStringPath());
-                                        goalTransformation=cloneArray(p);
-                                    }
-                                }
-                                else if (count == 2) {
-                                    if(transformationResult.machines.get(j).equals("Ma")) {
-                                        int[] p={5,3};
-                                        if(lastSameMachine == j) {p[0]=3;}
-                                        Path_Logic count1 = new Path_Logic(startTransformation, p, "Transformation");
-                                        pathString.append(count1.getStringPath());
-                                        goalTransformation=cloneArray(p);
-                                    }
-                                    else if(transformationResult.machines.get(j).equals("Mb")){
-                                        int[] p={5,4};
-                                        if(lastSameMachine == j) {p[0]=3;}
-                                        Path_Logic count2 = new Path_Logic(startTransformation, p, "Transformation");
-                                        pathString.append(count2.getStringPath());
-                                        goalTransformation=cloneArray(p);
-
-                                    }
-                                    else if(transformationResult.machines.get(j).equals("Mc")){
-                                        int[] p={5,5};
-                                        if(lastSameMachine == j) {p[0]=3;p[1]=3;}
-                                        Path_Logic count3 = new Path_Logic(startTransformation, p, "Transformation");
-                                        pathString.append(count3.getStringPath());
-                                        goalTransformation=cloneArray(p);
-                                    }
-                                }
-
-                            }
-                            else if(sameMachine == 3){
-                                if(transformationResult.machines.get(j).equals("Ma")) {
-                                    int[] p={1,3};
-                                    if(j==1) p[0]=3;
-                                    if(j==2) p[0]=5;
-                                    Path_Logic count1 = new Path_Logic(startTransformation, p, "Transformation");
-                                    pathString.append(count1.getStringPath());
-                                    goalTransformation=cloneArray(p);
-                                }
-                                else if(transformationResult.machines.get(j).equals("Mb")){
-                                    int[] p={1,4};
-                                    if(j==1) p[0]=3;
-                                    if(j==2) p[0]=5;
-                                    Path_Logic count2 = new Path_Logic(startTransformation, p, "Transformation");
-                                    pathString.append(count2.getStringPath());
-                                    goalTransformation=cloneArray(p);
-                                }
-                                else if(transformationResult.machines.get(j).equals("Mc")){
-                                    int[] p={1,5};
-                                    if(j==1) p[0]=3;
-                                    if(j==2) p[0]=5;
-                                    Path_Logic count3 = new Path_Logic(startTransformation, p, "Transformation");
-                                    pathString.append(count3.getStringPath());
-                                    goalTransformation=cloneArray(p);
-                                }
-
-                            }
-
-                            //Identify machine
-                            //String machineNow = transformationResult.machines.get(j);
-                            /*
-                            //Relate machine type with respective position
-                            if (!previousMachine.equals(machineNow)) {
-                                machineToGo = SFS.getMachineToSendPiece(machineNow);
-                                goalTransformation = reverseArray(machineToGo.getPosition());
-                                if (goalTransformation == null)
-                                    System.out.println("Error: order machine input not valid. ");
-                                else {
-                                    machineToGo.addWeight(1);
-                                }
-
-                                //Calculate path to Machine
-                                Path_Logic path = new Path_Logic(startTransformation, goalTransformation, "Transformation");
-                                pathString.append(path.getStringPath());
-                                previousMachine = machineNow;
-                            }
-                            else {
-                                String machinePositionString = String.valueOf(goalTransformation[0]) + String.valueOf(goalTransformation[1]);
-                                pathString.append(machinePositionString);
-                            }
-
-
-
-
-                            //Add Tool and Time to string respectively
-                            pathString.append(transformationResult.tool.get(j)).append(transformationResult.timeCost.get(j));
-                            startTransformation = cloneArray(goalTransformation);
-                        }
-
-                        //Path to Warehouse In cell
-                        Path_Logic pathEnd = new Path_Logic(startTransformation, warehouseIn, "Transformation");
-                        pathString.append(pathEnd.getStringPath());
-                        // Adds order info to the end
-                        String orderInfo = order.getPy() + "1" + order.getId();
-                        pathString.append(orderInfo);
-    */
 
                         while(bigFlagP1P9End){
                             boolean mA=SFS.getCell(3,1).getUnitPresence();
@@ -541,10 +208,38 @@ public class UnloadThread implements Runnable {
                             }
                         }
 
+                        while(bigFlagDoubleEndA){
+                            boolean mA=SFS.getCell(3,1).getUnitPresence();
+                            boolean rA=SFS.getCell(3,2).getUnitPresence();
+
+                            if(!mA && !rA ){
+                                bigFlagDoubleEndA=false;
+                            }
+                        }
+                        while(bigFlagDoubleEndB){
+                            boolean mB=SFS.getCell(4,1).getUnitPresence();
+                            boolean rB=SFS.getCell(4,2).getUnitPresence();
+
+                            if(!mB && !rB ){
+                                bigFlagDoubleEndB=false;
+                            }
+                        }
+                        while(bigFlagDoubleEndC){
+                            boolean mC=SFS.getCell(5,1).getUnitPresence();
+                            boolean rC=SFS.getCell(5,2).getUnitPresence();
+
+                            if(!mC && !rC ){
+                                bigFlagDoubleEndC=false;
+                            }
+                        }
+
+
+
+
 
                         pathString=getPathByTransformation(orderPx,orderPy,orderUnitsToDo,orderCountAux,false);
                         String orderInfo ="1" + order.getId();
-                        pathString=pathString+orderInfo;
+                        pathString=pathString+"T"+orderInfo;
                         //Sends information to OPC-UA
 
                         sendPathToOPC(unitTypeIdentifier(orderPx), pathString);
@@ -554,6 +249,10 @@ public class UnloadThread implements Runnable {
                         orderUnitsDone++;
                         order.setNDone(orderUnitsDone);
                         //System.out.println(order);
+
+                        //Update Unload Order on DataBase
+                        dbConnection.updateNSent_OrderTransformationDB(order.getId(), orderUnitsDone);
+
 
 
 
@@ -574,16 +273,28 @@ public class UnloadThread implements Runnable {
                             // If it's been done, keep looking
                             if(orderComp.getNDone()==orderComp.getNTotal()) continue;
 
+                            if((Warehouse.getPiece(orderComp.getPx()) <= 0)) {
+                                orderComp.setOutOfUnits(true);
+                                continue;
+                            }
+
+
                             String transf = isCompatible(orderPx,orderPy,orderComp.getPx(),orderComp.getPy());
-                            if((transf.equals("12") || transf.equals("32")) && !flagB){
+                            if((transf.equals("1|2") || transf.equals("3|2")) && !flagB){
                                 flagB = true;
 
                                 pathString = getPathByTransformation(orderComp.getPx(), orderComp.getPy(), 1, 1, true);
                                 orderInfo ="1" + orderComp.getId();
-                                pathString=pathString+orderInfo;
+                                pathString=pathString+"T"+orderInfo;
 
                                 if (orderComp.getNDone() == 0) orderComp.setStartTime(StopWatch.getTimeElapsed()); //Set order start Time
-                                if (orderComp.getStatus() != 2) orderComp.setStatus(2); //Set order status to "in progress".
+                                if (orderComp.getStatus() != 2){
+                                    orderComp.setStatus(2); //Set order status to "in progress".
+
+                                    //Update order in db
+                                    dbConnection.updateStatus_OrderTransformDB(orderComp.getId(), orderComp.getStatus());
+
+                                }
 
                                 //Sends information to OPC-UA
                                 sendPathToOPC(unitTypeIdentifier(orderComp.getPx()), pathString);
@@ -591,16 +302,27 @@ public class UnloadThread implements Runnable {
                                 //Updates order information
                                 orderComp.setNDone(orderComp.getNDone() + 1);
                                 //System.out.println(orderComp);
+
+                                //Update Order on DataBase
+                                dbConnection.updateNSent_OrderTransformationDB(orderComp.getId(), orderComp.getNDone());
+
+
+
                             }
-                            else if((transf.equals("13") || transf.equals("23")) && !flagC){
+                            else if((transf.equals("1|3") || transf.equals("2|3")) && !flagC){
                                 flagC = true;
 
                                 pathString = getPathByTransformation(orderComp.getPx(), orderComp.getPy(), 1, 1, true);
                                 orderInfo ="1" + orderComp.getId();
-                                pathString=pathString+orderInfo;
+                                pathString=pathString+"T"+orderInfo;
 
                                 if (orderComp.getNDone() == 0) orderComp.setStartTime(StopWatch.getTimeElapsed()); //Set order start Time
-                                if (orderComp.getStatus() != 2) orderComp.setStatus(2); //Set order status to "in progress".
+                                if (orderComp.getStatus() != 2){
+                                    orderComp.setStatus(2); //Set order status to "in progress".
+
+                                    dbConnection.updateStatus_OrderTransformDB(orderComp.getId(), orderComp.getStatus());
+
+                                }
 
                                 //Sends information to OPC-UA
                                 sendPathToOPC(unitTypeIdentifier(orderComp.getPx()), pathString);
@@ -608,35 +330,55 @@ public class UnloadThread implements Runnable {
                                 //Updates order information
                                 orderComp.setNDone(orderComp.getNDone() + 1);
                                 //System.out.println(orderComp);
+
+                                //Update Order on DataBase
+                                dbConnection.updateNSent_OrderTransformationDB(orderComp.getId(), orderComp.getNDone());
+
+
+
                             }
-                            else if((transf.equals("21") || transf.equals("31")) && !flagA){
+                            else if((transf.equals("2|1") || transf.equals("3|1")) && !flagA){
                                 flagA = true;
 
                                 pathString = getPathByTransformation(orderComp.getPx(), orderComp.getPy(), 1, 1, true);
                                 orderInfo ="1" + orderComp.getId();
-                                pathString=pathString+orderInfo;
+                                pathString=pathString+"T"+orderInfo;
 
                                 if (orderComp.getNDone() == 0) orderComp.setStartTime(StopWatch.getTimeElapsed()); //Set order start Time
-                                if (orderComp.getStatus() != 2) orderComp.setStatus(2); //Set order status to "in progress".
+                                if (orderComp.getStatus() != 2){
+                                    orderComp.setStatus(2); //Set order status to "in progress".
+
+                                    dbConnection.updateStatus_OrderTransformDB(orderComp.getId(), orderComp.getStatus());
+
+                                }
 
                                 //Sends information to OPC-UA
                                 sendPathToOPC(unitTypeIdentifier(orderComp.getPx()), pathString);
                                 //Updates order information
                                 orderComp.setNDone(orderComp.getNDone() + 1);
                                 //System.out.println(orderComp);
+
+                                //Update Order on DataBase
+                                dbConnection.updateNSent_OrderTransformationDB(orderComp.getId(), orderComp.getNDone());
+
                             }
 
                             //Caso encontre um transformação dupla possível
-                            if((transf.equals("123") || transf.equals("312"))  && !flagDouble){
+                            if((transf.equals("1|23") || transf.equals("3|12") || transf.equals("12|3") || transf.equals("23|1"))  && !flagDouble){
                                 orderDoubleComp=ordersPriority.get(a);
                                 flagDouble = true;
 
                                 if (orderDoubleComp.getNDone() == 0) orderDoubleComp.setStartTime(StopWatch.getTimeElapsed()); //Set order start Time
-                                if (orderDoubleComp.getStatus() != 2) orderDoubleComp.setStatus(2); //Set order status to "in progress".
+                                if (orderDoubleComp.getStatus() != 2){
+                                    orderDoubleComp.setStatus(2); //Set order status to "in progress".
+
+                                    dbConnection.updateStatus_OrderTransformDB(orderDoubleComp.getId(), orderDoubleComp.getStatus());
+
+                                }
 
                                 pathDoubleTransf = getPathByTransformation(orderComp.getPx(), orderComp.getPy(), 1, 1, true);
                                 orderInfo ="1" + orderComp.getId();
-                                pathDoubleTransf=pathDoubleTransf+orderInfo;
+                                pathDoubleTransf=pathDoubleTransf+"T"+orderInfo;
                             }
 
 
@@ -644,6 +386,9 @@ public class UnloadThread implements Runnable {
                             if(orderComp.getNTotal()==orderComp.getNDone()){
                                 orderComp.setStatus(3);
                                 Main.orderListTransformationEnded.add(ordersPriority.remove(a));
+
+                                dbConnection.updateStatus_OrderTransformDB(orderComp.getId(), orderComp.getStatus());
+
                             }
 
                         }
@@ -654,6 +399,10 @@ public class UnloadThread implements Runnable {
                             //Updates order information
                             orderDoubleComp.setNDone(orderDoubleComp.getNDone() + 1);
                             //System.out.println(orderDoubleComp);
+
+                            //Update Order on DataBase
+                            dbConnection.updateNSent_OrderTransformationDB(orderDoubleComp.getId(), orderDoubleComp.getNDone());
+
                         }
 
 
@@ -661,8 +410,8 @@ public class UnloadThread implements Runnable {
                     }
                 }
                 else {
-                    order.setStatus(3); //Set order status to "All pieces sent".
-                    orderListTransformationOutOfUnits.add(Main.ordersPriority.remove(index));
+                    order.setStatus(2); //Set order status to "All pieces sent".
+                    order.setOutOfUnits(true);
                 }
 
             }
@@ -696,17 +445,6 @@ public class UnloadThread implements Runnable {
         }
     }
 
-    private int[] reverseArray(int[] a) {
-        int n = a.length;
-        int[] b = new int[n];
-        int j = n;
-        for (int i = 0; i < n; i++) {
-            b[j - 1] = a[i];
-            j = j - 1;
-        }
-        return b;
-    }
-
     private void sendPathToOPC(int unitType, String path){
         //Sends information to OPC-UA
         //Set go a false
@@ -716,65 +454,39 @@ public class UnloadThread implements Runnable {
         //System.out.println(path);
         int aux = 1;
         while (true){
-
-            if(aux == 1 && !SFS.getCell(1,0).getUnitPresence()) {
-                Main.unitCount++;
-                OPCUA_Connection.setValueInt("MAIN_TASK", "UNIT_COUNT_AT1", Main.unitCount);
-                aux++;
+            try {
+                if (aux == 1 && !SFS.getCell(1, 0).getUnitPresence()) {
+                    Main.unitCount++;
+                    OPCUA_Connection.setValueInt("MAIN_TASK", "UNIT_COUNT_AT1", Main.unitCount);
+                    aux++;
+                }
+                if (aux == 2 && OPCUA_Connection.getValueInt("MAIN_TASK", "UNIT_COUNT_AT1") == Main.unitCount) {
+                    aux++;
+                }
+                if (aux == 3 && (OPCUA_Connection.getValueInt("MAIN_TASK", "CONFIRMATIONGO") == Main.unitCount)) break;
             }
-            if(aux == 2 && OPCUA_Connection.getValueInt("MAIN_TASK", "UNIT_COUNT_AT1") == Main.unitCount){
-                aux++;
+            catch(Exception e){
+                System.out.println("Send Path OPC:  Exception");
             }
-            if(aux == 3 && (OPCUA_Connection.getValueInt("MAIN_TASK", "CONFIRMATIONGO")==Main.unitCount)) break;
         }
 
     }
 
-    private boolean checkIfWaiting(){
-        boolean waiting=true;
-        for(int i=0; i < Main.orderListUnload.size(); i++){
-            int[] position = SFS.getUnloadPosition(Main.orderListUnload.get(i).getDy());
-            Slider slider = (Slider) SFS.getCell(position[1], position[0]);
-            if(!slider.isFull()) {
-                waiting=false;
-                break;
-            }
-        }
-        return waiting;
-    }
+    private boolean checkIfAtLeastOneCanHappen(){
 
-    private boolean piecesAvailableForOneUnload(){
-        boolean available=false;
         for(int i=0; i < Main.orderListUnload.size(); i++){
             String type = Main.orderListUnload.get(i).getPx();
-            int nPieces =Warehouse.getPiece(type);
-            if(nPieces >= (Main.orderListUnload.get(i).getQuantity() - Main.orderListUnload.get(i).getNDone())) {
-                available=true;
-                break;
+            int nPieces = Warehouse.getPiece(type);
+            int[] position = SFS.getUnloadPosition(Main.orderListUnload.get(i).getDy());
+            assert position != null;
+            Slider slider = (Slider) SFS.getCell(position[1], position[0]);
+
+            //Verificar se existe pelo menos 1 slider livre e com peças disponíveis que significa que existe uma transformação de unload que pode ser feita
+            if(!slider.isFull() && (nPieces > 0)) {
+                return true;
             }
         }
-        return available;
-    }
-
-    private boolean piecesAvailableForOutofUnits(){
-        boolean available=false;
-        for(int i=0; i < orderListTransformationOutOfUnits.size(); i++){
-            String type = orderListTransformationOutOfUnits.get(i).getPx();
-            int nPieces=Warehouse.getPiece(type);
-            if(nPieces >= (orderListTransformationOutOfUnits.get(i).getNTotal()-orderListTransformationOutOfUnits.get(i).getNDone())){
-                available=true;
-                break;
-            }
-        }
-        return available;
-    }
-
-    private int[] cloneArray(int[] a) {
-        int[] b = new int[a.length];
-        for (int i = 0; i < a.length; i++) {
-            b[i] = a[i];
-        }
-        return b;
+        return false;
     }
 
     private String getPathByTransformation(String orderPx,String orderPy, int orderUnitsToDo,int orderCountAux, boolean parallel) {
@@ -787,17 +499,17 @@ public class UnloadThread implements Runnable {
 
                 case "P2":
                     if (countCollumns==1){
-                        path = "21314151616263531156364656667574737271707P2"; //Ma3
+                        path = "21314151616263531156364656667574737271707P2Q2"; //Ma3
 
                         countCollumns++;
                     }
                     else if(countCollumns == 2){
-                        path = "213141424333115434445464737271707P2"; //Ma2
+                        path = "213141424333115434445464737271707P2Q2"; //Ma2
 
                         countCollumns++;
                     }
                     else if(countCollumns == 3){
-                        path = "2122231311523242526271707P2"; //Ma1
+                        path = "2122231311523242526271707P2Q2"; //Ma1
                         countCollumns=1;
 
                     }
@@ -806,28 +518,28 @@ public class UnloadThread implements Runnable {
                 case "P3":
                     if(parallel){
                         if (countCollumns==1){
-                            path = "21314151616263645412064656667574737271707P3"; //Mb3
+                            path = "21314151616263645412064656667574737271707P3Q3"; //Mb3
                             countCollumns++;
                         }
                         else if(countCollumns == 2){
-                            path="213141424344341204445464737271707P3";//Mb2
+                            path="213141424344341204445464737271707P3Q3";//Mb2
                             countCollumns++;
                         }
                         else if(countCollumns == 3){
-                            path="2122232414120242526271707P3"; //Mb1
+                            path="2122232414120242526271707P3Q3"; //Mb1
                             countCollumns=1;
                         }
 
                     }
                     if (countCollumns==1){
                         if (orderCountAux%3 == 1) {
-                            path = "21314151616263645412064656667574737271707P3"; //Mb3
+                            path = "21314151616263645412064656667574737271707P3Q3"; //Mb3
                         }
                         else if (orderCountAux%3 == 2) {
-                            path = "2131415161626353115531156364656667574737271707P3"; //Ma3
+                            path = "2131415161626353115531156364656667574737271707P3Q23"; //Ma3
                         }
                         else if (orderCountAux%3 == 0) {
-                            path = "21314151616263645412064656667574737271707P3"; //Mb3
+                            path = "21314151616263645412064656667574737271707P3Q3"; //Mb3
                         }
                         if(orderCountAux==orderUnitsToDo || orderCountAux%3== 0){
                             countCollumns++;
@@ -835,13 +547,13 @@ public class UnloadThread implements Runnable {
                     }
                     else if(countCollumns == 2){
                         if (orderCountAux%3 == 1) {
-                            path="213141424344341204445464737271707P3";//Mb2
+                            path="213141424344341204445464737271707P3Q3";//Mb2
                         }
                         else if (orderCountAux%3 == 2) {
-                            path = "21314142433311533115434445464737271707P3";//Ma2
+                            path = "21314142433311533115434445464737271707P3Q23";//Ma2
                         }
                         else if (orderCountAux%3 == 0) {
-                            path="213141424344341204445464737271707P3";//Mb2
+                            path="213141424344341204445464737271707P3Q3";//Mb2
                         }
                         if(orderCountAux==orderUnitsToDo || orderCountAux%3== 0){
                             countCollumns++;
@@ -849,13 +561,13 @@ public class UnloadThread implements Runnable {
                     }
                     else if(countCollumns == 3){
                         if (orderCountAux%3 == 1) {
-                            path="2122232414120242526271707P3";
+                            path="2122232414120242526271707P3Q3"; //Mb1
                         }
                         else if (orderCountAux%3 == 2) {
-                            path="212223131151311523242526271707P3";//Ma1
+                            path="212223131151311523242526271707P3Q23";//Ma1
                         }
                         else if (orderCountAux%3 == 0) {
-                            path="2122232414120242526271707P3";
+                            path="2122232414120242526271707P3Q3"; //Mb1
                         }
                         if(orderCountAux==orderUnitsToDo || orderCountAux%3== 0){
                             countCollumns=1;
@@ -866,15 +578,15 @@ public class UnloadThread implements Runnable {
                 case "P4":
                     if(parallel){
                         if (countCollumns==1){
-                            path = "21314151616263646555110656667574737271707P4"; //Mc3
+                            path = "21314151616263646555110656667574737271707P4Q4"; //Mc3
                             countCollumns++;
                         }
                         else if(countCollumns == 2){
-                            path = "213141424344453511045464737271707P4"; //Mc2
+                            path = "213141424344453511045464737271707P4Q4"; //Mc2
                             countCollumns++;
                         }
                         else if(countCollumns == 3){
-                            path = "2122232425151102526271707P4"; //Mc1
+                            path = "2122232425151102526271707P4Q4"; //Mc1
                             countCollumns=1;
                         }
 
@@ -882,19 +594,19 @@ public class UnloadThread implements Runnable {
 
                     else if(orderUnitsToDo <= 3){
                         if (countCollumns==1) {
-                            path = "21314151616263646555110656667574737271707P4"; //Mc3
+                            path = "21314151616263646555110656667574737271707P4Q4"; //Mc3
                             if(orderCountAux==orderUnitsToDo){
                                 countCollumns++;
                             }
                         }
                         else if (countCollumns==2) {
-                            path = "213141424344453511045464737271707P4"; //Mc2
+                            path = "213141424344453511045464737271707P4Q4"; //Mc2
                             if(orderCountAux==orderUnitsToDo){
                                 countCollumns++;
                             }
                         }
                         else if (countCollumns==3) {
-                            path = "2122232425151102526271707P4"; //Mc1
+                            path = "2122232425151102526271707P4Q4"; //Mc1
                             if(orderCountAux==orderUnitsToDo){
                                 countCollumns=1;
                             }
@@ -903,62 +615,47 @@ public class UnloadThread implements Runnable {
                     }
                     else {
                         if (countCollumns==1){
-                            if (orderCountAux%5 == 1) {
-                                path = "21314151616263646555110656667574737271707P4"; //Mc3
+                            if (orderCountAux%3 == 1) {
+                                path = "21314151616263646555110656667574737271707P4Q4"; //Mc3
                             }
-                            else if (orderCountAux%5 == 2) {
-                                path = "2131415161626364541205411564656667574737271707P4"; //Mb3
+                            else if (orderCountAux%3 == 2) {
+                                path = "2131415161626364541205411564656667574737271707P4Q34"; //Mb3
                             }
-                            else if (orderCountAux%5 == 3) {
-                                path = "21314151616263646555110656667574737271707P4"; //Mc3
+                            else if (orderCountAux%3 == 0) {
+                                path = "21314151616263646555110656667574737271707P4Q4"; //Mc3
                             }
-                            else if (orderCountAux%5 == 4) {
-                                path = "21314151616263646555110656667574737271707P4"; //Mc3
-                            }
-                            else if (orderCountAux%5 == 0) {
-                                path = "21314151616263646555110656667574737271707P4"; //Mc3
-                            }
-                            if(orderCountAux==orderUnitsToDo || orderCountAux%5== 0){
+
+                            if(orderCountAux==orderUnitsToDo || orderCountAux%3== 0){
                                 countCollumns++;
                             }
                         }
                         else if(countCollumns == 2){
-                            if (orderCountAux%5 == 1) {
-                                path = "213141424344453511045464737271707P4"; //Mc2
+                            if (orderCountAux%3 == 1) {
+                                path = "213141424344453511045464737271707P4Q4"; //Mc2
                             }
-                            else if (orderCountAux%5 == 2) {
-                                path = "21314142434434120341154445464737271707P4"; //Mb2
+                            else if (orderCountAux%3 == 2) {
+                                path = "21314142434434120341154445464737271707P4Q34"; //Mb2
                             }
-                            else if (orderCountAux%5 == 3) {
-                                path = "213141424344453511045464737271707P4"; //Mc2
+                            else if (orderCountAux%3 == 0) {
+                                path = "213141424344453511045464737271707P4Q4"; //Mc2
                             }
-                            else if (orderCountAux%5 == 4) {
-                                path = "213141424344453511045464737271707P4"; //Mc2
-                            }
-                            else if (orderCountAux%5 == 0) {
-                                path = "213141424344453511045464737271707P4"; //Mc2
-                            }
-                            if(orderCountAux==orderUnitsToDo || orderCountAux%5== 0){
+
+                            if(orderCountAux==orderUnitsToDo || orderCountAux%3== 0){
                                 countCollumns++;
                             }
                         }
                         else if(countCollumns == 3){
-                            if (orderCountAux%5 == 1) {
-                                path = "2122232425151102526271707P4"; //Mc1
+                            if (orderCountAux%3 == 1) {
+                                path = "2122232425151102526271707P4Q4"; //Mc1
                             }
-                            else if (orderCountAux%5 == 2) {
-                                path = "212223241412014115242526271707P4"; //Mb1
+                            else if (orderCountAux%3 == 2) {
+                                path = "212223241412014115242526271707P4Q34"; //Mb1
                             }
-                            else if (orderCountAux%5 == 3) {
-                                path = "2122232425151102526271707P4"; //Mc1
+                            else if (orderCountAux%3 == 0) {
+                                path = "2122232425151102526271707P4Q4"; //Mc1
                             }
-                            else if (orderCountAux%5 == 4) {
-                                path = "2122232425151102526271707P4"; //Mc1
-                            }
-                            else if (orderCountAux%5 == 0) {
-                                path = "2122232425151102526271707P4"; //Mc1
-                            }
-                            if(orderCountAux==orderUnitsToDo || orderCountAux%5== 0){
+
+                            if(orderCountAux==orderUnitsToDo || orderCountAux%3== 0){
                                 countCollumns=1;
                             }
                         }
@@ -969,19 +666,19 @@ public class UnloadThread implements Runnable {
                 case "P5":
                     if(orderUnitsToDo <=3){
                         if (countCollumns == 1) {
-                            path = "2131415161626364655511055130656667574737271707P5"; //Mc3
+                            path = "2131415161626364655511055130656667574737271707P5Q45"; //Mc3
 
                             if (orderCountAux == orderUnitsToDo) {
                                 countCollumns++;
                             }
                         } else if (countCollumns == 2) {
-                            path = "21314142434445351103513045464737271707P5"; //Mc2
+                            path = "21314142434445351103513045464737271707P5Q45"; //Mc2
 
                             if (orderCountAux == orderUnitsToDo) {
                                 countCollumns++;
                             }
                         } else if (countCollumns == 3) {
-                            path = "212223242515110151302526271707P5"; //Mc1
+                            path = "212223242515110151302526271707P5Q45"; //Mc1
 
                             if (orderCountAux == orderUnitsToDo) {
                                 countCollumns = 1;
@@ -991,59 +688,51 @@ public class UnloadThread implements Runnable {
                     }
                     else {
                         if (countCollumns == 1) {
-                            if(orderCountAux%4 == 1) {
-                                path = "2131415161626364655511055130656667574737271707P5"; //Mc3
+                            if(orderCountAux%3 == 1) {
+                                path = "2131415161626364655511055130656667574737271707P5Q45"; //Mc3
                             }
-                            else if(orderCountAux%4 == 2){
-                                path = "21314151616263645412054115646555130656667574737271707P5"; //Mb3+Mc3
+                            else if(orderCountAux%3 == 2){
+                                path = "21314151616263645412054115646555130656667574737271707P5Q345"; //Mb3+Mc3
                             }
-                            else if(orderCountAux%4 == 3) {
-                                path = "2131415161626364655511055130656667574737271707P5"; //Mc3
-                            }
-                            else if(orderCountAux%4 == 0) {
-                                path = "2131415161626364655511055130656667574737271707P5"; //Mc3
+                            else if(orderCountAux%3 == 0) {
+                                path = "2131415161626364655511055130656667574737271707P5Q45"; //Mc3
                             }
 
-                            if (orderCountAux == orderUnitsToDo || orderCountAux % 4 == 0) {
+                            if (orderCountAux == orderUnitsToDo || orderCountAux % 3 == 0) {
                                 countCollumns++;
                             }
                         }
                         else if (countCollumns == 2) {
 
-                            if(orderCountAux%4 == 1) {
-                                path = "21314142434445351103513045464737271707P5"; //Mc2
+                            if(orderCountAux%3 == 1) {
+                                path = "21314142434445351103513045464737271707P5Q45"; //Mc2
                             }
-                            else if(orderCountAux%4 == 2){
-                                path = "213141424344341203411544453513045464737271707P5"; //Mb2+Mc2
+                            else if(orderCountAux%3 == 2){
+                                path = "213141424344341203411544453513045464737271707P5Q345"; //Mb2+Mc2
                             }
-                            else if(orderCountAux%4 == 3) {
-                                path = "21314142434445351103513045464737271707P5"; //Mc2
-                            }
-                            else if(orderCountAux%4 == 0) {
-                                path = "21314142434445351103513045464737271707P5"; //Mc2
+                            else if(orderCountAux%3 == 3) {
+                                path = "21314142434445351103513045464737271707P5Q45"; //Mc2
                             }
 
-                            if (orderCountAux == orderUnitsToDo || orderCountAux % 4 == 0) {
+                            if (orderCountAux == orderUnitsToDo || orderCountAux % 3 == 0) {
                                 countCollumns++;
                             }
 
                         }
                         else if (countCollumns == 3) {
 
-                            if(orderCountAux%4 == 1) {
-                                path = "212223242515110151302526271707P5"; //Mc1
+                            if(orderCountAux%3 == 1) {
+                                path = "212223242515110151302526271707P5Q45"; //Mc1
                             }
-                            else if(orderCountAux%4 == 2){
-                                path = "2122232414120141152425151302526271707P5"; //Mb1+Mc1
+                            else if(orderCountAux%3 == 2){
+                                path = "2122232414120141152425151302526271707P5Q345"; //Mb1+Mc1
                             }
-                            else if(orderCountAux%4 == 3) {
-                                path = "212223242515110151302526271707P5"; //Mc1
-                            }
-                            else if(orderCountAux%4 == 0) {
-                                path = "212223242515110151302526271707P5"; //Mc1
+                            else if(orderCountAux%3 == 0) {
+                                path = "212223242515110151302526271707P5Q45"; //Mc1
                             }
 
-                            if (orderCountAux == orderUnitsToDo || orderCountAux % 4 == 0) {
+
+                            if (orderCountAux == orderUnitsToDo || orderCountAux % 3 == 0) {
                                 countCollumns=1;
                             }
                         }
@@ -1051,30 +740,83 @@ public class UnloadThread implements Runnable {
                     }
                     break;
 
-/*
-                case "P6":
-                    "21314151616263531154333215434445464737271707P6"
-                    "21222313115233321523242526271707P6"
-                case "P7":
-                    "21314151616263645412044342204445464737271707P7"
-                    "21222324141202434220242526271707P7"
 
-                    "21314151616263531155311563645422064656667574737271707P7"
-                    "213141424333115331154344342204445464737271707P7"
-                    "2122231311513115232414220242526271707P7"
+                case "P6":
+                    path = "212223131152333215434445464737271707P9Q26"; //Ma1+Ma2
+
+                    while(bigFlagDoubleInitA && !parallel){
+                        boolean p42=SFS.getCell(2,4).getUnitPresence();
+                        boolean p33=SFS.getCell(3,3).getUnitPresence();
+
+                        if(!p33 && !p42 ){
+                            bigFlagDoubleInitA=false;
+                        }
+
+                    }
+                    countCollumns++;
+                    if(countCollumns > 3){
+                        countCollumns=1;
+                    }
+
+                    if (orderCountAux == orderUnitsToDo && !parallel ) {
+                        bigFlagDoubleEndA=true;
+                        bigFlagDoubleInitA=true;
+                    }
+                    break;
+
+                case "P7":
+
+                    path = "212223241412024342204445464737271707P7Q37"; //Mb1+Mb2
+
+                    while(bigFlagDoubleInitB && !parallel){
+                        boolean p43=SFS.getCell(3,4).getUnitPresence();
+                        boolean p34=SFS.getCell(4,3).getUnitPresence();
+
+                        if(!p34 && !p43 ){
+                            bigFlagDoubleInitB=false;
+                        }
+
+                    }
+                    countCollumns++;
+                    if(countCollumns > 3){
+                        countCollumns=1;
+                    }
+
+                    if (orderCountAux == orderUnitsToDo && !parallel) {
+                        bigFlagDoubleEndB=true;
+                        bigFlagDoubleInitB=true;
+                    }
+
+                    break;
 
                 case "P8":
-                    "21314151616263645412054115646555210656667574737271707P8"
-                    "213141424344341203411544453521045464737271707P8"
-                    "2122232414120141152425152102526271707P8"
+                    path = "212223242515110253521045464737271707P9Q48"; //Mc1+Mc2
 
-                    "21314151616263646555110453521045464737271707P8"
-                    "21222324251511025352102526271707P8"
-*/
+                    while(bigFlagDoubleInitC && !parallel){
+                        boolean p43=SFS.getCell(3,4).getUnitPresence();
+                        boolean p34=SFS.getCell(4,3).getUnitPresence();
+
+                        if(!p34 && !p43 ){
+                            bigFlagDoubleInitC=false;
+                        }
+
+                    }
+                    countCollumns++;
+                    if(countCollumns > 3){
+                        countCollumns=1;
+                    }
+
+                    if (orderCountAux == orderUnitsToDo && !parallel) {
+                        bigFlagDoubleEndC=true;
+                        bigFlagDoubleInitC=true;
+                    }
+
+                    break;
+
                 case "P9":
 
                     if(orderUnitsToDo <= 4){
-                        path = "21222324251511025352104555310656667574737271707P9"; //Mc1+Mc2+Mc3
+                        path = "21222324251511025352104555310656667574737271707P9Q489"; //Mc1+Mc2+Mc3
 
                         if (orderCountAux == orderUnitsToDo) {
                             countCollumns=3;
@@ -1097,11 +839,11 @@ public class UnloadThread implements Runnable {
                         }
 
                         if (orderCountAux % 3 == 1) {
-                            path = "21222324251511025352104555310656667574737271707P9"; //Mc1+Mc2+Mc3
+                            path = "21222324251511025352104555310656667574737271707P9Q489"; //Mc1+Mc2+Mc3
                         } else if (orderCountAux % 3 == 2) {
-                            path = "21222324251511025352104555310656667574737271707P9"; //Mc1+Mc2+Mc3
+                            path = "21222324251511025352104555310656667574737271707P9Q489"; //Mc1+Mc2+Mc3
                         } else if (orderCountAux % 3 == 0) {
-                            path = "21222313115233321543533156364656667574737271707P9"; //Ma1+Ma2+Ma3
+                            path = "21222313115233321543533156364656667574737271707P9Q269"; //Ma1+Ma2+Ma3
                         }
 
                         if (orderCountAux == orderUnitsToDo) {
@@ -1126,19 +868,19 @@ public class UnloadThread implements Runnable {
                         }
 
                         if (orderCountAux%5 == 1) {
-                            path = "21222324251511025352104555310656667574737271707P9"; //Mc1+Mc2+Mc3
+                            path = "21222324251511025352104555310656667574737271707P9Q489"; //Mc1+Mc2+Mc3
                         }
                         else if (orderCountAux%5 == 2) {
-                            path = "21222324141202434220445432064656667574737271707P9"; //Mb1+Mb2+Mb3
+                            path = "21222324141202434220445432064656667574737271707P9Q379"; //Mb1+Mb2+Mb3
                         }
                         else if (orderCountAux%5 == 3) {
-                            path = "21222313115233321543533156364656667574737271707P9"; //Ma1+Ma2+Ma3
+                            path = "21222313115233321543533156364656667574737271707P9Q269"; //Ma1+Ma2+Ma3
                         }
                         else if (orderCountAux%5 == 4) {
-                            path = path = "21222324251511025352104555310656667574737271707P9"; //Mc1+Mc2+Mc3
+                            path = path = "21222324251511025352104555310656667574737271707P9Q489"; //Mc1+Mc2+Mc3
                         }
                         else if (orderCountAux%5 == 0) {
-                            path = "21222313115233321543533156364656667574737271707P9"; //Ma1+Ma2+Ma3
+                            path = "21222313115233321543533156364656667574737271707P9269"; //Ma1+Ma2+Ma3
                         }
 
                         if(orderCountAux==orderUnitsToDo){
@@ -1156,31 +898,31 @@ public class UnloadThread implements Runnable {
             switch (orderPy) {
                 case "P3":
                     if (countCollumns==1){
-                        path = "21314151616263531156364656667574737271707P3"; //Ma3
+                        path = "21314151616263531156364656667574737271707P3Q3"; //Ma3
 
                         countCollumns++;
                     }
                     else if(countCollumns == 2){
-                        path = "213141424333115434445464737271707P3"; //Ma2
+                        path = "213141424333115434445464737271707P3Q3"; //Ma2
 
                         countCollumns++;
                     }
                     else if(countCollumns == 3){
-                        path = "2122231311523242526271707P3"; //Ma1
+                        path = "2122231311523242526271707P3Q3"; //Ma1
                         countCollumns=1;
                     }
                     break;
                 case "P4":
                     if (countCollumns==1){
-                        path = "213141516162635311563645411564656667574737271707P4"; //Ma3 + Mb3
+                        path = "213141516162635311563645411564656667574737271707P4Q34"; //Ma3 + Mb3
                         countCollumns++;
                     }
                     else if(countCollumns == 2){
-                        path = "2131414243331154344341154445464737271707P4"; //Ma2 + Mb2
+                        path = "2131414243331154344341154445464737271707P4Q34"; //Ma2 + Mb2
                         countCollumns++;
                     }
                     else if(countCollumns == 3){
-                        path = "21222313115232414115242526271707P4"; //Ma1 + Mb1
+                        path = "21222313115232414115242526271707P4Q34"; //Ma1 + Mb1
                         countCollumns=1;
                     }
                     break;
@@ -1188,11 +930,11 @@ public class UnloadThread implements Runnable {
                 case "P5":
                     if(orderUnitsToDo <=3){
                         if (countCollumns == 1) {
-                            path = "2131415161626353115636454115646555130656667574737271707P5"; //Ma3 + Mb3 + Mc3
+                            path = "2131415161626353115636454115646555130656667574737271707P5Q345"; //Ma3 + Mb3 + Mc3
                         } else if (countCollumns == 2) {
-                            path = "21314142433311543443411544453513045464737271707P5"; //Ma2 + Mb2 + Mc2
+                            path = "21314142433311543443411544453513045464737271707P5Q345"; //Ma2 + Mb2 + Mc2
                         } else if (countCollumns == 3) {
-                            path = "212223131152324141152425151302526271707P5"; //Ma1 + Mb1 + Mc1
+                            path = "212223131152324141152425151302526271707P5Q345"; //Ma1 + Mb1 + Mc1
                         }
 
                         if(orderUnitsToDo == orderCountAux){
@@ -1203,13 +945,13 @@ public class UnloadThread implements Runnable {
                     }
                     else {
                         if (countCollumns == 1) {
-                            path = "2131415161626353115636454115646555130656667574737271707P5"; //Ma3 + Mb3 + Mc3
+                            path = "2131415161626353115636454115646555130656667574737271707P5Q345"; //Ma3 + Mb3 + Mc3
                             countCollumns++;
                         } else if (countCollumns == 2) {
-                            path = "21314142433311543443411544453513045464737271707P5"; //Ma2 + Mb2 + Mc2
+                            path = "21314142433311543443411544453513045464737271707P5Q345"; //Ma2 + Mb2 + Mc2
                             countCollumns++;
                         } else if (countCollumns == 3) {
-                            path = "212223131152324141152425151302526271707P5"; //Ma1 + Mb1 + Mc1
+                            path = "212223131152324141152425151302526271707P5Q345"; //Ma1 + Mb1 + Mc1
                             countCollumns = 1;
                         }
                     }
@@ -1217,40 +959,40 @@ public class UnloadThread implements Runnable {
                     break;
                 case "P6":
                     if (countCollumns==1){
-                        path = "21314151616263532156364656667574737271707P6"; //Ma3
+                        path = "21314151616263532156364656667574737271707P6Q6"; //Ma3
                         countCollumns++;
                     }
                     else if(countCollumns == 2){
-                        path = "213141424333215434445464737271707P6"; //Ma2
+                        path = "213141424333215434445464737271707P6Q6"; //Ma2
                         countCollumns++;
                     }
                     else if(countCollumns == 3){
-                        path = "2122231321523242526271707P6"; //Ma1
+                        path = "2122231321523242526271707P6Q6"; //Ma1
                         countCollumns=1;
                     }
                     break;
                 case "P7":
                     if (countCollumns==1){
-                        path = "213141516162635311563645422064656667574737271707P7"; //Ma3 + Mb3
+                        path = "213141516162635311563645422064656667574737271707P7Q37"; //Ma3 + Mb3
                         countCollumns++;
                     }
                     else if(countCollumns == 2){
-                        path = "2131414243331154344342204445464737271707P7"; //Ma2 + Mb2
+                        path = "2131414243331154344342204445464737271707P7Q37"; //Ma2 + Mb2
                         countCollumns++;
                     }
                     else if(countCollumns == 3){
-                        path = "21222313115232414220242526271707P7"; //Ma1 + Mb1
+                        path = "21222313115232414220242526271707P7Q37"; //Ma1 + Mb1
                         countCollumns=1;
                     }
                     break;
                 case "P8":
                     if(orderUnitsToDo <=3){
                         if (countCollumns == 1) {
-                            path = "2131415161626353115636454115646555210656667574737271707P8"; //Ma3 + Mb3 + Mc3
+                            path = "2131415161626353115636454115646555210656667574737271707P8Q348"; //Ma3 + Mb3 + Mc3
                         } else if (countCollumns == 2) {
-                            path = "21314142433311543443411544453521045464737271707P8"; //Ma2 + Mb2 + Mc2
+                            path = "21314142433311543443411544453521045464737271707P8Q348"; //Ma2 + Mb2 + Mc2
                         } else if (countCollumns == 3) {
-                            path = "212223131152324141152425152102526271707P8"; //Ma1 + Mb1 + Mc1
+                            path = "212223131152324141152425152102526271707P8Q348"; //Ma1 + Mb1 + Mc1
                         }
 
                         if(orderUnitsToDo == orderCountAux){
@@ -1261,22 +1003,39 @@ public class UnloadThread implements Runnable {
                     }
                     else {
                         if (countCollumns == 1) {
-                            path = "2131415161626353115636454115646555210656667574737271707P8"; //Ma3 + Mb3 + Mc3
+                            path = "2131415161626353115636454115646555210656667574737271707P8Q348"; //Ma3 + Mb3 + Mc3
                             countCollumns++;
                         } else if (countCollumns == 2) {
-                            path = "21314142433311543443411544453521045464737271707P8"; //Ma2 + Mb2 + Mc2
+                            path = "21314142433311543443411544453521045464737271707P8Q348"; //Ma2 + Mb2 + Mc2
                             countCollumns++;
                         } else if (countCollumns == 3) {
-                            path = "212223131152324141152425152102526271707P8"; //Ma1 + Mb1 + Mc1
+                            path = "212223131152324141152425152102526271707P8Q348"; //Ma1 + Mb1 + Mc1
                             countCollumns = 1;
                         }
                     }
 
                     break;
                 case "P9":
-                    //213141516162635311563645411564655521045353102526271707p9
-                    //213141424333215231331523242526271707p9
-                    //21314151616263531156364542204434320242526271707p9
+                    path = "212223132152333315434445464737271707P9Q69"; //Ma1+Ma2
+
+                    while(bigFlagDoubleInitA && !parallel){
+                        boolean p42=SFS.getCell(2,4).getUnitPresence();
+                        boolean p33=SFS.getCell(3,3).getUnitPresence();
+
+                        if(!p33 && !p42 ){
+                            bigFlagDoubleInitA=false;
+                        }
+
+                    }
+                    countCollumns++;
+                    if(countCollumns > 3){
+                        countCollumns=1;
+                    }
+
+                    if (orderCountAux == orderUnitsToDo && !parallel) {
+                        bigFlagDoubleEndA=true;
+                        bigFlagDoubleInitA=true;
+                    }
                     break;
             }
         }
@@ -1284,79 +1043,87 @@ public class UnloadThread implements Runnable {
             switch (orderPy) {
                 case "P4":
                     if (countCollumns==1){
-                        path = "21314151616263645411564656667574737271707P4"; //Mb3
+                        path = "21314151616263645411564656667574737271707P4Q4"; //Mb3
                         countCollumns++;
                     }
                     else if(countCollumns == 2){
-                        path = "213141424344341154445464737271707P4"; //Mb2
+                        path = "213141424344341154445464737271707P4Q4"; //Mb2
                         countCollumns++;
                     }
                     else if(countCollumns == 3){
-                        path = "2122232414115242526271707P4"; //Mb1
+                        path = "2122232414115242526271707P4Q4"; //Mb1
                         countCollumns=1;
                     }
                     break;
                 case "P5":
 
                     if (countCollumns == 1) {
-                        path="213141516162636454115646555130656667574737271707P5"; //Mb3+Mc3
-
-                        if (orderCountAux == orderUnitsToDo || orderCountAux % 3 == 0) {
-                            countCollumns++;
-                        }
+                        path="213141516162636454115646555130656667574737271707P5Q45"; //Mb3+Mc3
+                        countCollumns++;
                     }
                     else if (countCollumns == 2) {
-
-                        path="2131414243443411544453513045464737271707P5"; //Mb2+Mc2
-
-                        if (orderCountAux == orderUnitsToDo || orderCountAux % 3 == 0) {
-                            countCollumns++;
-                        }
+                        path="2131414243443411544453513045464737271707P5Q45"; //Mb2+Mc2
+                        countCollumns++;
 
                     }
                     else if (countCollumns == 3) {
-                        path="21222324141152425151302526271707P5"; //Mb1+Mc1
-
-                        if (orderCountAux == orderUnitsToDo || orderCountAux % 3 == 0) {
-                            countCollumns=1;
-                        }
+                        path="21222324141152425151302526271707P5Q45"; //Mb1+Mc1
+                        countCollumns=1;
                     }
 
                     break;
 
                 case "P7":
                     if (countCollumns==1){
-                        path = "21314151616263645422064656667574737271707P7"; //Mb3
+                        path = "21314151616263645422064656667574737271707P7Q7"; //Mb3
                         countCollumns++;
                     }
                     else if(countCollumns == 2){
-                        path = "213141424344342204445464737271707P7"; //Mb2
+                        path = "213141424344342204445464737271707P7Q7"; //Mb2
                         countCollumns++;
                     }
                     else if(countCollumns == 3){
-                        path = "2122232414220242526271707P7"; //Mb1
+                        path = "2122232414220242526271707P7Q7"; //Mb1
                         countCollumns=1;
                     }
                     break;
                 case "P8":
                     if (countCollumns==1){
-                        path = "213141516162636454115646555210656667574737271707P8"; //Mb3 + Mc3
+                        path = "213141516162636454115646555210656667574737271707P8Q48"; //Mb3 + Mc3
                         countCollumns++;
                     }
                     else if(countCollumns == 2){
-                        path = "2131414243443411544453521045464737271707P8"; //Mb2 + Mc2
+                        path = "2131414243443411544453521045464737271707P8Q48"; //Mb2 + Mc2
                         countCollumns++;
                     }
                     else if(countCollumns == 3){
-                        path = "21222324141152425152102526271707P8"; //Mb1 + Mc1
+                        path = "21222324141152425152102526271707P8Q48"; //Mb1 + Mc1
                         countCollumns=1;
                     }
                     break;
 
                 case "P9":
-                    //
-                    //
-                    //
+                    path = "212223241422024343204445464737271707P9Q79"; //Mb1+Mb2
+
+                    while(bigFlagDoubleInitB && !parallel){
+                        boolean p43=SFS.getCell(3,4).getUnitPresence();
+                        boolean p34=SFS.getCell(4,3).getUnitPresence();
+
+                        if(!p34 && !p43 ){
+                            bigFlagDoubleInitB=false;
+                        }
+
+                    }
+                    countCollumns++;
+                    if(countCollumns > 3){
+                        countCollumns=1;
+                    }
+
+                    if (orderCountAux == orderUnitsToDo && !parallel) {
+                        bigFlagDoubleEndB=true;
+                        bigFlagDoubleInitB=true;
+                    }
+
                     break;
             }
         }
@@ -1364,19 +1131,16 @@ public class UnloadThread implements Runnable {
             switch (orderPy) {
                 case "P5":
                     if (countCollumns == 1) {
-                        path = "21314151616263646555130656667574737271707P5"; //Mc3
+                        path = "21314151616263646555130656667574737271707P5Q5"; //Mc3
 
                         countCollumns++;
-                    } else if (countCollumns == 2) {
-
-                        path = "213141424344453513045464737271707P5"; //Mc2
-
+                    }
+                    else if (countCollumns == 2) {
+                        path = "213141424344453513045464737271707P5Q5"; //Mc2
                         countCollumns++;
 
                     } else if (countCollumns == 3) {
-
-                        path = "2122232425151302526271707P5"; //Mc1
-
+                        path = "2122232425151302526271707P5Q5"; //Mc1
                         countCollumns=1;
                     }
 
@@ -1384,90 +1148,83 @@ public class UnloadThread implements Runnable {
 
                 case "P8":
                     if (countCollumns == 1) {
-                        path = "21314151616263646555210656667574737271707P8"; //Mc3
+                        path = "21314151616263646555210656667574737271707P8Q8"; //Mc3
                         countCollumns++;
                     }
                     else if (countCollumns == 2) {
-                        path = "213141424344453521045464737271707P8"; //Mc2
+                        path = "213141424344453521045464737271707P8Q8"; //Mc2
                         countCollumns++;
                     }
                     else if (countCollumns == 3) {
-                        path = "2122232425152102526271707P8"; //Mc1
+                        path = "2122232425152102526271707P8Q8"; //Mc1
                         countCollumns=1;
                     }
 
                     break;
                 case "P9":
-                    //2131415161626364655521045353102526271707p9
-                    //
-                    //
-                    break;
+                    path = "212223242515210253531045464737271707P9Q89"; //Mc1+Mc2
+
+                    while(bigFlagDoubleInitC && !parallel){
+                        boolean p43=SFS.getCell(3,4).getUnitPresence();
+                        boolean p34=SFS.getCell(4,3).getUnitPresence();
+
+                        if(!p34 && !p43 ){
+                            bigFlagDoubleInitC=false;
+                        }
+
+                    }
+                    countCollumns++;
+                    if(countCollumns > 3){
+                        countCollumns=1;
+                    }
+
+                    if (orderCountAux == orderUnitsToDo && !parallel) {
+                        bigFlagDoubleEndC=true;
+                        bigFlagDoubleInitC=true;
+                    }
             }
         }
         else if (orderPx.equals("P6") && orderPy.equals("P9")) {
             if (countCollumns == 1) {
-                path = "21314151616263533156364656667574737271707P9"; //Ma3
+                path = "21314151616263533156364656667574737271707P9Q9"; //Ma3
                 countCollumns++;
             }
             else if (countCollumns == 2) {
-                path = "213141424333315434445464737271707P9"; //Ma2
+                path = "213141424333315434445464737271707P9Q9"; //Ma2
                 countCollumns++;
             }
             else if (countCollumns == 3) {
-                path = "2122231331523242526271707P9"; //Ma1
+                path = "2122231331523242526271707P9Q9"; //Ma1
                 countCollumns=1;
             }
         }
         else if (orderPx.equals("P7") && orderPy.equals("P9")) {
-            if (orderUnitsToDo <= 3) {
-                if (countCollumns == 1) {
-                    path = "21314151616263645432064656667574737271707P9"; //Mb3
+            if (countCollumns == 1) {
+                path = "21314151616263645432064656667574737271707P9Q9"; //Mb3
+                countCollumns++;
 
-                    if (orderCountAux == orderUnitsToDo) {
-                        countCollumns++;
-                    }
-                }
-                else if (countCollumns == 2) {
-                    path = "213141424344343204445464737271707P9"; //Mb2
+            } else if (countCollumns == 2) {
+                path = "213141424344343204445464737271707P9Q9"; //Mb2
+                countCollumns++;
 
-                    if (orderCountAux == orderUnitsToDo) {
-                        countCollumns++;
-                    }
-                } else if (countCollumns == 3) {
-                    path = "2122232414320242526271707P9"; //Mb1
-                    if (orderCountAux == orderUnitsToDo) {
-                        countCollumns=1;
-                    }
-                }
-            }
-            else {
-                if (countCollumns == 1) {
-                    path = "21314151616263645432064656667574737271707P9"; //Mb3
-                    countCollumns++;
-
-                } else if (countCollumns == 2) {
-                    path = "213141424344343204445464737271707P9"; //Mb2
-                    countCollumns++;
-
-                } else if (countCollumns == 3) {
-                    path = "2122232414320242526271707P9"; //Mb1
-                    countCollumns=1;
-
-                }
+            } else if (countCollumns == 3) {
+                path = "2122232414320242526271707P9Q9"; //Mb1
+                countCollumns=1;
 
             }
+
         }
         else if (orderPx.equals("P8") && orderPy.equals("P9")) {
             if (countCollumns == 1) {
-                path = "21314151616263645432064656667574737271707P9"; //Mc3
+                path = "21314151616263646555310656667574737271707P9Q9"; //Mc3
                 countCollumns++;
             }
             else if (countCollumns == 2) {
-                path = "213141424344343204445464737271707P9"; //Mc2
+                path = "213141424344453531045464737271707P9Q9"; //Mc2
                 countCollumns++;
             }
             else if (countCollumns == 3) {
-                path = "2122232414320242526271707P9"; //Mc1
+                path = "2122232425153102526271707P9Q9"; //Mc1
                 countCollumns=1;
             }
         }
@@ -1477,7 +1234,6 @@ public class UnloadThread implements Runnable {
         return path;
     }
 
-
     private String isCompatible(String orderPxNow,String orderPyNow,String orderPxCompatible,String orderPyCompatible){
         String compatible="";
         boolean maNow = false;
@@ -1485,15 +1241,25 @@ public class UnloadThread implements Runnable {
         boolean mcNow=false;
         boolean maCompatible =false, mbCompatible=false, mcCompatible = false;
 
-        if((orderPxNow.equals("P1") && orderPyNow.equals("P2")) || (orderPxNow.equals("P2") && orderPyNow.equals("P6")) || (orderPxNow.equals("P6") && orderPyNow.equals("P9")) || (orderPxNow.equals("P2") && orderPyNow.equals("P3"))){
-            compatible=compatible + "1";
+        if((orderPxNow.equals("P1") && orderPyNow.equals("P2")) || (orderPxNow.equals("P2") && orderPyNow.equals("P6")) || (orderPxNow.equals("P6") && orderPyNow.equals("P9")) || (orderPxNow.equals("P2") && orderPyNow.equals("P3"))
+                || (orderPxNow.equals("P1") && orderPyNow.equals("P6")) || (orderPxNow.equals("P2") && orderPyNow.equals("P9")) || (orderPxNow.equals("P3") && orderPyNow.equals("P6"))){
+            compatible=compatible + "1|";
         }
-        else if ((orderPxNow.equals("P3") && orderPyNow.equals("P7")) || (orderPxNow.equals("P7") && orderPyNow.equals("P9")) || (orderPxNow.equals("P3") && orderPyNow.equals("P4"))){
-            compatible=compatible + "2";
+        else if ((orderPxNow.equals("P3") && orderPyNow.equals("P7")) || (orderPxNow.equals("P7") && orderPyNow.equals("P9")) || (orderPxNow.equals("P3") && orderPyNow.equals("P4"))
+                || (orderPxNow.equals("P1") && orderPyNow.equals("P7")) || (orderPxNow.equals("P3") && orderPyNow.equals("P9"))){
+            compatible=compatible + "2|";
         }
-        else if((orderPxNow.equals("P4") && orderPyNow.equals("P5")) || (orderPxNow.equals("P4") && orderPyNow.equals("P8")) || (orderPxNow.equals("P8") && orderPyNow.equals("P9"))){
-            compatible=compatible + "3";
+        else if((orderPxNow.equals("P4") && orderPyNow.equals("P5")) || (orderPxNow.equals("P4") && orderPyNow.equals("P8")) || (orderPxNow.equals("P8") && orderPyNow.equals("P9"))
+                || (orderPxNow.equals("P1") && orderPyNow.equals("P8")) || (orderPxNow.equals("P4") && orderPyNow.equals("P9"))){
+            compatible=compatible + "3|";
         }
+        else if((orderPxNow.equals("P2") && orderPyNow.equals("P4")) || (orderPxNow.equals("P2") && orderPyNow.equals("P7"))) {
+            compatible=compatible + "12|";
+        }
+        else if((orderPxNow.equals("P3") && orderPyNow.equals("P5")) || (orderPxNow.equals("P3") && orderPyNow.equals("P8"))) {
+            compatible=compatible + "23|";
+        }
+
 
         if((orderPxCompatible.equals("P1") && orderPyCompatible.equals("P2")) || (orderPxCompatible.equals("P2") && orderPyCompatible.equals("P6")) || (orderPxCompatible.equals("P6") && orderPyCompatible.equals("P9")) || (orderPxCompatible.equals("P2") && orderPyCompatible.equals("P3"))){
             compatible=compatible + "1";
@@ -1517,6 +1283,7 @@ public class UnloadThread implements Runnable {
 
 
     private int getMaxPriority(){
+
         orderTransform maxPriority = ordersPriority.get(0);
         orderTransform maxPriorityNew;
         int maxPriorityIndex=0;
@@ -1524,9 +1291,11 @@ public class UnloadThread implements Runnable {
         for(int i=1; i < ordersPriority.size(); i++){
             maxPriorityNew=ordersPriority.get(i);
 
-            if(maxPriorityNew.getIdealEndTime() < maxPriority.getIdealEndTime()){
-              maxPriority=maxPriorityNew;
-              maxPriorityIndex=i;
+            if(Warehouse.getPiece(maxPriorityNew.getPx()) > 0) {
+                if ((maxPriorityNew.getIdealEndTime() < maxPriority.getIdealEndTime())) {
+                    maxPriority = maxPriorityNew;
+                    maxPriorityIndex = i;
+                }
             }
 
         }
@@ -1534,3 +1303,5 @@ public class UnloadThread implements Runnable {
         return maxPriorityIndex;
     }
 }
+
+

@@ -9,7 +9,7 @@ public class PusherThread1 implements Runnable {
         int full1=1;
         int full2=1;
         int full3=1;
-        int orderID;
+        int orderID=0;
         int orderKey;
         String stringOrderKey;
 
@@ -26,7 +26,12 @@ public class PusherThread1 implements Runnable {
 
                 updateOrder(orderKey);
 
-                orderID = Integer.parseInt(stringOrderKey.substring(1)); // to use in unload lists
+                try {
+                    orderID = Integer.parseInt(stringOrderKey.substring(1)); // to use in unload lists
+                }
+                catch (Exception e) {
+                    System.out.println(e);
+                }
 
                 //Compares HashMap_received_units with units_sent and updates or terminates order if last unit arrived
                 for (int i=0; i < Main.orderListUnloadEnded.size(); i++){

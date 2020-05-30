@@ -6,8 +6,8 @@ public class WarehouseIn implements Runnable{
         System.out.println("--------------[Executing] WarehouseIn is Running [Executing]--------------");
 
         int full=1;
-        int orderType;
-        int orderID;
+        int orderType=0;
+        int orderID=0;
         int orderKey;
         String stringOrderKey;
 
@@ -22,8 +22,28 @@ public class WarehouseIn implements Runnable{
 
                 updateOrder(orderKey);
 
-                orderType = Integer.parseInt(stringOrderKey.substring(0, 1)); // to identify if its TransformationOrder or a LoadOrder
-                orderID = Integer.parseInt(stringOrderKey.substring(1)); // to use in find ID in lists
+                // Incrementar Delete History depois de enviar para DB - Verificar posição
+                int deleteHistory=0;
+                try{
+                    deleteHistory = OPCUA_Connection.getValueInt("MAIN_TASK", "DELETE_HISTORY");
+                }
+                catch (Exception e){
+                    System.out.println(e);
+                }
+                try {
+                    OPCUA_Connection.setValueInt("MAIN_TASK", "DELETE_HISTORY", ++deleteHistory);
+                }
+                catch (Exception e){
+                    System.out.println(e);
+                }
+
+                try {
+                    orderType = Integer.parseInt(stringOrderKey.substring(0, 1)); // to identify if its TransformationOrder or a LoadOrder
+                    orderID = Integer.parseInt(stringOrderKey.substring(1)); // to use in find ID in lists
+                }
+                catch (Exception e){
+                    System.out.println(e);
+                }
 
                 //Compares HashMap_received_units with units_sent and updates or terminates order if last unit arrived
                 if(orderType==1) {
@@ -32,9 +52,14 @@ public class WarehouseIn implements Runnable{
                             Main.orderListTransformationEnded.get(i).setUnitsReachedEnd(Main.receivedOrderPieces.get(orderKey));
                             Main.orderListTransformationEnded.get(i).setEndTime(StopWatch.getTimeElapsed());
                             Main.orderListTransformationEnded.get(i).setStatus(4);
+
+                            dbConnection.updateStatus_OrderTransformDB(Main.orderListTransformationEnded.get(i).getId(), 3);
+
                             System.out.println("Order Transformation ended in AT2 -> "+ Main.orderListTransformationEnded.get(i));
                         } else if ((Main.orderListTransformationEnded.get(i).getId() == orderID) && (Main.receivedOrderPieces.get(orderKey) != Main.orderListTransformationEnded.get(i).getNTotal())) {
                             Main.orderListTransformationEnded.get(i).setUnitsReachedEnd(Main.receivedOrderPieces.get(orderKey));
+
+
                         }
                     }
                 }
@@ -60,9 +85,10 @@ public class WarehouseIn implements Runnable{
 
     }
 
-    private void updateOrder(int orderKey) {
+    private static void updateOrder(int orderKey) {
         // If present in Hash Table updates otherwise creates new key with value 1
         //System.out.println(Main.receivedOrderPieces.containsKey(orderID));
+
         if(Main.receivedOrderPieces.containsKey(orderKey)){
             Main.receivedOrderPieces.computeIfPresent(orderKey, (k, v) -> v + 1);
         }
@@ -71,5 +97,66 @@ public class WarehouseIn implements Runnable{
         }
 
         System.out.println(Main.receivedOrderPieces.get(orderKey));
+
+        String stringOrderKey = String.valueOf(orderKey);
+        int orderType=0;
+        int orderID=0;
+
+        try {
+            orderType = Integer.parseInt(stringOrderKey.substring(0, 1)); // to identify if its TransformationOrder or a LoadOrder
+            orderID = Integer.parseInt(stringOrderKey.substring(1)); // to use in find ID in lists
+        }
+        catch (Exception e){
+            System.out.println(e);
+        }
+
+        //Update order in db
+        if (orderType == 1) {
+            dbConnection.updateNDone_OrderTransformationDB(orderID, Main.receivedOrderPieces.get(orderKey));
+            System.out.println(String.format("Order not done -> ID: %d | N: %d", orderID,  Main.receivedOrderPieces.get(orderKey)));
+        }
+
+        if(orderType == 3) {
+            dbConnection.updateStatus_OrderLoadDB(orderID, 3);
+        }
     }
+
+    public static void missedPieces(){
+        //Ler peças que possam ter chegado
+        int deleteHistory=0;
+
+        try {
+            deleteHistory = OPCUA_Connection.getValueInt("MAIN_TASK", "DELETE_HISTORY");
+        }
+        catch (Exception e){
+            System.out.println(e);
+        }
+
+        int orderKey=0;
+        int i;
+        for(i = 0; i < 20; i++){
+
+            //String completeUnitType = "AT2.COMPLETE["+i+"].unit_type";
+            String completeOrderType = "AT2.COMPLETE["+i+"].order_type";
+            try {
+                orderKey = OPCUA_Connection.getValueInt("MAIN_TASK", completeOrderType);
+            }
+            catch (Exception e){
+                System.out.println(e);
+            }
+
+            if(orderKey == 0) break;
+            else updateOrder(orderKey);
+
+            System.out.println("Transf perdidas: "+orderKey);
+        }
+
+        try {
+            OPCUA_Connection.setValueInt("MAIN_TASK", "DELETE_HISTORY", (deleteHistory + i));
+        }
+        catch (Exception e){
+            System.out.println(e);
+        }
+    }
+
 }

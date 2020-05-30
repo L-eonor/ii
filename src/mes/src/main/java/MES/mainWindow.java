@@ -14,6 +14,8 @@ public class mainWindow extends JFrame {
     private JButton showHistoric_t;
     private JTable table_u;
     private JTable table_t;
+    private JTable table_l;
+    private JButton closeButton;
     //public unloadOrdersWindow unloadOrdersWindow = new unloadOrdersWindow();
     public HistoricWindow HistoricWindow = new HistoricWindow();
 
@@ -44,6 +46,17 @@ public class mainWindow extends JFrame {
         table_u.setRowHeight(30);
         table_u.setFont(font);
 
+        //load table
+        Object[] columns_l = {"ID", "SUBMIT TIME", "START TIME", "STATUS", "TYPE"};
+        DefaultTableModel defaultTableModel_l = new DefaultTableModel();
+        defaultTableModel_l.setColumnIdentifiers(columns_l);
+        table_l.setModel(defaultTableModel_l);
+        table_l.setBackground(Color.WHITE);
+        table_l.setForeground(Color.BLACK);
+        font = new Font("", 1, 22);
+        table_u.setRowHeight(30);
+        table_u.setFont(font);
+
         add(panelParent);
         setTitle("Order Visualizer");
         setSize(400, 500);
@@ -55,6 +68,13 @@ public class mainWindow extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 HistoricWindow.setVisible(true);
+            }
+        });
+
+        closeButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.exit(0);
             }
         });
 
@@ -89,6 +109,22 @@ public class mainWindow extends JFrame {
                 for (int i = 0; i < objetos.size(); i++){
                     Vector<Object> row = objetos.get(i);
                     defaultTableModel_u.addRow(row);
+                }
+
+                //fill table_u
+                if (objetos.size() > 0) objetos.clear();
+
+                objetos = dbConnection.readOrderListLoadDB();
+
+                if(defaultTableModel_l.getRowCount() > 0){
+                    for (int i = defaultTableModel_l.getRowCount() - 1; i > -1; i--){
+                        defaultTableModel_l.removeRow(i);
+                    }
+                }
+
+                for (int i = 0; i < objetos.size(); i++){
+                    Vector<Object> row = objetos.get(i);
+                    defaultTableModel_l.addRow(row);
                 }
             }
         });

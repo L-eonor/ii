@@ -12,6 +12,7 @@ public class HistoricWindow extends JFrame{
     private JPanel panel1;
     private JTable table_u;
     private JTable table_t;
+    private JTable table_l;
     public Vector<Vector<Object>> objetos = new Vector<Vector<Object>>();
 
 
@@ -39,6 +40,18 @@ public class HistoricWindow extends JFrame{
         font = new Font("", 1, 22);
         table_u.setRowHeight(30);
         table_u.setFont(font);
+
+        //load table
+        Object[] columns_l = {"ID", "SUBMIT TIME", "START TIME", "END_TIME", "TYPE"};
+        DefaultTableModel defaultTableModel_l = new DefaultTableModel();
+        defaultTableModel_l.setColumnIdentifiers(columns_l);
+        table_l.setModel(defaultTableModel_l);
+        table_l.setBackground(Color.WHITE);
+        table_l.setForeground(Color.BLACK);
+        font = new Font("", 1, 22);
+        table_l.setRowHeight(30);
+        table_l.setFont(font);
+
 
         add(panel1);
         setTitle("Historic of Orders");
@@ -75,6 +88,20 @@ public class HistoricWindow extends JFrame{
                 for (int i = 0; i < objetos.size(); i++){
                     Vector<Object> row = objetos.get(i);
                     defaultTableModel_u.addRow(row);
+                }
+
+                //fill table_l
+                if (objetos.size() > 0) objetos.clear();
+                objetos = dbConnection.readHistoricOrderListLoadDB();
+                if(defaultTableModel_l.getRowCount() > 0){
+                    for (int i = defaultTableModel_l.getRowCount() - 1; i > -1; i--){
+                        defaultTableModel_l.removeRow(i);
+                    }
+                }
+
+                for (int i = 0; i < objetos.size(); i++){
+                    Vector<Object> row = objetos.get(i);
+                    defaultTableModel_l.addRow(row);
                 }
 
             }

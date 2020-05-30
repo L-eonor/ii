@@ -24,16 +24,4 @@
 <Order Number="001">
 <Transform From="P1" To="P3" Quantity="3" MaxDelay="60"/>
 </Order>
-<Order Number="002">
-<Transform From="P3" To="P5" Quantity="7" MaxDelay="60"/>
-</Order>
-<Order Number="003">
-<Transform From="P4" To="P5" Quantity="6" MaxDelay="60"/>
-</Order>
-<Order Number="004">
-<Transform From="P1" To="P9" Quantity="20" MaxDelay="60"/>
-</Order>
-<Order Number="005">
-<Transform From="P1" To="P4" Quantity="10" MaxDelay="60"/>
-</Order>
 </ORDERS>

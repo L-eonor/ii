@@ -74,7 +74,7 @@ public class OPCUA_Connection {
      * String celulaName -> contém o nome do POU da célula
      * String VarName -> contém o nome da variavál que se pretende ler o valor
      */
-    public static void getValue(String cellName, String VarName) {
+    public static synchronized void getValue(String cellName, String VarName) {
         String aux1;
         aux1 = aux + cellName + "." + VarName;
         NodeId nodeidstring = new NodeId(id_node, aux1);

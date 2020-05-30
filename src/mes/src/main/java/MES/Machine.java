@@ -12,8 +12,9 @@ public class Machine extends Cell {
      */
 
     // Attributes
-    private int processTime;
-    private int tool;
+    private int totalTime;
+    private int totalUnits;
+    private int unitsDoneByType[] = { 0, 0, 0, 0, 0, 0, 0, 0, 0};
 
     // Constructor
 
@@ -25,25 +26,49 @@ public class Machine extends Cell {
 
     //Methods
 
-    //Setters
+    public synchronized int getTotalTime(){
+        String totalT = "C"+this.getPosition()[1]+"T"+this.getPosition()[0]+".TOTAL_TIME";
+        try {
+            this.totalTime = OPCUA_Connection.getValueInt("MAIN_TASK", totalT);
+        }
+        catch (Exception e){
+            System.out.println(e);
+        }
 
-    public void setProcessTime(int processTime) {
-        this.processTime = processTime;
+        System.out.println("Tempo total na Máquina "+ "C"+this.getPosition()[1]+"T"+this.getPosition()[0]+ ": "+ this.totalTime);
+        return this.totalTime;
     }
 
-    public void setTool(int tool) {
-        this.tool = tool;
+    public synchronized int getTotalUnits() {
+        String totalU = "C"+this.getPosition()[1]+"T"+this.getPosition()[0]+".TOTAL_UNITS_PROCESSED";
+        try {
+            this.totalUnits = OPCUA_Connection.getValueInt("MAIN_TASK", totalU);
+        }
+        catch (Exception e){
+            System.out.println(e);
+        }
+
+        System.out.println("Unidades processadas na Máquina "+ "C"+this.getPosition()[1]+"T"+this.getPosition()[0]+ ": "+ this.totalUnits);
+        return this.totalUnits;
     }
 
+    public synchronized int[] getUnitsDoneByType(){
+        System.out.println("Unidades por tipo na Máquina "+ "C"+this.getPosition()[1]+"T"+this.getPosition()[0]+ ": ");
+        for(int i=0; i < 9; i++ ){
+            String ubt = "C"+this.getPosition()[1]+"T"+this.getPosition()[0]+".UNITS_DONE_BY_TYPE["+i+"]";
+            try {
+                this.unitsDoneByType[i] = OPCUA_Connection.getValueInt("MAIN_TASK", ubt);
+            }
+            catch (Exception e){
+                System.out.println(e);
+            }
+            int a=i;
+            System.out.println("  - P"+(a+1)+": "+ this.unitsDoneByType[i]);
+        }
 
-    //Getters
-    public int getProcessTime() {
-        return processTime;
+        return this.unitsDoneByType;
     }
 
-    public int getTool() {
-        return tool;
-    }
 
 
 

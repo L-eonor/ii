@@ -387,6 +387,27 @@ public class dbConnection {
         return ERROR;
     }
 
+    public static int updateNSent_OrderTransformationDB(int id, int qSent) {
+        try {
+            Connection con = dbConnection.connect();
+            String statement = String.format(
+                    "UPDATE `orderListTransformation` SET `quantity_sent` = '%d' " +
+                            "WHERE `orderListTransformation`.`id` = '%d'",
+                    qSent, id);
+
+            PreparedStatement pst = con.prepareStatement(statement);
+            int rs = pst.executeUpdate();
+            if (rs == 0) {
+                return ERROR;
+            } else {
+                return SUCCESS;
+            }
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
+        }
+        return ERROR;
+    }
+
     /**
     public static int readWarehouse(Warehouse warehouse) {
         try {
@@ -462,6 +483,191 @@ public class dbConnection {
         return ERROR;
     }
 
+    public static int insertNew_orderLoadDB(int id, String type){
+        try {
+            Connection con = dbConnection.connect();
+
+            String statement = String.format(
+                    "INSERT INTO `orderListLoad` (`id`, `type`) " +
+                            "VALUES ('%d', '%s')",
+                    id, type);
+
+
+            PreparedStatement pst = con.prepareStatement(statement);
+            int rs = pst.executeUpdate();
+            if (rs == 0) {
+                return ERROR;
+            } else {
+                return SUCCESS;
+            }
+
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
+        }
+        return ERROR;
+
+    }
+
+    public static int updateStatus_OrderLoadDB(int id, int status) {
+        try {
+            Connection con = dbConnection.connect();
+
+            String statusText;
+            String statement = "";
+
+            if(status == 2){
+                statement = String.format(
+                        "UPDATE `orderListLoad` SET `start_time` = CURRENT_TIMESTAMP, `status` = 'em_processamento' " +
+                                "WHERE `orderListLoad`.`id` = '%d'",
+                        id);
+
+            }
+
+            if(status == 3){
+                statement = String.format(
+                        "UPDATE `orderListLoad` SET `end_time` = CURRENT_TIMESTAMP, `status` = 'concluida' " +
+                                "WHERE `orderListLoad`.`id` = '%d'",
+                        id);
+            }
+
+            PreparedStatement pst = con.prepareStatement(statement);
+            int rs = pst.executeUpdate();
+            if (rs == 0) {
+                return ERROR;
+            } else {
+                return SUCCESS;
+            }
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
+        }
+        return ERROR;
+    }
+
+
+    public static Vector<Vector<Object>> readOrderListLoadDB() {
+        try {
+
+            Connection con = dbConnection.connect();
+            String statementSelect = String.format("SELECT * from orderListLoad WHERE status NOT LIKE 'concluida' ORDER BY id ");
+            PreparedStatement pstSelect = con.prepareStatement(statementSelect);
+            ResultSet rsSelect = pstSelect.executeQuery();
+            Vector<Vector<Object>> data = new  Vector<Vector<Object>>();
+
+            while (rsSelect.next()) {
+
+                Vector<Object> row = new Vector<Object>();
+
+                row.add(rsSelect.getString(1));
+                row.add(rsSelect.getString(2));
+                row.add(rsSelect.getString(3));
+                row.add(rsSelect.getString(5));
+                row.add(rsSelect.getString(6));
+
+                data.add(row);
+            }
+            return data;
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
+        }
+        return null;
+    }
+
+    public static Vector<Vector<Object>> readHistoricOrderListLoadDB() {
+        try {
+
+            Connection con = dbConnection.connect();
+            String statementSelect = String.format("SELECT * from orderListLoad WHERE status LIKE 'concluida' ORDER BY id");
+            PreparedStatement pstSelect = con.prepareStatement(statementSelect);
+            ResultSet rsSelect = pstSelect.executeQuery();
+            Vector<Vector<Object>> data = new  Vector<Vector<Object>>();
+
+            while (rsSelect.next()) {
+                Vector<Object> row = new Vector<Object>();
+
+                row.add(rsSelect.getString(1));
+                row.add(rsSelect.getString(2));
+                row.add(rsSelect.getString(3));
+                row.add(rsSelect.getString(4));
+                row.add(rsSelect.getString(6));
+                data.add(row);
+            }
+            return data;
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
+        }
+        return null;
+    }
+
+
+
+
+
+
+    public static int deleteLoadTableDB() {
+        try {
+            Connection con = dbConnection.connect();
+
+            String statement = String.format(
+                    "DELETE FROM `orderListLoad`");
+
+
+            PreparedStatement pst = con.prepareStatement(statement);
+            int rs = pst.executeUpdate();
+            if (rs == 0) {
+                return ERROR;
+            } else {
+                return SUCCESS;
+            }
+
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
+        }
+        return ERROR;
+    }
+
+    public static int deleteUnloadTableDB() {
+        try {
+            Connection con = dbConnection.connect();
+
+            String statement = String.format(
+                    "DELETE FROM `orderListUnload`");
+
+
+            PreparedStatement pst = con.prepareStatement(statement);
+            int rs = pst.executeUpdate();
+            if (rs == 0) {
+                return ERROR;
+            } else {
+                return SUCCESS;
+            }
+
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
+        }
+        return ERROR;
+    }
+
+    public static int deleteTransformationTableDB() {
+        try {
+            Connection con = dbConnection.connect();
+
+            String statement = String.format(
+                    "DELETE FROM `orderListTransformation`");
+
+
+            PreparedStatement pst = con.prepareStatement(statement);
+            int rs = pst.executeUpdate();
+            if (rs == 0) {
+                return ERROR;
+            } else {
+                return SUCCESS;
+            }
+
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
+        }
+        return ERROR;
+    }
 
 
 

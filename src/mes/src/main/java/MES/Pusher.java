@@ -7,7 +7,7 @@ public class Pusher extends Cell {
      */
 
     // Attributes
-    private int orderPushing;
+    private int orderPushing = 0;
     private int unitTypePushing;
     private boolean pushing;
 

@@ -12,7 +12,7 @@ public class readSystem implements Runnable {
         System.out.println("--------------[Executing] ReadSystem is Running [Executing]--------------");
 
         while(true) {
-
+            try{
                     /* --------------------------- COLLUMN 0 --------------------------------*/
                     //WarehouseOut AT1
                     Cell AT1 = SFS.getCell(1, 0);
@@ -45,7 +45,9 @@ public class readSystem implements Runnable {
                     /* --------------------------- COLLUMN 2 --------------------------------*/
                     //Rotator
                     Rotator C2T1 = (Rotator) SFS.getCell(1, 2);
-                    C2T1.setUnitPresence(!OPCUA_Connection.getValueBoolean("MAIN_TASK", "C2T1.EMPTY.x"));
+                    try {
+                        C2T1.setUnitPresence(!OPCUA_Connection.getValueBoolean("MAIN_TASK", "C2T1.EMPTY.x"));
+                    }catch (Exception e){}
 
                     //Conveyor
                     Cell C2T2 = SFS.getCell(2, 2);
@@ -247,6 +249,7 @@ public class readSystem implements Runnable {
                     Warehouse.setPiece(OPCUA_Connection.getValueInt("MAIN_TASK", "ARMAZEM.P7"), "P7");
                     Warehouse.setPiece(OPCUA_Connection.getValueInt("MAIN_TASK", "ARMAZEM.P8"), "P8");
                     Warehouse.setPiece(OPCUA_Connection.getValueInt("MAIN_TASK", "ARMAZEM.P9"), "P9");
+        }catch(Exception e){}
 
         }
 

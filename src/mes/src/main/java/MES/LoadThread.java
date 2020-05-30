@@ -51,12 +51,19 @@ public class LoadThread implements Runnable {
                 //Sends via OPC-UA
                 sendPathToOPCLoad(pathStringLoad1.toString(),1);
                 aux1++;
+
+                dbConnection.insertNew_orderLoadDB(orderLoad1.getId(), "P1");
             }
             if(!SFS.getCell(1,8).getUnitPresence() && aux1 == 2) {
                 orderLoad1.setStartTime(StopWatch.getTimeElapsed());
                 orderLoad1.setStatus(3);
                 Main.orderListLoad.add(orderLoad1);
                 aux1=1;
+
+                System.out.println("UPDATE");
+
+                dbConnection.updateStatus_OrderLoadDB(orderLoad1.getId(), 2);
+
             }
 
             if(C7T7b && aux2 == 1) {
@@ -81,11 +88,17 @@ public class LoadThread implements Runnable {
                 //Sends via OPC-UA
                 sendPathToOPCLoad(pathStringLoad2.toString(),2);
                 aux2++;
+
+                dbConnection.insertNew_orderLoadDB(orderLoad2.getId(), "P2");
             }
             if(!SFS.getCell(7,8).getUnitPresence() && aux2 == 2) {
                 orderLoad2.setStartTime(StopWatch.getTimeElapsed());
                 orderLoad2.setStatus(3);
                 Main.orderListLoad.add(orderLoad2);
+                dbConnection.updateStatus_OrderLoadDB(orderLoad2.getId(), 2);
+
+                System.out.println("UPDATE");
+
                 aux2=1;
             }
         }

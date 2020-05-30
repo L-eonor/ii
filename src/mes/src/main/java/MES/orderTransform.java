@@ -7,6 +7,7 @@ public class orderTransform extends order {
     private final String Py;
     private final int nTotal;
     private int nDone;
+    private boolean outOfUnits;
 
     public orderTransform(int id, float submitTime, int type, int status, String Px, String Py, int nTotal, int nDone, int maxDelay) {
         super(id, submitTime, type, status, maxDelay);
@@ -14,6 +15,8 @@ public class orderTransform extends order {
         this.Py = Py;
         this.nTotal = nTotal;
         this.nDone = nDone;
+        this.outOfUnits = false;
+
     }
 
     @Override
@@ -54,6 +57,14 @@ public class orderTransform extends order {
 
     public int getNToProcess() {
         return (this.nTotal - this.nDone);
+    }
+
+    public void setOutOfUnits(boolean outOfUnits) {
+        this.outOfUnits = outOfUnits;
+    }
+
+    public boolean getOutOfUnits(){
+        return this.outOfUnits;
     }
 
 

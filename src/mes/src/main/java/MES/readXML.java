@@ -29,6 +29,26 @@ public class readXML {
 
         // Envia info sobre as peças em armazém quando pedido
         if (document.getElementsByTagName("Request_Stores").getLength() != 0) {
+
+            Machine C1T3 = (Machine) SFS.getCell(3,1);
+            Machine C3T3 = (Machine) SFS.getCell(3,3);
+            Machine C5T3 = (Machine) SFS.getCell(3,5);
+            Machine C1T4 = (Machine) SFS.getCell(4,1);
+            Machine C3T4 = (Machine) SFS.getCell(4,3);
+            Machine C5T4 = (Machine) SFS.getCell(4,5);
+            Machine C1T5 = (Machine) SFS.getCell(5,1);
+            Machine C3T5 = (Machine) SFS.getCell(5,3);
+            Machine C5T5 = (Machine) SFS.getCell(5,5);
+
+            C1T3.getTotalTime();
+            C1T3.getTotalUnits();
+            C1T3.getUnitsDoneByType();
+
+            C5T5.getTotalTime();
+            C5T5.getTotalUnits();
+            C5T5.getUnitsDoneByType();
+
+
             //createXML xml = new createXML("C:\\Users\\kicop\\Desktop\\requeststores.xml");
             //udpClient client = new udpClient(54321, "C:\\XML\\requeststores.xml");
             //createXML xml = new createXML("C:\\Users\\cjoao\\Desktop\\ii-Teste\\src\\mes\\requeststores.xml");
@@ -93,6 +113,10 @@ public class readXML {
                             Integer.parseInt(element1.getAttribute("MaxDelay")));
 
                     ordersPriority.add((orderTransform) order);
+
+                    //add on Database
+                    orderTransform order_aux = (orderTransform) order;
+                    dbConnection.insertNew_OrderTransformationDB(order_aux.getId(), order_aux.getPx(), order_aux.getPy(), order_aux.getNTotal(), order_aux.getMaxDelay());
 
                 }
 
