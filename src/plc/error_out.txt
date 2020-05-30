@@ -1,0 +1,8 @@
+SLF4J: Failed to load class "org.slf4j.impl.StaticLoggerBinder".
+SLF4J: Defaulting to no-operation (NOP) logger implementation
+SLF4J: See http://www.slf4j.org/codes.html#StaticLoggerBinder for further details.
+Exception in thread "Thread-2" java.lang.ClassCastException: org.eclipse.milo.opcua.stack.core.types.builtin.unsigned.UShort cannot be cast to java.lang.Boolean
+	at MES.OPCUA_Connection.getValueBoolean(OPCUA_Connection.java:142)
+	at MES.readSystem.run(readSystem.java:19)
+	at java.lang.Thread.run(Unknown Source)
+^C

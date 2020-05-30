@@ -1,0 +1,21 @@
+DESKTOP-G3Q32TE
+Connected to remote host
+hostname: DESKTOP-G3Q32TE
+--------------[Executing] ReadSystem is Running [Executing]--------------
+--------------[Executing] UnloadThread is Running [Executing]--------------
+--------------[Executing] LoadThread is Running [Executing]--------------
+--------------[Executing] PusherThread1 is Running [Executing]--------------
+Size of Unload List: 0
+--------------[Executing] WarehouseIn is Running [Executing]--------------
+[Transformation Order] From: P2 | To: P6 | Quantity: 30 | MaxDelay: 300
+[Transformation Order] From: P3 | To: P5 | Quantity: 7 | MaxDelay: 300
+[Transformation Order] From: P7 | To: P9 | Quantity: 10 | MaxDelay: 300
+[Transformation Order] From: P4 | To: P8 | Quantity: 7 | MaxDelay: 300
+[Unload Order] Type: P9 | Destination: D2 | Quantity: 8
+[Unload Order] Type: P6 | Destination: D3 | Quantity: 6
+[Unload] Esta é a string: 21314151617172737499P925
+[Unload] Esta é a string: 213141516162636465666777767599P626
+1
+Order not done -> ID: 1 | N: 1
+[Transformation Order] From: P1 | To: P9 | Quantity: 20 | MaxDelay: 900
+[Transformation Order] From: P4 | To: P5 | Quantity: 6 | MaxDelay: 1000
