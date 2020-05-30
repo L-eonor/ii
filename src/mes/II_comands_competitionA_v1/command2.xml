@@ -21,7 +21,7 @@
 >
 ]>
 <ORDERS>
-<Order Number="001">
-<Transform From="P1" To="P3" Quantity="3" MaxDelay="60"/>
+<Order Number="040">
+<Transform From="P1" To="P2" Quantity="3" MaxDelay="60"/>
 </Order>
 </ORDERS>

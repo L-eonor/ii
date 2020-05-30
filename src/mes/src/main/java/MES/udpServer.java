@@ -5,6 +5,7 @@ import java.io.FileWriter;
 import java.io.PrintWriter;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
+import java.net.InetAddress;
 
 import static MES.readXML.*;
 import static MES.createXML.*;
@@ -16,6 +17,8 @@ public class udpServer implements Runnable{
     private final int port;
 
     private static String FILE_NAME = "received_data.xml";
+
+    public InetAddress addressFromOrder;
 
     public udpServer(int port) {
         this.port = port;
@@ -35,6 +38,12 @@ public class udpServer implements Runnable{
                 DatagramPacket datagramPacket = new DatagramPacket(buffer, 0, buffer.length);
                 serverSocket.receive(datagramPacket);
 
+
+                addressFromOrder = datagramPacket.getAddress();
+                int clientPort = datagramPacket.getPort();
+
+                System.out.println("IP do ERP = " + addressFromOrder);
+
                 if(datagramPacket.getData()!=null) {
                     //FileWriter file = new FileWriter("C:\\Users\\kicop\\Git_Repo\\InformaticaIndustrial\\ii\\src\\mes\\received_data.xml");
                     //FileWriter file = new FileWriter("C:\\Users\\cjoao\\Desktop\\II_last\\ii-Teste\\src\\mes\\received_data.xml");
@@ -48,7 +57,9 @@ public class udpServer implements Runnable{
                     out.flush();
                     //ReadXML("C:\\Users\\kicop\\Git_Repo\\InformaticaIndustrial\\ii\\src\\mes\\received_data.xml");
                     //ReadXML("C:\\Users\\cjoao\\Desktop\\II_last\\ii-Teste\\src\\mes\\received_data.xml");
-                    ReadXML(f.getAbsolutePath());
+
+                    System.out.println("Port do ERP = " +clientPort);
+                    ReadXML(f.getAbsolutePath(), addressFromOrder, serverSocket, clientPort);
                     out.close();
                     file.close();
                 }

@@ -240,15 +240,6 @@ public class readSystem implements Runnable {
                     /* ---------------------------- UNITS Warehouse ---------------------------------*/
 
 
-                    Warehouse.setPiece(OPCUA_Connection.getValueInt("MAIN_TASK", "ARMAZEM.P1"), "P1");
-                    Warehouse.setPiece(OPCUA_Connection.getValueInt("MAIN_TASK", "ARMAZEM.P2"), "P2");
-                    Warehouse.setPiece(OPCUA_Connection.getValueInt("MAIN_TASK", "ARMAZEM.P3"), "P3");
-                    Warehouse.setPiece(OPCUA_Connection.getValueInt("MAIN_TASK", "ARMAZEM.P4"), "P4");
-                    Warehouse.setPiece(OPCUA_Connection.getValueInt("MAIN_TASK", "ARMAZEM.P5"), "P5");
-                    Warehouse.setPiece(OPCUA_Connection.getValueInt("MAIN_TASK", "ARMAZEM.P6"), "P6");
-                    Warehouse.setPiece(OPCUA_Connection.getValueInt("MAIN_TASK", "ARMAZEM.P7"), "P7");
-                    Warehouse.setPiece(OPCUA_Connection.getValueInt("MAIN_TASK", "ARMAZEM.P8"), "P8");
-                    Warehouse.setPiece(OPCUA_Connection.getValueInt("MAIN_TASK", "ARMAZEM.P9"), "P9");
         }catch(Exception e){}
 
         }

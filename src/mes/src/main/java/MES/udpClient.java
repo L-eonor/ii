@@ -23,10 +23,16 @@ import java.nio.file.Paths;
 public class udpClient implements Runnable {
     private final int serverPort;
     public final String pathname;
+    public final InetAddress addressFromOrder;
+    private final DatagramSocket serverSocket;
+    private final int clientPort;
 
-    public udpClient(int serverPort, String pathname) {
+    public udpClient(int serverPort, String pathname, InetAddress addressFromOrder, DatagramSocket serverSocket, int clientPort) {
         this.serverPort = serverPort;
         this.pathname = pathname;
+        this.addressFromOrder = addressFromOrder;
+        this.serverSocket = serverSocket;
+        this.clientPort=clientPort;
     }
 
     @Override
@@ -35,14 +41,14 @@ public class udpClient implements Runnable {
         try (DatagramSocket clientSocket = new DatagramSocket(50000)) {
 
             byte[] array = Files.readAllBytes(Paths.get(pathname));
-
             DatagramPacket datagramPacket = new DatagramPacket(
                     array,
                     array.length,
-                    InetAddress.getLocalHost(),
-                    serverPort
+                    addressFromOrder,
+                    clientPort
             );
-            clientSocket.send(datagramPacket);
+            serverSocket.send(datagramPacket);
+            System.out.println("XML Sent");
 
         } catch (IOException ex) {
             ex.printStackTrace();

@@ -8,6 +8,8 @@ import org.w3c.dom.NodeList;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.File;
+import java.net.DatagramSocket;
+import java.net.InetAddress;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -19,7 +21,7 @@ import static MES.createXML.*;
 
 public class readXML {
 
-    public static void ReadXML(String pathname) throws Exception {
+    public static void ReadXML(String pathname, InetAddress addressFromOrder, DatagramSocket serverSocket, int clientPort) throws Exception {
 
         File xmlFile = new File(pathname);
 
@@ -29,28 +31,11 @@ public class readXML {
 
         // Envia info sobre as peças em armazém quando pedido
         if (document.getElementsByTagName("Request_Stores").getLength() != 0) {
+            createXML xml = new createXML("requeststores.xml");
 
-            Machine C1T3 = (Machine) SFS.getCell(3,1);
-            Machine C3T3 = (Machine) SFS.getCell(3,3);
-            Machine C5T3 = (Machine) SFS.getCell(3,5);
-            Machine C1T4 = (Machine) SFS.getCell(4,1);
-            Machine C3T4 = (Machine) SFS.getCell(4,3);
-            Machine C5T4 = (Machine) SFS.getCell(4,5);
-            Machine C1T5 = (Machine) SFS.getCell(5,1);
-            Machine C3T5 = (Machine) SFS.getCell(5,3);
-            Machine C5T5 = (Machine) SFS.getCell(5,5);
-
-            C1T3.getTotalTime();
-            C1T3.getTotalUnits();
-            C1T3.getUnitsDoneByType();
-
-            C5T5.getTotalTime();
-            C5T5.getTotalUnits();
-            C5T5.getUnitsDoneByType();
-
-
-            //createXML xml = new createXML("C:\\Users\\kicop\\Desktop\\requeststores.xml");
-            //udpClient client = new udpClient(54321, "C:\\XML\\requeststores.xml");
+            udpClient client = new udpClient(54321, "requeststores.xml", addressFromOrder, serverSocket, clientPort);
+            client.run();
+            System.out.println("[REQUEST STORES] from " + addressFromOrder);
             //createXML xml = new createXML("C:\\Users\\cjoao\\Desktop\\ii-Teste\\src\\mes\\requeststores.xml");
             //udpClient client = new udpClient(54321, "C:\\Users\\cjoao\\Desktop\\ii-Teste\\src\\mes\\requeststores.xml");
         }

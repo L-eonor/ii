@@ -2,10 +2,7 @@ package MES;
 
 import javax.sound.midi.Soundbank;
 import java.sql.SQLOutput;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 import static MES.Main.*;
 import static java.lang.Thread.*;
@@ -41,6 +38,7 @@ public class UnloadThread implements Runnable {
         //Tells TransformationThread to immediately wait
 
         while (true) {
+
 
             if(!Main.orderListUnload.isEmpty() && checkIfAtLeastOneCanHappen()) {
 
@@ -104,7 +102,6 @@ public class UnloadThread implements Runnable {
                     //System.out.println("[Unload] Esta é a string: " + pathString);
 
                     for (int a = orderUnitsDone; a < orderUnitsTotal; a++) {
-
                         //Condition to verify when Slider is full or no more units are available to send
                         if (slider.isFull() || (Warehouse.getPiece(order.getPx()) <= 0)) {
                             order.setStatus(2);
@@ -143,8 +140,12 @@ public class UnloadThread implements Runnable {
 
             }
             else if (!Main.ordersPriority.isEmpty()) {
+                System.out.println("Tamanho lista: "+ordersPriority.size() );
+
                 int index = getMaxPriority(); //retorna a mais "urgente" desde que existam peças
                 orderTransform order= ordersPriority.get(index);
+
+                System.out.println("Tamanho lista: "+ordersPriority.size()+ " + Ordem índice: "+index);
 
                 //Order attributes
                 int orderUnitsDone = order.getNDone();
@@ -155,7 +156,9 @@ public class UnloadThread implements Runnable {
                 int orderCountAux=1;
 
                 if(Warehouse.getPiece(orderPx) > 0) {
-                    while (orderUnitsDone <= orderUnitsTotal) {
+                    while (orderUnitsDone < orderUnitsTotal) {
+                        System.out.println("A fazer "+ orderPx +"->" +orderPy);
+
                         //Verifies if it's out of units
                         if(Warehouse.getPiece(orderPx) <= 0){
                             order.setStatus(2); //Set order status to "All pieces sent".
@@ -166,11 +169,10 @@ public class UnloadThread implements Runnable {
                         //Verifies if orderUnitsDone = orderUnitsTotal and if yes, polls and updates Order
                         if (order.getNDone() == order.getNTotal()) {
                             order.setStatus(3); //Set order status to "All pieces sent".
-                            //System.out.println(order);
                             Main.orderListTransformationEnded.add(Main.ordersPriority.remove(index));
 
                             //Update order in db
-                            dbConnection.updateStatus_OrderUnloadDB(order.getId(), order.getStatus());
+                            dbConnection.updateStatus_OrderTransformDB(order.getId(), order.getStatus());
 
                             break;
                         }
@@ -190,7 +192,11 @@ public class UnloadThread implements Runnable {
                         }
 
                         if (orderUnitsDone == 0) order.setStartTime(StopWatch.getTimeElapsed()); //Set order start Time
-                        if (order.getStatus() != 2) order.setStatus(2); //Set order status to "in progress".
+                        if (order.getStatus() != 2) {
+                            order.setStatus(2);
+                            dbConnection.updateStatus_OrderTransformDB(order.getId(), order.getStatus());
+                            //Set order status to "in progress".
+                        }
 
                         String pathString;
 
@@ -234,14 +240,11 @@ public class UnloadThread implements Runnable {
                         }
 
 
-
-
-
                         pathString=getPathByTransformation(orderPx,orderPy,orderUnitsToDo,orderCountAux,false);
                         String orderInfo ="1" + order.getId();
                         pathString=pathString+"T"+orderInfo;
-                        //Sends information to OPC-UA
 
+                        //Sends information to OPC-UA
                         sendPathToOPC(unitTypeIdentifier(orderPx), pathString);
 
                         orderCountAux++;
@@ -262,6 +265,7 @@ public class UnloadThread implements Runnable {
                         boolean flagA=false, flagB=false,flagC=false, flagDouble=false;
                         String pathDoubleTransf="";
                         orderTransform orderDoubleComp=null;
+                        int orderDoubleCompIndex=0;
 
                         for(int a=0; a < Main.ordersPriority.size(); a++){
                             if(a==index){
@@ -271,7 +275,11 @@ public class UnloadThread implements Runnable {
                             orderTransform orderComp = Main.ordersPriority.get(a);
 
                             // If it's been done, keep looking
-                            if(orderComp.getNDone()==orderComp.getNTotal()) continue;
+                            if(orderComp.getNDone()==orderComp.getNTotal()) {
+                                Main.orderListTransformationEnded.add(ordersPriority.remove(a));
+                                dbConnection.updateStatus_OrderTransformDB(orderComp.getId(), orderComp.getStatus());
+                                continue;
+                            }
 
                             if((Warehouse.getPiece(orderComp.getPx()) <= 0)) {
                                 orderComp.setOutOfUnits(true);
@@ -366,6 +374,7 @@ public class UnloadThread implements Runnable {
                             //Caso encontre um transformação dupla possível
                             if((transf.equals("1|23") || transf.equals("3|12") || transf.equals("12|3") || transf.equals("23|1"))  && !flagDouble){
                                 orderDoubleComp=ordersPriority.get(a);
+                                orderDoubleCompIndex=a;
                                 flagDouble = true;
 
                                 if (orderDoubleComp.getNDone() == 0) orderDoubleComp.setStartTime(StopWatch.getTimeElapsed()); //Set order start Time
@@ -384,12 +393,12 @@ public class UnloadThread implements Runnable {
 
                             //Checks if order is done
                             if(orderComp.getNTotal()==orderComp.getNDone()){
-                                orderComp.setStatus(3);
+                                orderComp.setStatus(2);
                                 Main.orderListTransformationEnded.add(ordersPriority.remove(a));
-
                                 dbConnection.updateStatus_OrderTransformDB(orderComp.getId(), orderComp.getStatus());
 
                             }
+
 
                         }
 
@@ -405,11 +414,27 @@ public class UnloadThread implements Runnable {
 
                         }
 
+                        if(orderDoubleComp!=null) {
+                            if (orderDoubleComp.getNDone() == orderDoubleComp.getNTotal() && orderDoubleComp != null) {
+                                orderDoubleComp.setStatus(2);
+                                Main.orderListTransformationEnded.add(ordersPriority.remove(orderDoubleCompIndex));
+                                dbConnection.updateStatus_OrderTransformDB(orderDoubleComp.getId(), orderDoubleComp.getStatus());
+                            }
+                        }
+
 
 
                     }
+                    if (order.getNDone() == order.getNTotal()) {
+                        order.setStatus(2); //Set order status to "All pieces sent".
+                        Main.orderListTransformationEnded.add(Main.ordersPriority.remove(index));
+
+                        //Update order in db
+                        dbConnection.updateStatus_OrderTransformDB(order.getId(), order.getStatus());
+                    }
                 }
                 else {
+                    System.out.println("Sem peças.");
                     order.setStatus(2); //Set order status to "All pieces sent".
                     order.setOutOfUnits(true);
                 }
@@ -447,7 +472,6 @@ public class UnloadThread implements Runnable {
 
     private void sendPathToOPC(int unitType, String path){
         //Sends information to OPC-UA
-        //Set go a false
         OPCUA_Connection.setValueBoolean("MAIN_TASK", "GO", true);
         OPCUA_Connection.setValueInt("MAIN_TASK", "unit_type", unitType);
         OPCUA_Connection.setValueString("MAIN_TASK", "AT1_order_path_mes", path);
@@ -469,6 +493,8 @@ public class UnloadThread implements Runnable {
                 System.out.println("Send Path OPC:  Exception");
             }
         }
+
+        Warehouse.removePiece("P"+unitType);
 
     }
 
@@ -823,6 +849,7 @@ public class UnloadThread implements Runnable {
                         }
                     }
                     else if (orderUnitsToDo <= 15) {
+                        System.out.println("Espera para inciar P1->P9...");
                         while(bigFlagP1P9Init){
                             boolean p41=SFS.getCell(1,4).getUnitPresence();
                             boolean p42=SFS.getCell(2,4).getUnitPresence();
@@ -837,6 +864,7 @@ public class UnloadThread implements Runnable {
                             }
 
                         }
+                        System.out.println("Começou P1->P9.");
 
                         if (orderCountAux % 3 == 1) {
                             path = "21222324251511025352104555310656667574737271707P9Q489"; //Mc1+Mc2+Mc3
@@ -1281,7 +1309,7 @@ public class UnloadThread implements Runnable {
         return compatible;
     }
 
-
+    /*
     private int getMaxPriority(){
 
         orderTransform maxPriority = ordersPriority.get(0);
@@ -1302,6 +1330,38 @@ public class UnloadThread implements Runnable {
 
         return maxPriorityIndex;
     }
+*/
+
+    private int getMaxPriority(){
+
+        orderTransform maxPriority = ordersPriority.get(0);
+        int maxPriorityIndex=0;
+        orderTransform maxPriorityNew;
+
+        if(maxPriority.getOutOfUnits() && Warehouse.getPiece(maxPriority.getPx()) > 0){
+            maxPriority.setOutOfUnits(false);
+        }
+
+        for(int i=1; i < ordersPriority.size(); i++){
+            maxPriorityNew=ordersPriority.get(i);
+
+            if(maxPriority.getOutOfUnits() && !maxPriorityNew.getOutOfUnits()){
+                maxPriority=maxPriorityNew;
+                maxPriorityIndex=i;
+            }
+
+            if(Warehouse.getPiece(maxPriorityNew.getPx()) > 0) {
+                if ((maxPriorityNew.getIdealEndTime() < maxPriority.getIdealEndTime())) {
+                    maxPriority = maxPriorityNew;
+                    maxPriorityIndex = i;
+                }
+            }
+
+        }
+
+        return maxPriorityIndex;
+    }
+
 }
 
 

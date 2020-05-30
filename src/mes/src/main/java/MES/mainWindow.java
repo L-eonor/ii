@@ -16,8 +16,11 @@ public class mainWindow extends JFrame {
     private JTable table_t;
     private JTable table_l;
     private JButton closeButton;
+    private JButton machineStatsButton;
     //public unloadOrdersWindow unloadOrdersWindow = new unloadOrdersWindow();
-    public HistoricWindow HistoricWindow = new HistoricWindow();
+    public MES.HistoricWindow HistoricWindow = new HistoricWindow();
+
+    public machineStats MachineStats = new machineStats();
 
     public Vector<Vector<Object>> objetos = new Vector<Vector<Object>>();
 
@@ -25,7 +28,7 @@ public class mainWindow extends JFrame {
 
 
         //transformation table
-        Object[] columns_t = {"ID", "SUBMIT TIME", "START TIME", "STATUS", "PX", "PY", "QUANTITY", "N_DONE", "MAX DELAY"};
+        Object[] columns_t = {"ID", "SUBMIT TIME", "START TIME", "STATUS", "PX", "PY", "TOTAL", "SENT", "IN PROD", "DONE", "WAITING", "DEADLINE"};
         DefaultTableModel defaultTableModel_t = new DefaultTableModel();
         defaultTableModel_t.setColumnIdentifiers(columns_t);
         table_t.setModel(defaultTableModel_t);
@@ -36,7 +39,7 @@ public class mainWindow extends JFrame {
         table_t.setFont(font);
 
         //unload table
-        Object[] columns1 = {"ID", "SUBMIT TIME", "START TIME", "STATUS", "PX", "DY", "QUANTITY", "N_DONE"};
+        Object[] columns1 = {"ID", "SUBMIT TIME", "START TIME", "STATUS", "PX", "DY", "TOTAL", "SENT", "QUEUED"};
         DefaultTableModel defaultTableModel_u = new DefaultTableModel();
         defaultTableModel_u.setColumnIdentifiers(columns1);
         table_u.setModel(defaultTableModel_u);
@@ -77,6 +80,15 @@ public class mainWindow extends JFrame {
                 System.exit(0);
             }
         });
+
+        machineStatsButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                MachineStats.setVisible(true);
+            }
+        });
+
+
 
         Timer timer = new Timer(2000, new ActionListener() {
             @Override

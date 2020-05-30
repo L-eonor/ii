@@ -35,7 +35,7 @@ public class Machine extends Cell {
             System.out.println(e);
         }
 
-        System.out.println("Tempo total na Máquina "+ "C"+this.getPosition()[1]+"T"+this.getPosition()[0]+ ": "+ this.totalTime);
+        //System.out.println("Tempo total na Máquina "+ "C"+this.getPosition()[1]+"T"+this.getPosition()[0]+ ": "+ this.totalTime);
         return this.totalTime;
     }
 
@@ -48,12 +48,12 @@ public class Machine extends Cell {
             System.out.println(e);
         }
 
-        System.out.println("Unidades processadas na Máquina "+ "C"+this.getPosition()[1]+"T"+this.getPosition()[0]+ ": "+ this.totalUnits);
+        //System.out.println("Unidades processadas na Máquina "+ "C"+this.getPosition()[1]+"T"+this.getPosition()[0]+ ": "+ this.totalUnits);
         return this.totalUnits;
     }
 
     public synchronized int[] getUnitsDoneByType(){
-        System.out.println("Unidades por tipo na Máquina "+ "C"+this.getPosition()[1]+"T"+this.getPosition()[0]+ ": ");
+        //System.out.println("Unidades por tipo na Máquina "+ "C"+this.getPosition()[1]+"T"+this.getPosition()[0]+ ": ");
         for(int i=0; i < 9; i++ ){
             String ubt = "C"+this.getPosition()[1]+"T"+this.getPosition()[0]+".UNITS_DONE_BY_TYPE["+i+"]";
             try {
@@ -63,11 +63,13 @@ public class Machine extends Cell {
                 System.out.println(e);
             }
             int a=i;
-            System.out.println("  - P"+(a+1)+": "+ this.unitsDoneByType[i]);
+            //System.out.println("  - P"+(a+1)+": "+ this.unitsDoneByType[i]);
         }
 
         return this.unitsDoneByType;
     }
+
+
 
 
 

@@ -10,6 +10,7 @@ public class PusherThread1 implements Runnable {
         int full2=1;
         int full3=1;
         int orderID=0;
+        int unitType=0;
         int orderKey;
         String stringOrderKey;
 
@@ -24,13 +25,17 @@ public class PusherThread1 implements Runnable {
                 orderKey = p1.getOrderPushing();
                 stringOrderKey = String.valueOf(orderKey);
 
+                //Get unit type to upload stats
+                unitType = p1.getUnitTypePushing();
+                p1.addUnloadStats(unitType);
+                p1.addUnitCount();
+
                 updateOrder(orderKey);
 
                 try {
                     orderID = Integer.parseInt(stringOrderKey.substring(1)); // to use in unload lists
                 }
                 catch (Exception e) {
-                    System.out.println(e);
                 }
 
                 //Compares HashMap_received_units with units_sent and updates or terminates order if last unit arrived
@@ -58,9 +63,18 @@ public class PusherThread1 implements Runnable {
                 orderKey = p2.getOrderPushing();
                 stringOrderKey = String.valueOf(orderKey);
 
+                //Get unit type to upload stats
+                unitType = p2.getUnitTypePushing();
+                p2.addUnloadStats(unitType);
+                p2.addUnitCount();
+
                 updateOrder(orderKey);
 
-                orderID = Integer.parseInt(stringOrderKey.substring(1)); // to use in unload lists
+                try {
+                    orderID = Integer.parseInt(stringOrderKey.substring(1)); // to use in unload lists
+                }
+                catch (Exception e){
+                }
 
                 //Compares HashMap_received_units with units_sent and updates or terminates order if last unit arrived
                 for (int i=0; i < Main.orderListUnloadEnded.size(); i++){
@@ -87,9 +101,17 @@ public class PusherThread1 implements Runnable {
                 orderKey = p3.getOrderPushing();
                 stringOrderKey = String.valueOf(orderKey);
 
-                updateOrder(orderKey);
+                //Get unit type to upload stats
+                unitType = p3.getUnitTypePushing();
+                p3.addUnloadStats(unitType);
+                p3.addUnitCount();
 
-                orderID = Integer.parseInt(stringOrderKey.substring(1)); // to use in unload lists
+                updateOrder(orderKey);
+                try {
+                    orderID = Integer.parseInt(stringOrderKey.substring(1)); // to use in unload lists
+                }
+                catch(Exception e){
+                }
 
                 //Compares HashMap_received_units with units_sent and updates or terminates order if last unit arrived
                 for (int i=0; i < Main.orderListUnloadEnded.size(); i++){

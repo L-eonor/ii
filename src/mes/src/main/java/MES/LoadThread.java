@@ -43,7 +43,7 @@ public class LoadThread implements Runnable {
                 pathStringLoad1.append(pathLoad.getStringPath());
 
                 // Adds order info to the end
-                String orderInfo = "P13" + (loadOrderCount);
+                String orderInfo = "P1" + "T3"+ (loadOrderCount);
                 pathStringLoad1.append(orderInfo);
 
                 System.out.println("[Load1] Esta é a string: " + pathStringLoad1);
@@ -80,7 +80,7 @@ public class LoadThread implements Runnable {
                 pathStringLoad2.append(pathLoad.getStringPath());
 
                 // Adds order info to the end
-                String orderInfo = "P23" + (loadOrderCount);
+                String orderInfo = "P2" + "T3"+(loadOrderCount);
                 pathStringLoad2.append(orderInfo);
 
                 System.out.println("[Load2] Esta é a string: " + pathStringLoad2);

@@ -19,23 +19,31 @@ public class Warehouse {
         switch (type){
             case "P1":
                 P1--;
+                break;
             case "P2":
                 P2--;
+                break;
             case "P3":
                 P3--;
+                break;
             case "P4":
                 P4--;
+                break;
             case "P5":
                 P5--;
+                break;
             case "P6":
                 P6--;
+                break;
             case "P7":
                 P7--;
+                break;
             case "P8":
                 P8--;
+                break;
             case "P9":
                 P9--;
-            default: return;
+                break;
         }
     }
 
@@ -43,23 +51,31 @@ public class Warehouse {
         switch (type){
             case "P1":
                 P1++;
+                break;
             case "P2":
                 P2++;
+                break;
             case "P3":
                 P3++;
+                break;
             case "P4":
                 P4++;
+                break;
             case "P5":
                 P5++;
+                break;
             case "P6":
                 P6++;
+                break;
             case "P7":
                 P7++;
+                break;
             case "P8":
                 P8++;
+                break;
             case "P9":
                 P9++;
-            default: return;
+                break;
         }
     }
 

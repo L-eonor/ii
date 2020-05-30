@@ -47,15 +47,9 @@ public class Slider extends Cell {
     }
 
     public synchronized boolean isFull() {
-     if(this.sensorLevel4)  return true;
+     if(this.sensorLevel4 && this.sensorLevel3 && this.sensorLevel2)  return true;
      else return false;
     }
 
-    public synchronized int getNumberOfUnits() {
-        if(this.sensorLevel4) return 4;
-        else if(this.sensorLevel3) return 3;
-        else if(this.sensorLevel2) return 2;
-        else return 1;
-    }
 
 }

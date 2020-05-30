@@ -23,6 +23,8 @@ public class Main {
     public static ConcurrentHashMap<Integer, Integer> receivedOrderPieces = new ConcurrentHashMap<>(); //
     public static List<orderLoad> orderListLoad = Collections.synchronizedList(new ArrayList<>());
 
+
+
     public static Warehouse warehouse = new Warehouse();
 
 
@@ -103,7 +105,7 @@ public class Main {
             OpcUaClient connection = MyConnection.MakeConnection();
             connection.connect().get();
         }catch(Exception e){
-            System.out.println("ERROR: OPC-UA connection failed aaaa");
+            System.out.println("ERROR: OPC-UA connection failed");
             System.exit(0);
         }
 
@@ -115,44 +117,30 @@ public class Main {
         udpServer server = new udpServer(port);
         //createXML client = new createXML("C:\\Users\\kicop\\Desktop\\requeststores.xml"); // linha de testes
 
-        //ExecutorService executorService = Executors.newFixedThreadPool(10);
 
-        //Starts thread that reads XML files with orders from ERP
-        //executorService.submit(server);
+        // Init number of pieces in Warehouse
+        initWarehouse();
 
         //initRoutine();
+
+        //Start thread Server
         new Thread(server).start();
 
         //Start thread that updates Floor
-        //readSystem floorUpdate = new readSystem();
-        //executorService.submit(floorUpdate);
         new Thread(new readSystem()).start();
 
         //Start thread that handles Unload Orders
-        //UnloadThread unloadHandler = new UnloadThread();
-        //executorService.submit(unloadHandler);
         new Thread(new UnloadThread()).start();
 
         //Start thread that handles Load Orders
-        //LoadThread loadHandler = new LoadThread();
-        //executorService.submit(loadHandler);
         new Thread(new LoadThread()).start();
 
-        //PusherThread1 pusherHandler1 = new PusherThread1();
-        //executorService.submit(pusherHandler1);
+        //Start thread that handles Unload Orders arriving
         new Thread(new PusherThread1()).start();
 
-        //PusherThread2 pusherHandler2 = new PusherThread2();
-        //executorService.submit(pusherHandler2);
-
-        //PusherThread3 pusherHandler3 = new PusherThread3();
-        //executorService.submit(pusherHandler3);
-
-        //WarehouseIn warehouseInHandler = new WarehouseIn();
-        //executorService.submit(warehouseInHandler);
+        //Start thread that handles Transformations and Load Orders arriving
         new Thread(new WarehouseIn()).start();
 
-        System.out.println("Size of Unload List: " + orderListUnload.size());
 
         JFrame mainWindow = new mainWindow();
         mainWindow.setVisible(true);
@@ -225,6 +213,54 @@ public class Main {
                 ordersPriority.add(order);
             }
         }
+    }
+
+    private static void parseUnloadStatsTableToMes(){
+        Vector<Vector<Object>> tableElements = dbConnection.readOrderListTransformationDB();
+
+        for (int i = 0; i < tableElements.size(); i++){
+            int id = Integer.parseInt(tableElements.get(i).get(0).toString());
+            float submitTime = 0;
+            float startTime = 0;
+            int type = 1;
+            String status = String.valueOf(tableElements.get(i).get(3));
+            String PX = tableElements.get(i).get(4).toString();
+            String PY = tableElements.get(i).get(5).toString();
+            Integer qTotal = Integer.parseInt(tableElements.get(i).get(6).toString());
+            Integer qDone = Integer.parseInt(tableElements.get(i).get(7).toString());
+            Integer maxDelay = Integer.parseInt(tableElements.get(i).get(8).toString());
+
+            int statusInt = 1;
+            if(status.equals("por_iniciar"))  statusInt = 1;
+            else if (status.equals("em_processamento"))  statusInt = 2;
+            else if (status.equals("concluida"))  statusInt = 3;
+
+            if (statusInt != 3) {
+                orderTransform order = new orderTransform(id, submitTime, type, statusInt, PX, PY, qTotal, 0, maxDelay);
+                order.setNDone(qDone);
+
+                ordersPriority.add(order);
+            }
+        }
+    }
+
+
+
+    private static void initWarehouse(){
+
+        for(int i=1; i < 10; i++){
+            String wareHouseUnits = "ARMAZEM.P"+i;
+            String type = "P"+i;
+            try {
+                int nPieces = OPCUA_Connection.getValueInt("MAIN_TASK", wareHouseUnits);
+                Warehouse.setPiece(nPieces, type);
+            }
+            catch(Exception e){
+
+            }
+
+        }
+
     }
 
 
