@@ -1,1 +1,0 @@
-java -jar ServiceCreate.jar DESKTOP-G3Q32TE > out.txt 2>error_out.txt
