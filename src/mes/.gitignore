@@ -1,4 +1,0 @@
-#exclude folder .idea
-/.idea/*
-#exclude folder targer
-/target/*
