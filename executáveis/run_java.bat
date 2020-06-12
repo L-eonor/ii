@@ -1,0 +1,1 @@
+java -jar A4_RS1_A_mes.jar "DESKTOP-FDH4U1M" "y" > out.txt 2>error_out.txt

@@ -1,0 +1,9 @@
+Hipotetical situation where there is an order for unloading a P4 unit and transform two P1 units into P2.
+
+In the first order, the unit already has been placed in the warehouse out conveyor and is waiting for the path to be defined.  
+In the second order one of the units has already been transformed, the other one is beeing processed in the C1T3 machine.
+
+The space defined in the object diagram is the warehouse and the C1 cell, marked with orange and light blue, respectively.
+
+
+
